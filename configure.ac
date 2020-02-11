@@ -20,6 +20,11 @@ AM_INIT_AUTOMAKE([subdir-objects])
 
 # Checks for library functions.
 
+# Outputs.
+
+# A hack!
+ac_configure_args="${ac_configure_args} --enable-experimental --enable-module-ecdh"
+
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_SUBDIRS([external/secp256k1
 		   client
