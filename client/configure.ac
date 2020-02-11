@@ -7,6 +7,8 @@ AC_CONFIG_AUX_DIR([auxdir])
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_SRCDIR([plugin.cpp])
 AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_MACRO_DIRS([m4])
+LT_INIT
 
 # Checks for programs.
 AC_PROG_CXX

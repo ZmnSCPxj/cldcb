@@ -8,6 +8,7 @@ config.h.in
 config.log
 config.status
 configure
+m4
 stamp-*
 .deps
 .dirstamp
@@ -18,3 +19,4 @@ stamp-*
 *.m4
 *.o
 *.scan
+*~
