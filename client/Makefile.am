@@ -6,7 +6,9 @@ LIBSECP256K1_INCLUDE = -I../external/secp256k1/include/
 
 SECP256K1_WRAPPER_SOURCES = \
 	Secp256k1/Context.cpp \
-	Secp256k1/Context.hpp
+	Secp256k1/Context.hpp \
+	Secp256k1/Random.cpp \
+	Secp256k1/Random.hpp
 
 cldcb_plugin_SOURCES = \
 	$(SECP256K1_WRAPPER_SOURCES) \
