@@ -16,32 +16,22 @@ void illegal_callback(const char* msg, void*) {
 namespace Secp256k1 {
 
 Context::Context(int flags) {
-	int c_flags = SECP256K1_CONTEXT_NONE;
+	auto c_flags = int(SECP256K1_CONTEXT_NONE);
 	if (flags & Sign)
 		c_flags |= SECP256K1_CONTEXT_SIGN;
 	if (flags & Verify)
 		c_flags |= SECP256K1_CONTEXT_VERIFY;
 
 	auto ctx = secp256k1_context_create(c_flags);
-	pimpl = (void*) ctx;
+	pimpl = std::shared_ptr<secp256k1_context_struct>( ctx
+							 , &secp256k1_context_destroy
+							 );
 	secp256k1_context_set_illegal_callback( ctx
 					      , &illegal_callback
 					      , nullptr
 					      );
 }
 
-Context::Context(Context&& o) {
-	pimpl = o.pimpl;
-	o.pimpl = nullptr;
-}
-
-Context::Context(Context const& o) {
-	auto ctx = secp256k1_context_clone((secp256k1_context *) o.pimpl);
-	pimpl = (void*) ctx;
-}
-
-Context::~Context() {
-	secp256k1_context_destroy((secp256k1_context*) pimpl);
-}
+Context::Context(Context&& o) : pimpl(std::move(o.pimpl)) { }
 
 }
