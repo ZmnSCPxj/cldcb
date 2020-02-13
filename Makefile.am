@@ -1,6 +1,7 @@
 
 SUBDIRS = \
 	external/secp256k1/ \
+	common/ \
 	client/
 
 .PHONY : TAGS

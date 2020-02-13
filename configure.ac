@@ -29,6 +29,7 @@ ac_configure_args="${ac_configure_args} --enable-experimental --enable-module-ec
 
 AC_CONFIG_FILES([Makefile
 		 client/Makefile
+		 common/Makefile
 		])
 AC_CONFIG_SUBDIRS([external/secp256k1
 		  ])

@@ -1,5 +1,5 @@
-#ifndef CLDCB_SECP256K1_PUBKEY_HPP
-#define CLDCB_SECP256K1_PUBKEY_HPP
+#ifndef CLDCB_COMMON_SECP256K1_PUBKEY_HPP
+#define CLDCB_COMMON_SECP256K1_PUBKEY_HPP
 
 #include<istream>
 #include<memory>
@@ -83,4 +83,4 @@ PubKey operator*(PrivKey const& a, PubKey const& B) {
 
 }
 
-#endif /* CLDCB_SECP256K1_PUBKEY_HPP */
+#endif /* CLDCB_COMMON_SECP256K1_PUBKEY_HPP */
