@@ -8,6 +8,7 @@
 #include"Secp256k1/Context.hpp"
 #include"Secp256k1/PrivKey.hpp"
 #include"Secp256k1/PubKey.hpp"
+#include"Util/make_unique.hpp"
 
 namespace Secp256k1 {
 
@@ -122,15 +123,12 @@ public:
 };
 
 PubKey::PubKey(Secp256k1::PrivKey const& sk)
-	/* FIXME: Use a make_unique factory.  */
-	: pimpl(new Impl(sk)) {}
+	: pimpl(Util::make_unique<Impl>(sk)) {}
 
 PubKey::PubKey(PubKey const& o)
-	/* FIXME: Use a make_unique factory.  */
-	: pimpl(new Impl(*o.pimpl)) { }
+	: pimpl(Util::make_unique<Impl>(*o.pimpl)) { }
 PubKey::PubKey(PubKey&& o) {
-	/* FIXME: Use a make_unique factory.  */
-	auto mine = std::unique_ptr<Impl>(new Impl(o.pimpl->ctx));
+	auto mine = Util::make_unique<Impl>(o.pimpl->ctx);
 	std::swap(pimpl, mine);
 	std::swap(pimpl, o.pimpl);
 }

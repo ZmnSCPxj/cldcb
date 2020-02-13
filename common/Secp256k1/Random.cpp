@@ -8,6 +8,7 @@
 #include<unistd.h>
 #include<utility>
 #include"Secp256k1/Random.hpp"
+#include"Util/make_unique.hpp"
 
 namespace Secp256k1 {
 
@@ -90,9 +91,7 @@ public:
 
 #endif
 
-Random::Random() {
-	pimpl.reset(new Impl());
-}
+Random::Random() : pimpl(Util::make_unique<Impl>()) { }
 Random::~Random() { }
 
 std::uint8_t Random::get() {

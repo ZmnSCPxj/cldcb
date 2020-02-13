@@ -12,7 +12,8 @@ libcldcb_common_la_SOURCES = \
 	Secp256k1/PubKey.cpp \
 	Secp256k1/PubKey.hpp \
 	Secp256k1/Random.cpp \
-	Secp256k1/Random.hpp
+	Secp256k1/Random.hpp \
+	Util/make_unique.hpp
 
 libcldcb_common_la_LIBADD = $(LIBSECP256K1_LIBRARY)
 libcldcb_common_la_CPPFLAGS = $(LIBSECP256K1_INCLUDE)
