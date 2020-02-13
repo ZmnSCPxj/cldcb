@@ -7,3 +7,5 @@ SUBDIRS = \
 
 TAGS :
 	etags `find -name "*.h" -o -name "*.c" -o -name "*.hpp" -o -name "*.cpp"`
+
+ACLOCAL_AMFLAGS = -I m4
