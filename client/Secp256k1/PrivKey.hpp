@@ -2,12 +2,16 @@
 #define CLDCB_CLIENT_SECP256K1_PRIVKEY_HPP
 
 #include<cstdint>
+#include<ostream>
 
 #include"Secp256k1/Context.hpp"
 
+namespace Secp256k1 { class PrivKey; }
 namespace Secp256k1 { class PubKey; }
 namespace Secp256k1 { class Random; }
 namespace Secp256k1 { class Signature; }
+
+std::ostream& operator<<(std::ostream&, Secp256k1::PrivKey const&);
 
 namespace Secp256k1 {
 
@@ -63,6 +67,7 @@ public:
 	}
 
 	friend class PubKey;
+	friend std::ostream& ::operator<<(std::ostream&, Secp256k1::PrivKey const&);
 
 	/* TODO: serialization. */
 };
