@@ -1,6 +1,7 @@
 INSTALL
 Makefile
 Makefile.in
+TAGS
 autom4te*
 auxdir
 config.h
