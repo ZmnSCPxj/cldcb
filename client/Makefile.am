@@ -9,6 +9,8 @@ SECP256K1_WRAPPER_SOURCES = \
 	Secp256k1/Context.hpp \
 	Secp256k1/PrivKey.cpp \
 	Secp256k1/PrivKey.hpp \
+	Secp256k1/PubKey.cpp \
+	Secp256k1/PubKey.hpp \
 	Secp256k1/Random.cpp \
 	Secp256k1/Random.hpp
 

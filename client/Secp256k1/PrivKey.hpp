@@ -62,6 +62,8 @@ public:
 		return PrivKey(ctx, buffer);
 	}
 
+	friend class PubKey;
+
 	/* TODO: serialization. */
 };
 
