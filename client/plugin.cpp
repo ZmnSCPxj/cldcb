@@ -1,5 +1,6 @@
 #include<iostream>
 #include"Secp256k1/Context.hpp"
+#include"Secp256k1/G.hpp"
 #include"Secp256k1/PrivKey.hpp"
 #include"Secp256k1/PubKey.hpp"
 #include"Secp256k1/Random.hpp"
@@ -13,6 +14,8 @@ int main(int argc, char **argv) {
 
 	Secp256k1::PrivKey b(secp, random);
 	Secp256k1::PubKey B(b);
+
+	std::cout << Secp256k1::G << std::endl;
 
 	std::cout << a << std::endl;
 	std::cout << A << std::endl;
@@ -29,6 +32,8 @@ int main(int argc, char **argv) {
 	std::cout << (A != B) << std::endl; /* With high probability anyway. */
 	std::cout << (A + B != A) << std::endl;
 	std::cout << (A + B != B) << std::endl;
+
+	std::cout << (A == a * Secp256k1::G) << std::endl;
 
 	std::cout << "Hello World." << std::endl;
 	return 0;

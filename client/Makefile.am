@@ -7,6 +7,8 @@ LIBSECP256K1_INCLUDE = -I../external/secp256k1/include/
 SECP256K1_WRAPPER_SOURCES = \
 	Secp256k1/Context.cpp \
 	Secp256k1/Context.hpp \
+	Secp256k1/G.cpp \
+	Secp256k1/G.hpp \
 	Secp256k1/PrivKey.cpp \
 	Secp256k1/PrivKey.hpp \
 	Secp256k1/PubKey.cpp \
