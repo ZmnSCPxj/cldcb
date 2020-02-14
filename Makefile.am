@@ -1,5 +1,6 @@
 
 SUBDIRS = \
+	external/sha-2/ \
 	external/secp256k1/ \
 	common/ \
 	client/
