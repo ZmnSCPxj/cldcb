@@ -139,6 +139,18 @@ public:
 			os << hexbyte(a[i]);
 		}
 	}
+
+	void to_buffer(std::uint8_t buffer[33]) const {
+		size_t size = 33;
+		auto resa = secp256k1_ec_pubkey_serialize( context.get()
+							 , buffer
+							 , &size
+							 , &key
+							 , SECP256K1_EC_COMPRESSED
+							 );
+		assert(resa == 1);
+		assert(size == 3);
+	}
 };
 
 PubKey::PubKey(secp256k1_context_struct *ctx, std::uint8_t buffer[33])
@@ -173,6 +185,10 @@ PubKey& PubKey::operator*=(PrivKey const& o) {
 
 bool PubKey::operator==(PubKey const& o) const {
 	return pimpl->equal(*o.pimpl);
+}
+
+void PubKey::to_buffer(std::uint8_t buffer[33]) const {
+	pimpl->to_buffer(buffer);
 }
 
 }

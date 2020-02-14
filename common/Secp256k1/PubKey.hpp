@@ -90,6 +90,8 @@ public:
 		return PubKey(ctx, buffer);
 	}
 
+	void to_buffer(std::uint8_t buffer[33]) const;
+
 	/* TODO: Serialization.  */
 };
 
