@@ -3,6 +3,8 @@
 #include"Secp256k1/PrivKey.hpp"
 #include"Secp256k1/PubKey.hpp"
 #include"Secp256k1/Random.hpp"
+#include"Sha256/Hash.hpp"
+#include"Sha256/fun.hpp"
 
 int main(int argc, char **argv) {
 	Secp256k1::Random random;
@@ -12,6 +14,8 @@ int main(int argc, char **argv) {
 
 	Secp256k1::PrivKey b(random);
 	Secp256k1::PubKey B(b);
+
+	std::cout << Sha256::fun("a", 1) << std::endl;
 
 	std::cout << Secp256k1::G << std::endl;
 
