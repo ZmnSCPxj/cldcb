@@ -5,37 +5,36 @@
 #include<stdexcept>
 #include<string>
 #include<string.h>
+#include"Secp256k1/Detail/context.hpp"
 #include"Secp256k1/PrivKey.hpp"
 #include"Secp256k1/Random.hpp"
 
+using Secp256k1::Detail::context;
+
 namespace  Secp256k1 {
 
-PrivKey::PrivKey( Secp256k1::Context const& ctx_
-		, std::uint8_t key_[32]
-		) : ctx(ctx_) {
+PrivKey::PrivKey(std::uint8_t key_[32]) {
 	memcpy(key, key_, 32);
 }
 
-PrivKey::PrivKey( Secp256k1::Context const& ctx_
-		, Secp256k1::Random& rand
-		) : ctx(ctx_) {
+PrivKey::PrivKey(Secp256k1::Random& rand) {
 	for (auto i = 0; i < 32; ++i) {
 		key[i] = rand.get();
 	}
 }
 
-PrivKey::PrivKey(PrivKey const& o) : ctx(o.ctx) {
+PrivKey::PrivKey(PrivKey const& o) {
 	memcpy(key, o.key, 32);
 }
 
 PrivKey& PrivKey::negate() {
-	auto res = secp256k1_ec_privkey_negate(ctx.get(), key);
+	auto res = secp256k1_ec_privkey_negate(context.get(), key);
 	assert(res == 1);
 	return *this;
 }
 
 PrivKey& PrivKey::operator+=(PrivKey const& o) {
-	auto res = secp256k1_ec_privkey_tweak_add(ctx.get(), key, o.key);
+	auto res = secp256k1_ec_privkey_tweak_add(context.get(), key, o.key);
 	/* FIXME: Use a backtrace-catching exception. */
 	if (!res)
 		throw std::out_of_range("Secp256k1::PrivKey += out-of-range");
@@ -43,7 +42,7 @@ PrivKey& PrivKey::operator+=(PrivKey const& o) {
 }
 
 PrivKey& PrivKey::operator*=(PrivKey const& o) {
-	auto res = secp256k1_ec_privkey_tweak_mul(ctx.get(), key, o.key);
+	auto res = secp256k1_ec_privkey_tweak_mul(context.get(), key, o.key);
 	/* FIXME: Use a backtrace-catching exception. */
 	if (!res)
 		throw std::out_of_range("Secp256k1::PrivKey += out-of-range");

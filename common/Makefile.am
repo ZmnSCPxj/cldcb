@@ -3,8 +3,8 @@ LIBSECP256K1_INCLUDE = -I../external/secp256k1/include/
 
 noinst_LTLIBRARIES = libcldcb-common.la
 libcldcb_common_la_SOURCES = \
-	Secp256k1/Context.cpp \
-	Secp256k1/Context.hpp \
+	Secp256k1/Detail/context.cpp \
+	Secp256k1/Detail/context.hpp \
 	Secp256k1/G.cpp \
 	Secp256k1/G.hpp \
 	Secp256k1/PrivKey.cpp \

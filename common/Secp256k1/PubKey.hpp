@@ -1,11 +1,15 @@
 #ifndef CLDCB_COMMON_SECP256K1_PUBKEY_HPP
 #define CLDCB_COMMON_SECP256K1_PUBKEY_HPP
 
+#include<cstdint>
 #include<istream>
 #include<memory>
 #include<ostream>
 #include<stdexcept>
-#include"Secp256k1/Context.hpp"
+
+extern "C" {
+struct secp256k1_context_struct;
+}
 
 namespace Secp256k1 { class PrivKey; }
 namespace Secp256k1 { class PubKey; }
@@ -24,6 +28,9 @@ class PubKey {
 private:
 	class Impl;
 	std::unique_ptr<Impl> pimpl;
+
+	explicit PubKey(secp256k1_context_struct *, std::uint8_t buffer[33]);
+	explicit PubKey(std::uint8_t buffer[33]);
 
 public:
 	explicit PubKey(Secp256k1::PrivKey const&);
@@ -72,6 +79,16 @@ public:
 	}
 
 	friend std::ostream& ::operator<<(std::ostream&, PubKey const&);
+
+	static PubKey from_buffer(std::uint8_t buffer[33]) {
+		return PubKey(buffer);
+	}
+	/* Needed for the generator point.  */
+	static PubKey from_buffer_with_context( secp256k1_context_struct *ctx
+					      , std::uint8_t buffer[33]
+					      ) {
+		return PubKey(ctx, buffer);
+	}
 
 	/* TODO: Serialization.  */
 };

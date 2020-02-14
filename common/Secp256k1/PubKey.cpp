@@ -5,40 +5,59 @@
 #include<string>
 #include<string.h>
 #include<utility>
-#include"Secp256k1/Context.hpp"
+#include"Secp256k1/Detail/context.hpp"
 #include"Secp256k1/PrivKey.hpp"
 #include"Secp256k1/PubKey.hpp"
 #include"Util/make_unique.hpp"
+
+using Secp256k1::Detail::context;
 
 namespace Secp256k1 {
 
 class PubKey::Impl {
 public:
-	Secp256k1::Context ctx;
 	secp256k1_pubkey key;
 
-	explicit Impl(Secp256k1::PrivKey const& sk) : ctx(sk.ctx) {
-		auto res = secp256k1_ec_pubkey_create( ctx.get()
+	explicit Impl(Secp256k1::PrivKey const& sk) {
+		auto res = secp256k1_ec_pubkey_create( context.get()
 						     , &key
 						     , sk.key
 						     );
 		if (!res)
 			throw InvalidPrivKey();
 	}
-	explicit Impl(Secp256k1::Context ctx_) : ctx(ctx_) { }
-	Impl(Impl const& o) : ctx(o.ctx) {
-		memcpy(&key, &o.key, sizeof(key));
+	Impl(secp256k1_context_struct *ctx, std::uint8_t buffer[33]) {
+		auto res = secp256k1_ec_pubkey_parse( ctx
+						    , &key
+						    , buffer
+						    , 33
+						    );
+		if (!res)
+			throw std::runtime_error("Invalid pubkey");
+	}
+	Impl(std::uint8_t buffer[33]) {
+		auto res = secp256k1_ec_pubkey_parse( context.get()
+						    , &key
+						    , buffer
+						    , 33
+						    );
+		if (!res)
+			throw std::runtime_error("Invalid pubkey");
+	}
+	Impl() { }
+	Impl(Impl const& o) {
+		key = o.key;
 	}
 
 	void negate() {
-		auto res = secp256k1_ec_pubkey_negate(ctx.get(), &key);
+		auto res = secp256k1_ec_pubkey_negate(context.get(), &key);
 		assert(res == 1);
 	}
 	void add(Impl const& o) {
 		secp256k1_pubkey tmp;
 
 		secp256k1_pubkey const* keys[2] = {&o.key, &key};
-		auto res = secp256k1_ec_pubkey_combine( ctx.get()
+		auto res = secp256k1_ec_pubkey_combine( context.get()
 						      , &tmp
 						      , keys
 						      , 2
@@ -56,7 +75,7 @@ public:
 		/* Construct temporary. */
 		auto tmp = key;
 
-		auto res = secp256k1_ec_pubkey_tweak_mul( ctx.get()
+		auto res = secp256k1_ec_pubkey_tweak_mul( context.get()
 							, &tmp
 							, sk.key
 							);
@@ -75,7 +94,7 @@ public:
 		size_t asize = sizeof(a);
 		size_t bsize = sizeof(b);
 
-		auto resa = secp256k1_ec_pubkey_serialize( ctx.get()
+		auto resa = secp256k1_ec_pubkey_serialize( context.get()
 							 , a
 							 , &asize
 							 , &key
@@ -84,7 +103,7 @@ public:
 		assert(resa == 1);
 		assert(asize == sizeof(a));
 
-		auto resb = secp256k1_ec_pubkey_serialize( ctx.get()
+		auto resb = secp256k1_ec_pubkey_serialize( context.get()
 							 , b
 							 , &bsize
 							 , &o.key
@@ -107,7 +126,7 @@ public:
 		std::uint8_t a[33];
 		size_t asize = sizeof(a);
 
-		auto resa = secp256k1_ec_pubkey_serialize( ctx.get()
+		auto resa = secp256k1_ec_pubkey_serialize( context.get()
 							 , a
 							 , &asize
 							 , &key
@@ -122,13 +141,18 @@ public:
 	}
 };
 
+PubKey::PubKey(secp256k1_context_struct *ctx, std::uint8_t buffer[33])
+	: pimpl(Util::make_unique<Impl>(ctx, buffer)) {}
+PubKey::PubKey(std::uint8_t buffer[33])
+	: pimpl(Util::make_unique<Impl>(buffer)) {}
+
 PubKey::PubKey(Secp256k1::PrivKey const& sk)
 	: pimpl(Util::make_unique<Impl>(sk)) {}
 
 PubKey::PubKey(PubKey const& o)
 	: pimpl(Util::make_unique<Impl>(*o.pimpl)) { }
 PubKey::PubKey(PubKey&& o) {
-	auto mine = Util::make_unique<Impl>(o.pimpl->ctx);
+	auto mine = Util::make_unique<Impl>();
 	std::swap(pimpl, mine);
 	std::swap(pimpl, o.pimpl);
 }

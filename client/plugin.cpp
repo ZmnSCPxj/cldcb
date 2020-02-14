@@ -1,18 +1,16 @@
 #include<iostream>
-#include"Secp256k1/Context.hpp"
 #include"Secp256k1/G.hpp"
 #include"Secp256k1/PrivKey.hpp"
 #include"Secp256k1/PubKey.hpp"
 #include"Secp256k1/Random.hpp"
 
 int main(int argc, char **argv) {
-	Secp256k1::Context secp;
 	Secp256k1::Random random;
 
-	Secp256k1::PrivKey a(secp, random);
+	Secp256k1::PrivKey a(random);
 	Secp256k1::PubKey A(a);
 
-	Secp256k1::PrivKey b(secp, random);
+	Secp256k1::PrivKey b(random);
 	Secp256k1::PubKey B(b);
 
 	std::cout << Secp256k1::G << std::endl;
