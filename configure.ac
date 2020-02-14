@@ -24,9 +24,6 @@ AX_CXX_COMPILE_STDCXX_11
 
 # Outputs.
 
-# A hack!
-ac_configure_args="${ac_configure_args} --enable-experimental --enable-module-ecdh"
-
 AC_CONFIG_FILES([Makefile
 		 client/Makefile
 		 common/Makefile
