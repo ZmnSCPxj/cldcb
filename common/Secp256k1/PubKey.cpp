@@ -8,6 +8,7 @@
 #include"Secp256k1/Detail/context.hpp"
 #include"Secp256k1/PrivKey.hpp"
 #include"Secp256k1/PubKey.hpp"
+#include"Util/Str.hpp"
 #include"Util/make_unique.hpp"
 
 using Secp256k1::Detail::context;
@@ -115,13 +116,6 @@ public:
 		return memcmp(a, b, sizeof(a)) == 0;
 	}
 
-	std::string hexbyte(std::uint8_t v) {
-		std::ostringstream os;
-		os << std::hex << std::setfill('0') << std::setw(2);
-		os << ((unsigned int) v);
-		return os.str();
-	}
-
 	void dump(std::ostream& os) {
 		std::uint8_t a[33];
 		size_t asize = sizeof(a);
@@ -136,7 +130,7 @@ public:
 		assert(asize == sizeof(a));
 
 		for (auto i = 0; i < 33; ++i) {
-			os << hexbyte(a[i]);
+			os << Util::Str::hexbyte(a[i]);
 		}
 	}
 

@@ -8,6 +8,7 @@
 #include"Secp256k1/Detail/context.hpp"
 #include"Secp256k1/PrivKey.hpp"
 #include"Secp256k1/Random.hpp"
+#include"Util/Str.hpp"
 
 using Secp256k1::Detail::context;
 
@@ -51,19 +52,8 @@ PrivKey& PrivKey::operator*=(PrivKey const& o) {
 
 }
 
-namespace {
-
-std::string hexbyte(std::uint8_t v) {
-	std::ostringstream os;
-	os << std::hex << std::setfill('0') << std::setw(2);
-	os << ((unsigned int) v);
-	return os.str();
-}
-
-}
-
 std::ostream& operator<<(std::ostream& os, Secp256k1::PrivKey const& sk) {
 	for (auto i = 0; i < 32; ++i)
-		os << hexbyte(sk.key[i]);
+		os << Util::Str::hexbyte(sk.key[i]);
 	return os;
 }
