@@ -3,6 +3,7 @@
 
 #include<cstdint>
 #include<ostream>
+#include<stdexcept>
 #include<string>
 
 namespace Secp256k1 { class PrivKey; }
@@ -13,6 +14,15 @@ namespace Secp256k1 { class Signature; }
 std::ostream& operator<<(std::ostream&, Secp256k1::PrivKey const&);
 
 namespace Secp256k1 {
+
+/* Thrown if caller-provided data would result in an invalid
+ * private key.
+ */
+/* FIXME: derive from a backtrace-capturing exception.  */
+class InvalidPrivKey : public std::invalid_argument {
+public:
+	InvalidPrivKey() : std::invalid_argument("Invalid private key.") {}
+};
 
 class PrivKey {
 private:

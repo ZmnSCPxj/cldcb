@@ -24,8 +24,8 @@ public:
 						     , &key
 						     , sk.key
 						     );
-		if (!res)
-			throw InvalidPrivKey();
+		/* The private key should have been verified.  */
+		assert(res == 1);
 	}
 	Impl(secp256k1_context_struct *ctx, std::uint8_t buffer[33]) {
 		auto res = secp256k1_ec_pubkey_parse( ctx
@@ -34,7 +34,7 @@ public:
 						    , 33
 						    );
 		if (!res)
-			throw std::runtime_error("Invalid pubkey");
+			throw InvalidPubKey();
 	}
 	Impl(std::uint8_t buffer[33]) {
 		auto res = secp256k1_ec_pubkey_parse( context.get()
@@ -43,7 +43,7 @@ public:
 						    , 33
 						    );
 		if (!res)
-			throw std::runtime_error("Invalid pubkey");
+			throw InvalidPubKey();
 	}
 	Impl() { }
 	Impl(Impl const& o) {
@@ -156,7 +156,7 @@ PubKey::PubKey(std::string const& s) {
 	auto buf = Util::Str::hexread(s);
 	if (buf.size() != 33)
 		/* FIXME: Use a specific invalid-public-key failure.  */
-		throw std::runtime_error("Invalid public key length");
+		throw InvalidPubKey();
 	pimpl = Util::make_unique<Impl>(&buf[0]);
 }
 

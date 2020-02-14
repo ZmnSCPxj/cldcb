@@ -15,21 +15,26 @@ using Secp256k1::Detail::context;
 namespace  Secp256k1 {
 
 PrivKey::PrivKey(std::uint8_t key_[32]) {
+	if (!secp256k1_ec_seckey_verify(context.get(), key_))
+		throw InvalidPrivKey();
 	memcpy(key, key_, 32);
 }
 
 PrivKey::PrivKey(std::string const& s) {
 	auto buf = Util::Str::hexread(s);
 	if (buf.size() != 32)
-		/* FIXME: Throw a specific invalid-private-key exception.  */
-		throw std::runtime_error("Invalid Private Key");
+		throw InvalidPrivKey();
+	if (!secp256k1_ec_seckey_verify(context.get(), &buf[0]))
+		throw InvalidPrivKey();
 	memcpy(key, &buf[0], 32);
 }
 
 PrivKey::PrivKey(Secp256k1::Random& rand) {
-	for (auto i = 0; i < 32; ++i) {
-		key[i] = rand.get();
-	}
+	do {
+		for (auto i = 0; i < 32; ++i) {
+			key[i] = rand.get();
+		}
+	} while (!secp256k1_ec_seckey_verify(context.get(), key));
 }
 
 PrivKey::PrivKey(PrivKey const& o) {

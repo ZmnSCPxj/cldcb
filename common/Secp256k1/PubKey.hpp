@@ -19,10 +19,10 @@ std::ostream& operator<<(std::ostream&, Secp256k1::PubKey const&);
 
 namespace Secp256k1 {
 
-/* Thrown if the PrivKey is somehow invalid.*/
-class InvalidPrivKey : public std::runtime_error {
+/* Thrown in case of being fed an invalid public key.  */
+class InvalidPubKey : public std::invalid_argument {
 public:
-	InvalidPrivKey() : std::runtime_error("Secp256k1: Invalid Privkey") { }
+	InvalidPubKey() : std::invalid_argument("Invalid public key.") { }
 };
 
 class PubKey {
