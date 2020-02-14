@@ -3,6 +3,7 @@
 
 #include<cstdint>
 #include<ostream>
+#include<string>
 
 namespace Secp256k1 { class PrivKey; }
 namespace Secp256k1 { class PubKey; }
@@ -22,7 +23,11 @@ private:
 public:
 	PrivKey() =delete;
 
+	/* Load private key from a hex-encoded string.  */
+	explicit PrivKey(std::string const&);
+	/* Pick a random private key.  */
 	explicit PrivKey(Secp256k1::Random& rand);
+	/* Copy an existing private key.  */
 	PrivKey(PrivKey const&);
 
 	PrivKey& negate();
@@ -55,6 +60,16 @@ public:
 
 	static PrivKey from_buffer(std::uint8_t buffer[32]) {
 		return PrivKey(buffer);
+	}
+
+	bool operator==(PrivKey const& o) const {
+		for (auto i = 0; i < 32; ++i)
+			if (key[i] != o.key[i])
+				return false;
+		return true;
+	}
+	bool operator!=(PrivKey const& o) const {
+		return !(*this == o);
 	}
 
 	friend class PubKey;

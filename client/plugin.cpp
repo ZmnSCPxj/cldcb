@@ -3,6 +3,7 @@
 #include"Secp256k1/PrivKey.hpp"
 #include"Secp256k1/PubKey.hpp"
 #include"Secp256k1/Random.hpp"
+#include"Secp256k1/ecdh.hpp"
 #include"Sha256/Hash.hpp"
 #include"Sha256/fun.hpp"
 
@@ -36,6 +37,13 @@ int main(int argc, char **argv) {
 	std::cout << (A + B != B) << std::endl;
 
 	std::cout << (A == a * Secp256k1::G) << std::endl;
+
+	/* From BOLT 8.  */
+	Secp256k1::PubKey  P("028d7500dd4c12685d1f568b4c2b5048e8534b873319f3a8daa612b469132ec7f7");
+	Secp256k1::PrivKey s("1212121212121212121212121212121212121212121212121212121212121212");
+	auto ss = Secp256k1::ecdh(s, P);
+	std::cout << ss << std::endl;
+	std::cout << (ss == Secp256k1::PrivKey("1e2fb3c8fe8fb9f262f649f64d26ecf0f2c0a805a767cf02dc2d77a6ef1fdcc3")) << std::endl;
 
 	std::cout << "Hello World." << std::endl;
 	return 0;

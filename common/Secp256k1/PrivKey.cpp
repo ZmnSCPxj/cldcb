@@ -18,6 +18,14 @@ PrivKey::PrivKey(std::uint8_t key_[32]) {
 	memcpy(key, key_, 32);
 }
 
+PrivKey::PrivKey(std::string const& s) {
+	auto buf = Util::Str::hexread(s);
+	if (buf.size() != 32)
+		/* FIXME: Throw a specific invalid-private-key exception.  */
+		throw std::runtime_error("Invalid Private Key");
+	memcpy(key, &buf[0], 32);
+}
+
 PrivKey::PrivKey(Secp256k1::Random& rand) {
 	for (auto i = 0; i < 32; ++i) {
 		key[i] = rand.get();

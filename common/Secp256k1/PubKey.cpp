@@ -143,7 +143,7 @@ public:
 							 , SECP256K1_EC_COMPRESSED
 							 );
 		assert(resa == 1);
-		assert(size == 3);
+		assert(size == 33);
 	}
 };
 
@@ -151,6 +151,14 @@ PubKey::PubKey(secp256k1_context_struct *ctx, std::uint8_t buffer[33])
 	: pimpl(Util::make_unique<Impl>(ctx, buffer)) {}
 PubKey::PubKey(std::uint8_t buffer[33])
 	: pimpl(Util::make_unique<Impl>(buffer)) {}
+
+PubKey::PubKey(std::string const& s) {
+	auto buf = Util::Str::hexread(s);
+	if (buf.size() != 33)
+		/* FIXME: Use a specific invalid-public-key failure.  */
+		throw std::runtime_error("Invalid public key length");
+	pimpl = Util::make_unique<Impl>(&buf[0]);
+}
 
 PubKey::PubKey(Secp256k1::PrivKey const& sk)
 	: pimpl(Util::make_unique<Impl>(sk)) {}
