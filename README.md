@@ -31,17 +31,51 @@ You want the `cldcb-server` to be run at each startup of your remote
 server.
 This means installing it in your `init` system somehow.
 
+The `cldcb-server` will create a server identifier, this is a 66-hex-digit
+string whose first digit will be `5`.
+
 Then, you need to set up the `cldcb-server` to allow 1 or more nodes
 to back up their data there, as well as where in the filesystem to
 store the data.
-This means providing the Lightning node ID(s) of the node(s) you want
-to keep backups for.
+You do this by providing a "client identifier" to the server.
 
-Then, you will need to install `cldcb-client` (which also installs
-`cldcb-plugin`) on the computer(s) with your Lightning node(s).
+To create a client identifier, install `cldcb-client` (which also
+installs `cldcb-plugin`) on the computer(s) with your Lightning
+node(s).
+Then run:
+
+    cldcb-client newclient $CLIENT_PRIVKEY_FILE
+
+(`$CLIENT_PRIVKEY_FILE` is any filename you want.)
+
+`cldcb-client` will save the identifier private key in the given
+file, then print out the client identifier.
+You can also open the `$CLIENT_PRIVKEY_FILE` (it is a text file)
+to see the client identifier, it is the hex string starting with
+`id =` and with the hex string always starting with the hex digit
+`c`.
+The `$CLIENT_PRIVKEY_FILE` will look like:
+
+    id = c3df949fa268776a789f321051211a9183fb9c2891b8dc2742cfc9107ec7f9d23f
+    pk = e49802ca07d9f3a579afefca067dd28f22c572de8756d8ef372c53873f82b25e
+
+The first is the client identifier you need to give to the backup
+server.
+The second is a private key and should not be given to anyone, not
+even the backup server.
+
+Then, on the backup server, run:
+
+    cldcb-server add $CLIENT_IDENTIFIER
+
+This tells the server about a new client that will save backups on
+the server.
+
+Afterwards, you are ready to install the plugin into your C-Lightning.
 While your C-Lightning node is running, run:
 
-    cldcb-client install --lightning-dir=$LIGHTNINGDIR
+    cldcb-client installplugin --lightning-dir=$LIGHTNINGDIR \
+                               --client-privkey=$CLIENT_PRIVKEY_FILE
 
 Follow the prompts and tell `cldcb-client` how to access the
 `cldcb-server`.
@@ -51,14 +85,35 @@ C-Lightning installation, and also trigger C-Lightning to reload
 plugins so that the backup plugin will be started and you can
 start uploading your backups to the `cldcb-server`.
 
+After this you can safely delete the `$CLIENT_PRIVKEY_FILE`;
+its content will be saved in `cldcb-plugin-wrapper`.
+
 Finally, create a **secure offline** backup of your `hsm_secret`
 file.
 This can be found in your `$LIGHTNINGDIR`.
-In principle you could hex-dump it and then write the hex down
-on a piece of paper, it is just 64 hex characters.
+In principle you could hex-dump it (`xxd hsm_secret`) and then
+write the hex down on a piece of paper, it is just 64 hex characters.
 
 ***Without a copy of `hsm_secret` your CLDCB data cannot be
 recovered (or stolen, for that matter).***
+
+Single-Step Setup
+-----------------
+
+(TODO)
+
+If you have `sshd` installed on the backup server, and `ssh` installed
+locally (which is likely), then `cldcb-client` can do a single-step
+setup.
+
+    cldcb-client install --lightning-dir=$LIGHTNINGDIR
+
+This will issue the `cldcb-server add` command automatically to the
+server you provide, via `ssh`.
+This will cause `ssh` to ask for your username and password for the
+remote server.
+
+This will create a client identifier and install it in your server.
 
 Recovery
 ========
@@ -112,43 +167,49 @@ You cannot get options from C-Lightning before `db_write`
 could trigger, you cannot query anything from C-Lightning
 while `db_write` is in-flight, and so on.
 
-During installation of the plugin, we generate a public-private
-keypair, then ask the Lightning node to sign the generated public
-key using `signmessage`.
-We use that public key to tell `cldcb-server` that we are an
-authorized representative of the Lightning node.
+Further, it would be preferable if the server does not need to
+know the identifier for the Lightning network node it is keeping
+backups for.
 
-Thus, authentication with the server goes this way:
+Thus, we have *three* keypairs:
 
-* We present the Lightning node public key.
-  The server checks that it is in the list of nodes it is keeping
-  backups for.
-* We present `cldcb-plugin` public key.
-* We present the signature of the Lightning node that signs
-  the `cldcb-plugin` public key.
-  This effectively tells the server that this is a delegate of
-  the Lightning node.
-  * What is actually signed is a string of the public key in
-    hex, with a prefixed scare-message of "DO NOT SIGN THIS MESSAGE
-    UNLESS YOU WANT TO LOSE ALL YOUR FUNDS ".
+* The key of the node, i.e. the node identifier.
+* The key of the `cldcb-plugin`, i.e. the client identifier.
+* The key of the `cldcb-server`, i.e. the server identifier.
 
-Remember, we cannot query the C-Lightning node *anything* while a
-`db_write` is in-flight, not even a `signmessage`, so we cannot sign
-every message to `cldcb-server` that way.
-Worse, we cannot even know *where* the `cldcb-server` *is* by
+When a `cldcb-plugin` is installed into a C-Lightning node, we
+generate a keypair for it to serve as the client identifier.
+The server will only allow client identifiers it has been set
+up to receive from.
+The data saved by the plugin is encrypted to be decryptable only
+by the node private key itself.
+
+Authentication with the server simply requires that the plugin
+prove to the backup server that it has control of the client
+private key corresponding to the client identifier that was
+configured at the server.
+
+Thus, the plugin never needs to query anything from the
+C-Lightning node:
+all it needs is the client private key (which is separate from
+the node keypair).
+
+Now an issue is that we cannot do anything in the plugin, not
+even C-Lightning command-line options, since options are provided
+during `init`, but `db_write` hooks can get invoked before that.
+So we cannot even know *where* the `cldcb-server` *is* by
 looking at the C-Lightning options, because `db_write` can occur
 before the options are passed to the plugin!
 
 Thus, `cldcb-client` creates a shell script `cldcb-plugin-wrapper`
 that is the actual plugin that is executed by C-Lightning.
-This contains the `cldcb-plugin` *private* key, the signature from
-C-Lightning, the node public key, and how to contact the
-`cldcb-server`.
+This contains the `cldcb-plugin` client *private* key, the node
+public key, and how to contact the `cldcb-server`.
 The wrapper just `exec`s into `cldcb-plugin`.
 
 `cldcb-plugin` is passed the `$0` argument of `cldcb-plugin-wrapper`,
 which is the location of `cldcb-plugin-wrapper`.
-The **actual** data (privkey, signature, server contact details...)
+The **actual** data (client privkey, server contact details...)
 is then parsed by `cldcb-plugin` from the shell script comments.
 This is because modern operating systems store the entire command line
 used to invoke a process, so we cannot safely pass in private keys
@@ -185,9 +246,47 @@ Periodically, if the server notes that the encrypted queries on
 top of the database are larger than the database, it will
 request the full database anyway regardless.
 
-On recovery, the `cldcb-client` will request the encrypted database
-and the queries.
-It will either read the `hsm_secret`, or communicate with an
-`lightning_hsmd`-alike program to get signatures (for communicating
+Recovery is now difficult.
+Presumably, recovery happens because the entire C-Lightning node went
+permanently down, and the only thing that was saved was the
+`hsm_secret`.
+Thus, even the client identifier (even the client public key!) is
+presumably lost as well.
+
+To let a newly-recovered C-Lightning node identify which client
+identifier it was using before backup, we create a shared secret
+in this manner:
+
+* First we do an ECDH between the client private key and the
+  C-Lightning node public key.
+  If the recovered C-Lightning node can learn the corresponding
+  client public key, it can recover the ECDH.
+* We use the ECDH key as the key in an HMAC-SHA256.
+  The data that is hashed is the client public key.
+* The server keeps a list of client public keys and associated
+  HMAC-SHA256 pairs.
+
+On recovery:
+
+* The recovered C-Lightning node requests the list of client
+  public keys and associated HMAC-SHA256.
+* For each entry in the list, the C-Lightning node tries to
+  derive the ECDH with its private key and the client public
+  key.
+  Then it uses this as the key in an HMAC-SHA256 of the client
+  public key, and if it matches, it now knows which client
+  public key it was using, and can now ask the server to provide
+  all data saved in that client public key.
+* We can even recover the client private key by encrypting it
+  in an asymmetric encryption with the node public key, so that
+  it can be read only by knowledge of the node private key.
+  * Thus, the node private key is all that is needed to recover
+    the entire C-Lightning setup (including `cldcb-plugin`) from a
+    `cldcb-server` which keeps serving the backup data.
+* The server never learns which C-Lightning node was using any
+  particular client identifier.
+
+`cldcb-client` will either read the `hsm_secret`, or communicate with
+a `lightning_hsmd`-alike program to get signatures (for communicating
 with the `cldbc-server`) and ECDH operations (for decrypting the
 data).

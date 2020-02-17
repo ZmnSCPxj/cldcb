@@ -11,9 +11,7 @@ creates a wrapper shell script for the `cldcb-plugin` program,
 installing the wrapper into the plugins-dir of a C-Lightning node.
 
 The plugin has to know some details about the node, in particular
-it needs to know the node ID, and it has to get authorization
-from the node (in the form of a signature that attests a public
-key for the plugin itself).
+it needs to know the node ID, as well as the server ID.
 
 `cldcb-plugin`
 --------------
@@ -31,8 +29,7 @@ The plugin launches a number of threads:
   * It also encrypts the database if any server requests for the
     database.
 * `stdout` serializer - Ensures that entire JSON objects are
-  sent to C-Lightning; in particular the logger also includes
-  this.
+  sent to C-Lightning; in particular the logger also sends to this.
 * Server handler - Connects to the server and establishes a session
   with them, then sends any pending data to it.
   * The session adds a second layer of encryption; the server can
