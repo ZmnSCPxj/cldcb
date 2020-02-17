@@ -1,4 +1,7 @@
 #include<iostream>
+#include<sstream>
+#include"Jsmn/Object.hpp"
+#include"Jsmn/Parser.hpp"
 #include"Secp256k1/G.hpp"
 #include"Secp256k1/PrivKey.hpp"
 #include"Secp256k1/PubKey.hpp"
@@ -44,6 +47,24 @@ int main(int argc, char **argv) {
 	auto ss = Secp256k1::ecdh(s, P);
 	std::cout << ss << std::endl;
 	std::cout << (ss == Secp256k1::PrivKey("1e2fb3c8fe8fb9f262f649f64d26ecf0f2c0a805a767cf02dc2d77a6ef1fdcc3")) << std::endl;
+
+	/* JSMN parser.  */
+	Jsmn::Parser parser;
+	auto jsons = parser.feed(" {} null true false { \"greeting\": [\"hello\", \"world\", 42.0]");
+	auto jsons2 = parser.feed(" } ");
+	for (auto& j : jsons) {
+		std::cout << j << std::endl;
+	}
+	for (auto& j : jsons2) {
+		std::cout << "2: " << j << std::endl;
+	}
+
+	std::istringstream is(" [1, 2] { \"key\": { \"key2\": true}, \" key3\": 42}");
+	Jsmn::Object o;
+	is >> o;
+	std::cout << o << std::endl;
+	is >> o;
+	std::cout << o << std::endl;
 
 	std::cout << "Hello World." << std::endl;
 	return 0;

@@ -3,6 +3,17 @@ LIBSECP256K1_INCLUDE = -I../external/secp256k1/include/
 
 noinst_LTLIBRARIES = libcldcb-common.la
 libcldcb_common_la_SOURCES = \
+	Jsmn/Detail/EndAdvancer.cpp \
+	Jsmn/Detail/EndAdvancer.hpp \
+	Jsmn/Detail/ParseResult.hpp \
+	Jsmn/Detail/Str.cpp \
+	Jsmn/Detail/Str.hpp \
+	Jsmn/Detail/Token.hpp \
+	Jsmn/Detail/Type.hpp \
+	Jsmn/Object.cpp \
+	Jsmn/Object.hpp \
+	Jsmn/Parser.cpp \
+	Jsmn/Parser.hpp \
 	Secp256k1/Detail/context.cpp \
 	Secp256k1/Detail/context.hpp \
 	Secp256k1/G.cpp \
@@ -28,5 +39,6 @@ libcldcb_common_la_LIBADD =\
 	../external/sha-2/libsha-2.la
 libcldcb_common_la_CPPFLAGS = \
 	-I../external/secp256k1/include/ \
-	-I../external/sha-2/
+	-I../external/sha-2/ \
+	-I../external/jsmn/
 
