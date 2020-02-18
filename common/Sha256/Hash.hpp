@@ -14,6 +14,7 @@ public:
 		for (auto i = 0; i < 32; ++i)
 			hash[i] = 0;
 	}
+	Hash(std::string const&);
 	Hash(Hash const&) =default;
 	Hash(Hash&&) =default;
 	Hash& operator=(Hash const&) =default;

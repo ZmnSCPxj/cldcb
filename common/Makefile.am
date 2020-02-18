@@ -44,3 +44,11 @@ libcldcb_common_la_CPPFLAGS = \
 	-I../external/sha-2/ \
 	-I../external/jsmn/
 
+AM_DEFAULT_SOURCE_EXT = .cpp
+LDADD = libcldcb-common.la
+
+TESTS = \
+	test_jsmn \
+	test_secp256k1 \
+	test_sha256
+check_PROGRAMS = $(TESTS)

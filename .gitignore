@@ -21,4 +21,5 @@ stamp-*
 *.m4
 *.o
 *.scan
+*.trs
 *~

@@ -8,11 +8,13 @@ AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_SRCDIR([client/plugin.cpp])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIRS([m4])
+AC_REQUIRE_AUX_FILE([test-driver])
 LT_INIT
 
 # Checks for programs.
 AC_PROG_CXX
 AX_CXX_COMPILE_STDCXX_11
+AC_LANG([C++])
 
 # Checks for libraries.
 
