@@ -9,6 +9,7 @@
 #include"Secp256k1/ecdh.hpp"
 #include"Sha256/Hash.hpp"
 #include"Sha256/fun.hpp"
+#include"Sha256/hmac.hpp"
 
 int main(int argc, char **argv) {
 	Secp256k1::Random random;
@@ -20,6 +21,13 @@ int main(int argc, char **argv) {
 	Secp256k1::PubKey B(b);
 
 	std::cout << Sha256::fun("a", 1) << std::endl;
+
+	auto msg = std::string("The quick brown fox jumps over the lazy dog");
+	std::cout << Sha256::hmac( "key", 3
+				 , &msg[0], msg.size()
+				 )
+		  << std::endl
+		   ;
 
 	std::cout << Secp256k1::G << std::endl;
 

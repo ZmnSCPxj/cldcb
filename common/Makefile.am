@@ -30,6 +30,8 @@ libcldcb_common_la_SOURCES = \
 	Sha256/Hash.hpp \
 	Sha256/fun.cpp \
 	Sha256/fun.hpp \
+	Sha256/hmac.cpp \
+	Sha256/hmac.hpp \
 	Util/Str.cpp \
 	Util/Str.hpp \
 	Util/make_unique.hpp
