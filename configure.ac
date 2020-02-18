@@ -17,6 +17,9 @@ AX_CXX_COMPILE_STDCXX_11
 AC_LANG([C++])
 
 # Checks for libraries.
+AX_PTHREAD([:],[
+	AC_MSG_ERROR([Need pthread,])
+])
 
 # Checks for header files.
 
@@ -25,6 +28,9 @@ AC_LANG([C++])
 # Checks for library functions.
 
 # Outputs.
+AC_SUBST([PTHREAD_CC])
+AC_SUBST([PTHREAD_CFLAGS])
+AC_SUBST([PTHREAD_LIBS])
 
 AC_CONFIG_FILES([Makefile
 		 client/Makefile

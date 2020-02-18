@@ -32,6 +32,7 @@ libcldcb_common_la_SOURCES = \
 	Sha256/fun.hpp \
 	Sha256/hmac.cpp \
 	Sha256/hmac.hpp \
+	Sync/MVar.hpp \
 	Util/Str.cpp \
 	Util/Str.hpp \
 	Util/make_unique.hpp
@@ -44,11 +45,14 @@ libcldcb_common_la_CPPFLAGS = \
 	-I../external/sha-2/ \
 	-I../external/jsmn/
 
+AM_CXXFLAGS = $(PTHREAD_CFLAGS)
+LDADD = libcldcb-common.la $(PTHREAD_LIBS)
+
 AM_DEFAULT_SOURCE_EXT = .cpp
-LDADD = libcldcb-common.la
 
 TESTS = \
 	test_jsmn \
 	test_secp256k1 \
-	test_sha256
+	test_sha256 \
+	test_sync
 check_PROGRAMS = $(TESTS)
