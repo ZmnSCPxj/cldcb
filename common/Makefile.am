@@ -33,6 +33,8 @@ libcldcb_common_la_SOURCES = \
 	Sha256/hmac.cpp \
 	Sha256/hmac.hpp \
 	Sync/MVar.hpp \
+	Util/Logger.cpp \
+	Util/Logger.hpp \
 	Util/Str.cpp \
 	Util/Str.hpp \
 	Util/make_unique.hpp
@@ -52,6 +54,7 @@ AM_DEFAULT_SOURCE_EXT = .cpp
 
 TESTS = \
 	test_jsmn \
+	test_logger \
 	test_secp256k1 \
 	test_sha256 \
 	test_sync
