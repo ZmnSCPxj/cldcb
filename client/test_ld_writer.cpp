@@ -1,0 +1,46 @@
+#include<algorithm>
+#include<assert.h>
+#include<sstream>
+#include<thread>
+#include<vector>
+
+# include"LD/Writer.cpp"
+
+int main() {
+
+	{
+		auto constexpr number = 20;
+		auto os = std::ostringstream();
+		auto wr = LD::Writer(os);
+
+		auto threads = std::vector<std::thread>();
+		for (auto i = 0; i < number; ++i) {
+			threads.emplace_back([i, &wr]() {
+				auto my_os = std::ostringstream();
+				my_os << std::dec << i;
+				wr.write(my_os.str());
+			});
+		}
+
+		for (auto& t : threads)
+			t.join();
+
+		auto s = os.str();
+		/* There should be "number" lines.  */
+		assert(std::count(s.begin(), s.end(), '\n') == number);
+		/* All the printed lines should be present.  */
+		for (auto i = 0; i < number; ++i) {
+			auto my_os = std::ostringstream();
+			my_os << std::dec << i << std::endl;
+			auto str_i = my_os.str();
+			/* FIXME: Not exactly accurate, as 1\n will also
+			 * match 41\n.
+			 */
+			assert(std::search( s.begin(), s.end()
+					  , str_i.begin(), str_i.end()
+					  ) != s.end());
+		}
+	}
+
+	return 0;
+}

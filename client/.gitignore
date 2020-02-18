@@ -1,3 +1,5 @@
 cldcb-client
 cldcb-plugin
 libtool
+test_*
+!test_*.cpp
