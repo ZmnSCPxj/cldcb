@@ -16,6 +16,9 @@ AC_PROG_CXX
 AX_CXX_COMPILE_STDCXX_11
 AC_LANG([C++])
 
+AX_VALGRIND_CHECK()
+AM_CONDITIONAL([USE_VALGRIND], [test x"$enable_valgrind" = xyes])
+
 # Checks for libraries.
 AX_PTHREAD([:],[
 	AC_MSG_ERROR([Need pthread,])

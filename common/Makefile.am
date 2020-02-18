@@ -56,3 +56,8 @@ TESTS = \
 	test_sha256 \
 	test_sync
 check_PROGRAMS = $(TESTS)
+
+if USE_VALGRIND
+LOG_COMPILER = valgrind
+AM_LOG_FLAGS = --leak-check=full --error-exitcode=1
+endif USE_VALGRIND
