@@ -135,7 +135,7 @@ public:
 			auto key = Detail::Str::from_escaped(ekey);
 			if (key == s)
 				return std::make_shared<Impl>( parse_result
-							     , my_i + i + 1 + 1
+							     , my_i + i * 2 + 1 + 1
 							     );
 		}
 		return nullptr;
