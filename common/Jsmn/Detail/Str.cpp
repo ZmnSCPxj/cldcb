@@ -74,7 +74,7 @@ std::string from_escaped(std::string const& s) {
 				auto uc = sr.pop_str(4);
 				auto hex = Util::Str::hexread(uc);
 				assert(hex.size() == 2);
-				auto cp = std::uint16_t(hex[0]) << 8
+				auto cp = (std::uint16_t(hex[0]) << 8)
 					+ std::uint16_t(hex[1])
 					;
 				/* Re-encode in UTF-8, because UTF-8 is
