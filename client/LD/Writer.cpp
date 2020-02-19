@@ -20,6 +20,10 @@ public:
 					break;
 				}
 				os << *ps << std::endl;
+				/* We will block at the next loop iteration,
+				 * so flush the output stream now.
+				 */
+				os.flush();
 			}
 		  })
 		, channel()
