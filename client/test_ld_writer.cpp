@@ -9,15 +9,19 @@
 int main() {
 
 	{
-		auto constexpr number = 20;
+		auto constexpr number = 50;
 		auto os = std::ostringstream();
 		auto wr = LD::Writer(os);
 
 		auto threads = std::vector<std::thread>();
 		for (auto i = 0; i < number; ++i) {
 			threads.emplace_back([i, &wr]() {
+				auto sum = 0;
+				for (auto n = 0; n < i; ++n) {
+					sum += n + 1;
+				}
 				auto my_os = std::ostringstream();
-				my_os << std::dec << i;
+				my_os << std::dec << sum;
 				wr.write(my_os.str());
 			});
 		}
@@ -30,8 +34,9 @@ int main() {
 		assert(std::count(s.begin(), s.end(), '\n') == number);
 		/* All the printed lines should be present.  */
 		for (auto i = 0; i < number; ++i) {
+			auto sum = (i * i + i) / 2;
 			auto my_os = std::ostringstream();
-			my_os << std::dec << i << std::endl;
+			my_os << std::dec << sum << std::endl;
 			auto str_i = my_os.str();
 			/* FIXME: Not exactly accurate, as 1\n will also
 			 * match 41\n.

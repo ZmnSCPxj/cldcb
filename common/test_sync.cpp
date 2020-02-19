@@ -1,6 +1,7 @@
 #include<assert.h>
 #include<memory>
 #include<thread>
+#include<vector>
 #include"Sync/MVar.hpp"
 #include"Util/make_unique.hpp"
 
@@ -60,6 +61,30 @@ int main() {
 		});
 		one.join();
 		two.join();
+	}
+
+	/* Mass multithreeaded.  */
+	{
+		auto constexpr number = 100;
+		auto mv = Sync::MVar<int>();
+
+		std::thread summer([&mv]() {
+			auto sum = int(0);
+			for (auto i = 0; i < number; ++i)
+				sum += mv.take();
+			assert(sum == ((number * number + number) / 2));
+		});
+
+		auto threads = std::vector<std::thread>();
+		for (auto i = 0; i < number; ++i) {
+			threads.emplace_back([i, &mv]() {
+				mv.put(i + 1);
+			});
+		}
+
+		summer.join();
+		for (auto& t : threads)
+			t.join();
 	}
 
 	return 0;
