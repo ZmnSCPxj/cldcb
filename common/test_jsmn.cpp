@@ -79,5 +79,31 @@ int main() {
 	assert(o["key3"].is_number());
 	assert((double)o["key3"] == 3);
 
+	/* Complex objects check.  */
+	auto is4 = std::istringstream(
+		"{ \"params\": [ { \"object\": 0 }"
+		"              , { \"object\": 1 }"
+		"              ]"
+		", \"id\": 1"
+		", \"method\" : \"example\""
+		"}"
+	);
+	is4 >> o;
+	assert(o.is_object());
+	assert(o.has("id"));
+	assert((double)o["id"] == 1);
+	assert(o.has("params"));
+	assert(o["params"].is_array());
+	assert(o["params"].size() == 2);
+	assert(o["params"][0].is_object());
+	assert(o["params"][0].has("object"));
+	assert((double)o["params"][0]["object"] == 0);
+	assert(o["params"][1].is_object());
+	assert(o["params"][1].has("object"));
+	assert((double)o["params"][1]["object"] == 1);
+	assert(o.has("method"));
+	assert(o["method"].is_string());
+	assert((std::string)o["method"] == "example");
+
 	return 0;
 }

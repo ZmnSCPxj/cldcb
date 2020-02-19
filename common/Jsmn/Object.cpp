@@ -101,7 +101,7 @@ public:
 		auto ret = std::vector<std::string>();
 
 		auto tokptr = &tok + 1;
-		for (auto i = 0; i < tok.size; ++i, tokptr += 2) {
+		for (auto i = 0; i < tok.size; ++i, ++tokptr, Detail::Token::next(tokptr)) {
 			auto ekey = at(tokptr->start, tokptr->end);
 			auto key = Detail::Str::from_escaped(ekey);
 			ret.push_back(key);
@@ -115,7 +115,7 @@ public:
 			throw TypeError();
 
 		auto tokptr = &tok + 1;
-		for (auto i = 0; i < tok.size; ++i, tokptr += 2) {
+		for (auto i = 0; i < tok.size; ++i, ++tokptr, Detail::Token::next(tokptr)) {
 			auto ekey = at(tokptr->start, tokptr->end);
 			auto key = Detail::Str::from_escaped(ekey);
 			if (key == s)
@@ -130,13 +130,15 @@ public:
 			throw TypeError();
 
 		auto tokptr = &tok + 1;
-		for (auto i = 0; i < tok.size; ++i, tokptr += 2) {
+		for (auto i = 0; i < tok.size; ++i, ++tokptr, Detail::Token::next(tokptr)) {
 			auto ekey = at(tokptr->start, tokptr->end);
 			auto key = Detail::Str::from_escaped(ekey);
-			if (key == s)
+			if (key == s) {
+				++tokptr;
 				return std::make_shared<Impl>( parse_result
-							     , my_i + i * 2 + 1 + 1
+							     , tokptr - &parse_result->tokens[0]
 							     );
+			}
 		}
 		return nullptr;
 	}
@@ -151,8 +153,12 @@ public:
 		if (i >= tok.size)
 			return nullptr;
 
+		auto tokptr = &tok + 1;
+		for (auto step = 0; step < i; ++step)
+			Detail::Token::next(tokptr);
+
 		return std::make_shared<Impl>( parse_result
-					     , my_i + 1 + i
+					     , tokptr - &parse_result->tokens[0]
 					     );
 	}
 };

@@ -10,6 +10,8 @@ struct Token {
 	int start;
 	int end;
 	int size;
+
+	static void next(Token const*& tokptr);
 };
 
 }}

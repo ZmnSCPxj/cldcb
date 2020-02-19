@@ -8,6 +8,7 @@ libcldcb_common_la_SOURCES = \
 	Jsmn/Detail/ParseResult.hpp \
 	Jsmn/Detail/Str.cpp \
 	Jsmn/Detail/Str.hpp \
+	Jsmn/Detail/Token.cpp \
 	Jsmn/Detail/Token.hpp \
 	Jsmn/Detail/Type.hpp \
 	Jsmn/Object.cpp \
