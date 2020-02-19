@@ -333,7 +333,7 @@ public:
 
 	std::pair<bool, char> read() {
 		auto c = char('0');
-		if (!is)
+		if (!is || is.eof())
 			return std::make_pair(false, '0');
 		is.read(&c, 1);
 		buffer.push_back(c);
@@ -356,8 +356,10 @@ std::istream& operator>>(std::istream& is, Jsmn::Object& o) {
 	Detail::EndAdvancer ender(ssr);
 	Jsmn::Parser parser;
 
+	is >> std::ws;
+
 	for(;;) {
-		if (!is) {
+		if (!is || is.eof()) {
 			if (!started)
 				return is;
 			throw std::runtime_error("Unexpected end-of-file.");
