@@ -7,6 +7,8 @@ cldcb_plugin_SOURCES = \
 	LD/Writer.hpp \
 	Plugin/Main.cpp \
 	Plugin/Main.hpp \
+	Plugin/MainLoop.cpp \
+	Plugin/MainLoop.hpp \
 	plugin.cpp
 
 AM_DEFAULT_SOURCE_EXT = .cpp

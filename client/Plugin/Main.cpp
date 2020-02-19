@@ -5,24 +5,29 @@
 #include"LD/Logger.hpp"
 #include"LD/Writer.hpp"
 #include"Plugin/Main.hpp"
+#include"Plugin/MainLoop.hpp"
 #include"Util/make_unique.hpp"
 
 namespace Plugin {
 
 class Main::Impl {
 private:
+	std::istream& stdin;
 	LD::Writer writer;
 	LD::Logger log;
 
 public:
-	Impl( std::istream& stdin, std::ostream& stdout
+	Impl( std::istream& stdin_, std::ostream& stdout_
 	    , int argc, char** argv
-	    ) : writer(stdout)
+	    ) : stdin(stdin_)
+	      , writer(stdout_)
 	      , log(writer)
 	      { }
 
 	int run() {
 		/* TODO: option processing.  */
+
+		auto loop = Plugin::MainLoop(stdin, writer, log);
 
 		log.info( "cldcb-plugin %1$s "
 			  "is Free Software WITHOUT ANY WARRANTY; "
@@ -30,7 +35,7 @@ public:
 			, PACKAGE_VERSION
 			, PACKAGE_BUGREPORT
 			);
-		return 0;
+		return loop.run();
 	}
 };
 
