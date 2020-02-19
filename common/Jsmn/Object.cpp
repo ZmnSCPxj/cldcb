@@ -335,7 +335,7 @@ public:
 		auto c = char('0');
 		if (!is)
 			return std::make_pair(false, '0');
-		is >> c;
+		is.read(&c, 1);
 		buffer.push_back(c);
 		return std::make_pair(true, c);
 	}

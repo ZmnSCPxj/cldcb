@@ -69,13 +69,13 @@ int main() {
 	is2 >> o;
 	assert((std::string)o == orig_string);
 
-	auto is3 = std::istringstream("{\"key1\": \"value1\", \"key2\": \"value2\", \"key3\": 3.0 }");
+	auto is3 = std::istringstream("{\"key1\": \"value1\", \"key2\": \"value 2\", \"key3\": 3.0 }");
 	is3 >> o;
 	assert(o.is_object());
 	assert(o["key1"].is_string());
 	assert((std::string)o["key1"] == "value1");
 	assert(o["key2"].is_string());
-	assert((std::string)o["key2"] == "value2");
+	assert((std::string)o["key2"] == "value 2");
 	assert(o["key3"].is_number());
 	assert((double)o["key3"] == 3);
 

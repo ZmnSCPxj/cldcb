@@ -12,6 +12,11 @@ void EndAdvancer::scan() {
 			if (!rd.first)
 				return;
 		} while (std::isspace(rd.second, loc));
+		if ( rd.second == '}'
+		  || rd.second == ']'
+		  || rd.second == '\"'
+		   )
+			return;
 	}
 
 	do {
