@@ -4,9 +4,23 @@
 #include<utility>
 #include"LD/Logger.hpp"
 #include"LD/Writer.hpp"
+#include"Plugin/DbWriteHandler.hpp"
 #include"Plugin/Main.hpp"
 #include"Plugin/MainLoop.hpp"
 #include"Util/make_unique.hpp"
+
+namespace {
+
+class NullDbWriteHandler : public Plugin::DbWriteHandler {
+public:
+	bool handle( std::uint32_t data_version
+		   , std::vector<std::string> writes
+		   ) override {
+		return true;
+	}
+};
+
+}
 
 namespace Plugin {
 
@@ -27,7 +41,8 @@ public:
 	int run() {
 		/* TODO: option processing.  */
 
-		auto loop = Plugin::MainLoop(stdin, writer, log);
+		auto handler = NullDbWriteHandler();
+		auto loop = Plugin::MainLoop(stdin, writer, log, handler);
 
 		log.info( "cldcb-plugin %1$s "
 			  "is Free Software WITHOUT ANY WARRANTY; "

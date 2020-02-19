@@ -4,6 +4,7 @@
 #include<istream>
 
 namespace LD { class Writer; }
+namespace Plugin { class DbWriteHandler; }
 namespace Util { class Logger; }
 
 namespace Plugin {
@@ -13,6 +14,7 @@ private:
 	std::istream& stdin;
 	LD::Writer& writer;
 	Util::Logger& log;
+	DbWriteHandler& handler;
 
 public:
 	MainLoop() =delete;
@@ -20,7 +22,12 @@ public:
 	MainLoop( std::istream& stdin_
 		, LD::Writer& writer_
 		, Util::Logger& log_
-		) : stdin(stdin_), writer(writer_), log(log_) { }
+		, DbWriteHandler& handler_
+		) : stdin(stdin_)
+		  , writer(writer_)
+		  , log(log_)
+		  , handler(handler_)
+		  { }
 
 	int run();
 };
