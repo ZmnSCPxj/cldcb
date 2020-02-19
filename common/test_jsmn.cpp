@@ -2,6 +2,7 @@
 #include<sstream>
 #include"Jsmn/Object.hpp"
 #include"Jsmn/Parser.hpp"
+#include"Jsmn/jsonify_string.hpp"
 
 int main() {
 	Jsmn::Parser parser;
@@ -62,6 +63,11 @@ int main() {
 	assert((std::string)o == std::string("\0", 1));
 	is >> o;
 	assert((std::string)o == "\t\r\n\f\b\"\\");
+
+	auto orig_string = std::string("\"\\\t\r\n\f\b\v");
+	auto is2 = std::istringstream(Jsmn::jsonify_string(orig_string));
+	is2 >> o;
+	assert((std::string)o == orig_string);
 
 	return 0;
 }

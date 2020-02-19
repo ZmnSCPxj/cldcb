@@ -14,6 +14,8 @@ libcldcb_common_la_SOURCES = \
 	Jsmn/Object.hpp \
 	Jsmn/Parser.cpp \
 	Jsmn/Parser.hpp \
+	Jsmn/jsonify_string.cpp \
+	Jsmn/jsonify_string.hpp \
 	Secp256k1/Detail/context.cpp \
 	Secp256k1/Detail/context.hpp \
 	Secp256k1/G.cpp \
