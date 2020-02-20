@@ -3,6 +3,7 @@
 #include<sstream>
 #include<thread>
 #include<vector>
+#include"Util/make_unique.hpp"
 
 # include"LD/Writer.cpp"
 
@@ -11,7 +12,7 @@ int main() {
 	{
 		auto constexpr number = 50;
 		auto os = std::ostringstream();
-		auto wr = LD::Writer(os);
+		auto wr = Util::make_unique<LD::Writer>(os);
 
 		auto threads = std::vector<std::thread>();
 		for (auto i = 0; i < number; ++i) {
@@ -22,12 +23,17 @@ int main() {
 				}
 				auto my_os = std::ostringstream();
 				my_os << std::dec << sum;
-				wr.write(my_os.str());
+				wr->write(my_os.str());
 			});
 		}
 
+		/* Make sure all senders complete.  */
 		for (auto& t : threads)
 			t.join();
+		/* Now destroy the writer object, to ensure it
+		 * has completed writing everything.
+		 */
+		wr = nullptr;
 
 		auto s = os.str();
 		/* There should be "number" lines.  */
