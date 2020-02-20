@@ -5,7 +5,9 @@ SUBDIRS = \
 	common/ \
 	client/
 
-EXTRA_DIST = external/jsmn/jsmn.h
+EXTRA_DIST = \
+	external/jsmn/LICENSE
+	external/jsmn/jsmn.h
 
 .PHONY : TAGS
 
