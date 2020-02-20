@@ -17,6 +17,7 @@ libcldcb_common_la_SOURCES = \
 	Jsmn/Parser.hpp \
 	Jsmn/jsonify_string.cpp \
 	Jsmn/jsonify_string.hpp \
+	S.hpp \
 	Secp256k1/Detail/context.cpp \
 	Secp256k1/Detail/context.hpp \
 	Secp256k1/G.cpp \
@@ -59,6 +60,7 @@ TESTS = \
 	test_jsmn \
 	test_logger \
 	test_secp256k1 \
+	test_serialize \
 	test_sha256 \
 	test_sync
 check_PROGRAMS = $(TESTS)
