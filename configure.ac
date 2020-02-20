@@ -41,6 +41,5 @@ AC_CONFIG_FILES([Makefile
 		])
 AC_CONFIG_SUBDIRS([external/libsodium
                    external/secp256k1
-                   external/sha-2
 		  ])
 AC_OUTPUT
