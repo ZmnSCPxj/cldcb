@@ -8,6 +8,7 @@
 #include<stdexcept>
 #include<string>
 #include<utility>
+#include"S.hpp"
 
 extern "C" {
 struct secp256k1_context_struct;
@@ -115,6 +116,30 @@ public:
 inline
 PubKey operator*(PrivKey const& a, PubKey const& B) {
 	return B * a;
+}
+
+}
+
+namespace S {
+
+template<typename A>
+inline
+void serialize(A& a, ::Secp256k1::PubKey const& pk) {
+	std::uint8_t buffer[33];
+	pk.to_buffer(buffer);
+	for (auto i = 0; i < 33; ++i)
+		put_byte(a, buffer[i]);
+}
+template<typename A>
+inline
+void deserialize(A& a, ::Secp256k1::PubKey& pk) {
+	std::uint8_t buffer[33];
+	buffer[0] = get_byte(a);
+	if (buffer[0] != 0x02 && buffer[0] != 0x03)
+		throw S::InvalidByte();
+	for (auto i = 1; i < 33; ++i)
+		buffer[i] = get_byte(a);
+	pk = ::Secp256k1::PubKey::from_buffer(buffer);
 }
 
 }

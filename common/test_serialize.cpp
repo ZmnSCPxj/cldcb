@@ -1,6 +1,9 @@
 #include<assert.h>
 #include"S.hpp"
+#include"Secp256k1/G.hpp"
+#include"Secp256k1/PubKey.hpp"
 #include"Secp256k1/Random.hpp"
+#include"Sha256/Hash.hpp"
 
 namespace {
 
@@ -103,6 +106,19 @@ int main() {
 		auto b = std::vector<std::string>{ "hello"
 						 , "world"
 						 };
+		test(b);
+	}
+
+	{
+		auto b = Secp256k1::G;
+		test(b);
+	}
+
+	{
+		std::uint8_t buffer[32];
+		for (auto i = 0; i < 32; ++i)
+			buffer[i] = rand.get();
+		auto b = Sha256::Hash::from_buffer(buffer);
 		test(b);
 	}
 

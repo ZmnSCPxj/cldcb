@@ -3,6 +3,7 @@
 
 #include<cstdint>
 #include<ostream>
+#include"S.hpp"
 
 namespace Sha256 {
 
@@ -45,5 +46,24 @@ public:
 }
 
 std::ostream& operator<<(std::ostream&, Sha256::Hash const&);
+
+namespace S {
+
+template<typename A>
+void serialize(A& a, ::Sha256::Hash const& t) {
+	std::uint8_t buffer[32];
+	t.to_buffer(buffer);
+	for (auto i = 0; i < 32; ++i)
+		put_byte(a, buffer[i]);
+}
+template<typename A>
+void deserialize(A& a, ::Sha256::Hash& t) {
+	std::uint8_t buffer[32];
+	for (auto i = 0; i < 32; ++i)
+		buffer[i] = get_byte(a);
+	t = ::Sha256::Hash::from_buffer(buffer);
+}
+
+}
 
 #endif /* CLDCB_COMMON_SHA256_HASH_HPP */
