@@ -31,15 +31,18 @@ public:
 /*--------------------------------------------------------------------------*/
 
 template<typename A>
+inline
 void put_byte(A& a, std::uint8_t);
 
 template<>
+inline
 void put_byte<std::vector<std::uint8_t>>( std::vector<std::uint8_t>& a
 					, std::uint8_t b
 					) {
 	a.push_back(b);
 }
 template<>
+inline
 void put_byte<std::queue<std::uint8_t>>( std::queue<std::uint8_t>& a
 				       , std::uint8_t b
 				       ) {
@@ -47,18 +50,22 @@ void put_byte<std::queue<std::uint8_t>>( std::queue<std::uint8_t>& a
 }
 
 template<typename A>
+inline
 void serialize(A& a, bool const& t) {
 	put_byte(a, t ? 1 : 0);
 }
 template<typename A>
+inline
 void serialize(A& a, std::uint8_t const& t) {
 	put_byte(a, t);
 }
 template<typename A>
+inline
 void serialize(A& a, std::int8_t const& t) {
 	serialize(a, std::uint8_t(t));
 }
 template<typename A>
+inline
 void serialize(A& a, std::uint16_t const& t) {
 	auto d0 = std::uint8_t((t >> 8) & 0xff);
 	auto d1 = std::uint8_t((t >> 0) & 0xff);
@@ -67,10 +74,12 @@ void serialize(A& a, std::uint16_t const& t) {
 	put_byte(a, d1);
 }
 template<typename A>
+inline
 void serialize(A& a, std::int16_t const& t) {
 	serialize(a, std::uint16_t(t));
 }
 template<typename A>
+inline
 void serialize(A& a, std::uint32_t const& t) {
 	auto d0 = std::uint8_t((t >> 24) & 0xff);
 	auto d1 = std::uint8_t((t >> 16) & 0xff);
@@ -83,10 +92,12 @@ void serialize(A& a, std::uint32_t const& t) {
 	put_byte(a, d3);
 }
 template<typename A>
+inline
 void serialize(A& a, std::int32_t const& t) {
 	serialize(a, std::uint32_t(t));
 }
 template<typename A>
+inline
 void serialize(A& a, std::uint64_t const& t) {
 	auto d0 = std::uint8_t((t >> 56) & 0xff);
 	auto d1 = std::uint8_t((t >> 48) & 0xff);
@@ -107,11 +118,13 @@ void serialize(A& a, std::uint64_t const& t) {
 	put_byte(a, d7);
 }
 template<typename A>
+inline
 void serialize(A& a, std::int64_t const& t) {
 	serialize(a, std::uint64_t(t));
 }
 
 template<typename A>
+inline
 void serialize(A& a, std::string const& s) {
 	auto len = std::uint64_t(s.length());
 	serialize(a, len);
@@ -122,6 +135,7 @@ void serialize(A& a, std::string const& s) {
 }
 
 template<typename A, typename T>
+inline
 void serialize(A& a, std::vector<T> const& t) {
 	auto len = std::uint64_t(t.size());
 	serialize(a, len);
@@ -133,9 +147,11 @@ void serialize(A& a, std::vector<T> const& t) {
 /*--------------------------------------------------------------------------*/
 
 template<typename A>
+inline
 std::uint8_t get_byte(A&);
 
 template<>
+inline
 std::uint8_t get_byte<std::queue<std::uint8_t>>(std::queue<std::uint8_t>& a) {
 	if (a.empty())
 		throw DeserializationTruncated();
@@ -145,6 +161,7 @@ std::uint8_t get_byte<std::queue<std::uint8_t>>(std::queue<std::uint8_t>& a) {
 }
 
 template<typename A>
+inline
 void deserialize(A& a, bool& t) {
 	auto b = get_byte(a);
 	switch (b) {
@@ -155,16 +172,19 @@ void deserialize(A& a, bool& t) {
 	}
 }
 template<typename A>
+inline
 void deserialize(A& a, std::uint8_t& t) {
 	t = get_byte(a);
 }
 template<typename A>
+inline
 void deserialize(A& a, std::int8_t& t) {
 	std::uint8_t b;
 	deserialize(a, b);
 	t = (std::int8_t) b;
 }
 template<typename A>
+inline
 void deserialize(A& a, std::uint16_t& t) {
 	auto d0 = get_byte(a);
 	auto d1 = get_byte(a);
@@ -173,12 +193,14 @@ void deserialize(A& a, std::uint16_t& t) {
 	  ;
 }
 template<typename A>
+inline
 void deserialize(A& a, std::int16_t& t) {
 	std::uint16_t b;
 	deserialize(a, b);
 	t = (std::int16_t) b;
 }
 template<typename A>
+inline
 void deserialize(A& a, std::uint32_t& t) {
 	auto d0 = get_byte(a);
 	auto d1 = get_byte(a);
@@ -191,12 +213,14 @@ void deserialize(A& a, std::uint32_t& t) {
 	  ;
 }
 template<typename A>
+inline
 void deserialize(A& a, std::int32_t& t) {
 	std::uint32_t b;
 	deserialize(a, b);
 	t = (std::int32_t) b;
 }
 template<typename A>
+inline
 void deserialize(A& a, std::uint64_t& t) {
 	auto d0 = get_byte(a);
 	auto d1 = get_byte(a);
@@ -217,6 +241,7 @@ void deserialize(A& a, std::uint64_t& t) {
 	  ;
 }
 template<typename A>
+inline
 void deserialize(A& a, std::int64_t& t) {
 	std::uint64_t b;
 	deserialize(a, b);
@@ -224,6 +249,7 @@ void deserialize(A& a, std::int64_t& t) {
 }
 
 template<typename A>
+inline
 void deserialize(A& a, std::string& t) {
 	std::uint64_t len;
 	deserialize(a, len);
@@ -237,6 +263,7 @@ void deserialize(A& a, std::string& t) {
 }
 
 template<typename A, typename T>
+inline
 void deserialize(A& a, std::vector<T>& t) {
 	std::uint64_t len;
 	deserialize(a, len);
