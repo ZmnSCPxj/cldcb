@@ -1,4 +1,5 @@
 #include<iomanip>
+#include<sodium/utils.h>
 #include<stdexcept>
 #include<sstream>
 #include"Sha256/Hash.hpp"
@@ -14,6 +15,10 @@ Hash::Hash(std::string const& s) {
 
 	for (auto i = 0; i < 32; ++i)
 		hash[i] = data[i];
+}
+
+bool Hash::operator==(Hash const& o) const {
+	return sodium_memcmp(hash, o.hash, sizeof(hash)) == 0;
 }
 
 }

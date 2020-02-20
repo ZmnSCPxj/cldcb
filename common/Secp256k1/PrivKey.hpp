@@ -40,6 +40,8 @@ public:
 	/* Copy an existing private key.  */
 	PrivKey(PrivKey const&);
 
+	~PrivKey();
+
 	PrivKey& negate();
 	PrivKey operator-() const {
 		auto tmp = *this;
@@ -72,12 +74,7 @@ public:
 		return PrivKey(buffer);
 	}
 
-	bool operator==(PrivKey const& o) const {
-		for (auto i = 0; i < 32; ++i)
-			if (key[i] != o.key[i])
-				return false;
-		return true;
-	}
+	bool operator==(PrivKey const& o) const;
 	bool operator!=(PrivKey const& o) const {
 		return !(*this == o);
 	}

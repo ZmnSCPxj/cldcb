@@ -1,6 +1,7 @@
 #include<assert.h>
 #include<iomanip>
 #include<secp256k1.h>
+#include<sodium/utils.h>
 #include<sstream>
 #include<string>
 #include<string.h>
@@ -114,7 +115,7 @@ public:
 		assert(resb == 1);
 		assert(bsize == sizeof(b));
 
-		return memcmp(a, b, sizeof(a)) == 0;
+		return sodium_memcmp(a, b, sizeof(a)) == 0;
 	}
 
 	void dump(std::ostream& os) {

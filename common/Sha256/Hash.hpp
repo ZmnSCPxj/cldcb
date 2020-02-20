@@ -21,12 +21,7 @@ public:
 	Hash& operator=(Hash const&) =default;
 	Hash& operator=(Hash&&) =default;
 
-	bool operator==(Hash const& o) const {
-		for (auto i = 0; i < 32; ++i)
-			if (hash[i] != o.hash[i])
-				return false;
-		return true;
-	}
+	bool operator==(Hash const& o) const;
 	bool operator!=(Hash const& o) const {
 		return !(*this == o);
 	}

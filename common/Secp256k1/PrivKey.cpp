@@ -1,6 +1,7 @@
 #include<assert.h>
 #include<iomanip>
 #include<secp256k1.h>
+#include<sodium/utils.h>
 #include<sstream>
 #include<stdexcept>
 #include<string>
@@ -41,6 +42,10 @@ PrivKey::PrivKey(PrivKey const& o) {
 	memcpy(key, o.key, 32);
 }
 
+PrivKey::~PrivKey() {
+	sodium_memzero(key, sizeof(key));
+}
+
 PrivKey& PrivKey::negate() {
 	auto res = secp256k1_ec_privkey_negate(context.get(), key);
 	assert(res == 1);
@@ -61,6 +66,10 @@ PrivKey& PrivKey::operator*=(PrivKey const& o) {
 	if (!res)
 		throw std::out_of_range("Secp256k1::PrivKey += out-of-range");
 	return *this;
+}
+
+bool PrivKey::operator==(PrivKey const& o) const {
+	return 0 == sodium_memcmp(key, o.key, sizeof(key));
 }
 
 }
