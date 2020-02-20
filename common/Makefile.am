@@ -47,9 +47,9 @@ libcldcb_common_la_LIBADD =\
 	../external/secp256k1/libsecp256k1.la \
 	../external/sha-2/libsha-2.la
 libcldcb_common_la_CPPFLAGS = \
-	-I../external/secp256k1/include/ \
-	-I../external/sha-2/ \
-	-I../external/jsmn/
+	-I$(top_srcdir)/external/secp256k1/include/ \
+	-I$(top_srcdir)/external/sha-2/ \
+	-I$(top_srcdir)/external/jsmn/
 
 AM_CXXFLAGS = $(PTHREAD_CFLAGS)
 LDADD = libcldcb-common.la $(PTHREAD_LIBS)

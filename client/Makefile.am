@@ -5,6 +5,7 @@ cldcb_plugin_SOURCES = \
 	LD/Logger.hpp \
 	LD/Writer.cpp \
 	LD/Writer.hpp \
+	Plugin/DbWriteHandler.hpp \
 	Plugin/Main.cpp \
 	Plugin/Main.hpp \
 	Plugin/MainLoop.cpp \
@@ -14,7 +15,7 @@ cldcb_plugin_SOURCES = \
 AM_DEFAULT_SOURCE_EXT = .cpp
 
 LDADD = ../common/libcldcb-common.la $(PTHREAD_LIBS)
-AM_CXXFLAGS = -I../common/ $(PTHREAD_CFLAGS)
+AM_CXXFLAGS = -I$(top_srcdir)/common/ $(PTHREAD_CFLAGS)
 
 TESTS = \
 	test_ld_logger \
