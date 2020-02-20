@@ -254,29 +254,20 @@ Thus, even the client identifier (even the client public key!) is
 presumably lost as well.
 
 To let a newly-recovered C-Lightning node identify which client
-identifier it was using before backup, we create a shared secret
-in this manner:
-
-* First we do an ECDH between the client private key and the
-  C-Lightning node public key.
-  If the recovered C-Lightning node can learn the corresponding
-  client public key, it can recover the ECDH.
-* We use the ECDH key as the key in an HMAC-SHA256.
-  The data that is hashed is the client public key.
-* The server keeps a list of client public keys and associated
-  HMAC-SHA256 pairs.
+identifier it was using before backup, the C-Lightning node must
+provide a signature that signs the client public key.
+When the plugin connects to the server, it sends this signature
+as well, and the server keeps a list of client public keys and
+the signature.
 
 On recovery:
 
 * The recovered C-Lightning node requests the list of client
-  public keys and associated HMAC-SHA256.
+  public keys and associated signatures.
 * For each entry in the list, the C-Lightning node tries to
-  derive the ECDH with its private key and the client public
-  key.
-  Then it uses this as the key in an HMAC-SHA256 of the client
-  public key, and if it matches, it now knows which client
-  public key it was using, and can now ask the server to provide
-  all data saved in that client public key.
+  validate the associated signature with its own public key.
+  If it validates, then the C-Lightning node knows which client
+  public key was being used for backup.
 * We can even recover the client private key by encrypting it
   in an asymmetric encryption with the node public key, so that
   it can be read only by knowledge of the node private key.
