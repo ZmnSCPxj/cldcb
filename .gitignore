@@ -11,6 +11,7 @@ config.status
 configure
 libtool
 m4
+!external/libsodium/m4
 stamp-*
 .deps
 .dirstamp
@@ -19,6 +20,7 @@ stamp-*
 *.lo
 *.log
 *.m4
+!external/libsodium/m4/*.m4
 *.o
 *.scan
 *.trs

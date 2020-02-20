@@ -39,7 +39,8 @@ AC_CONFIG_FILES([Makefile
 		 client/Makefile
 		 common/Makefile
 		])
-AC_CONFIG_SUBDIRS([external/secp256k1
+AC_CONFIG_SUBDIRS([external/libsodium
+                   external/secp256k1
                    external/sha-2
 		  ])
 AC_OUTPUT
