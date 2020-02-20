@@ -7,6 +7,7 @@
 #include<ostream>
 #include<stdexcept>
 #include<string>
+#include<utility>
 
 extern "C" {
 struct secp256k1_context_struct;
@@ -34,6 +35,8 @@ private:
 	explicit PubKey(std::uint8_t buffer[33]);
 
 public:
+	/* Get G.  */
+	PubKey();
 	/* Load public key from a hex-encoded string.  */
 	explicit PubKey(std::string const&);
 	/* Get the public key behind the given private key.  */
@@ -45,8 +48,16 @@ public:
 
 	~PubKey();
 
-	PubKey& operator=(PubKey const&) =default;
-	PubKey& operator=(PubKey&&) =default;
+	PubKey& operator=(PubKey const& o) {
+		auto tmp = PubKey(o);
+		tmp.pimpl.swap(pimpl);
+		return *this;
+	}
+	PubKey& operator=(PubKey&& o) {
+		auto tmp = PubKey(std::move(o));
+		tmp.pimpl.swap(pimpl);
+		return *this;
+	}
 
 	void negate();
 	PubKey operator-() const {

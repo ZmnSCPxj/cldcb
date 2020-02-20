@@ -6,6 +6,7 @@
 #include<string.h>
 #include<utility>
 #include"Secp256k1/Detail/context.hpp"
+#include"Secp256k1/G.hpp"
 #include"Secp256k1/PrivKey.hpp"
 #include"Secp256k1/PubKey.hpp"
 #include"Util/Str.hpp"
@@ -146,6 +147,9 @@ public:
 		assert(size == 33);
 	}
 };
+
+PubKey::PubKey()
+	: pimpl(Util::make_unique<Impl>(*G.pimpl)) { }
 
 PubKey::PubKey(secp256k1_context_struct *ctx, std::uint8_t buffer[33])
 	: pimpl(Util::make_unique<Impl>(ctx, buffer)) {}
