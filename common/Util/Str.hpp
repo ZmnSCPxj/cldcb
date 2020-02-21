@@ -24,7 +24,8 @@ struct HexParseFailure : public std::runtime_error {
 };
 std::vector<std::uint8_t> hexread(std::string const&);
 
-}
-}
+std::string trim(std::string const& s);
+
+}}
 
 #endif /* CLDCB_COMMON_UTIL_STR_HPP */

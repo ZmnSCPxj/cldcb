@@ -1,3 +1,5 @@
+#include<algorithm>
+#include<cctype>
 #include<iomanip>
 #include<sstream>
 #include"Util/Str.hpp"
@@ -51,6 +53,18 @@ std::vector<std::uint8_t> hexread(std::string const& s) {
 	}
 
 	return buf;
+}
+
+std::string trim(std::string const& s) {
+	auto start = std::find_if_not(s.begin(), s.end(), isspace);
+	/* If all spaces, empty string.  */
+	if (start == s.end())
+		return "";
+
+	auto rend = std::find_if_not(s.rbegin(), s.rend(), isspace);
+	auto end = rend.base();
+
+	return std::string(start, end);
 }
 
 }
