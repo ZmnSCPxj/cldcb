@@ -1,5 +1,6 @@
 #undef NDEBUG
 #include<assert.h>
+#include"Crypto/Secret.hpp"
 #include"Secp256k1/G.hpp"
 #include"Secp256k1/PrivKey.hpp"
 #include"Secp256k1/PubKey.hpp"
@@ -35,7 +36,7 @@ int main() {
 	auto P = Secp256k1::PubKey("028d7500dd4c12685d1f568b4c2b5048e8534b873319f3a8daa612b469132ec7f7");
 	auto s = Secp256k1::PrivKey("1212121212121212121212121212121212121212121212121212121212121212");
 	auto ss = Secp256k1::ecdh(s, P);
-	assert(ss == Secp256k1::PrivKey("1e2fb3c8fe8fb9f262f649f64d26ecf0f2c0a805a767cf02dc2d77a6ef1fdcc3"));
+	assert(ss == Crypto::Secret("1e2fb3c8fe8fb9f262f649f64d26ecf0f2c0a805a767cf02dc2d77a6ef1fdcc3"));
 
 	/* Simple math.  */
 	auto x = Secp256k1::PrivKey("0000000000000000000000000000000000000000000000000000000000000001");

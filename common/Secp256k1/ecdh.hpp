@@ -1,6 +1,7 @@
 #ifndef CLDCB_COMMON_SECP256K1_ECDH_HPP
 #define CLDCB_COMMON_SECP256K1_ECDH_HPP
 
+namespace Crypto { class Secret; }
 namespace Secp256k1 { class PrivKey; }
 namespace Secp256k1 { class PubKey; }
 
@@ -18,16 +19,17 @@ namespace Secp256k1 {
  * Bitcoin world: the privkey is multiplied with the
  * pubkey, the resulting pubkey is represented as a
  * compressed DER public key, then the DER encoding is
- * hashed with SHA256, resulting (with high probability)
- * to a valid private key.
+ * hashed with SHA256, resulting in a shared secret.
  *
  * Note that most other non-Bitcoin standards have a
  * slightly different sense of "ECDH":
  * the privkey is multiplied with the pubkey, the X
  * coordinate of the resulting pubkey is used as the
  * resulting private key.
+ * This is mildly undesirable as the X coordinate has
+ * less than 256 bits of entropy.
  */
-PrivKey ecdh(PrivKey, PubKey);
+Crypto::Secret ecdh(PrivKey, PubKey);
 
 }
 
