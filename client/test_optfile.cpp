@@ -1,5 +1,7 @@
 #include<assert.h>
 #include<sstream>
+#include"Plugin/ServerSpec.hpp"
+#include"Plugin/Setup.hpp"
 
 # include"Plugin/OptFile/parse.cpp"
 # include"Plugin/OptFile/validate_keys.cpp"

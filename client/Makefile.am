@@ -17,6 +17,8 @@ cldcb_plugin_SOURCES = \
 	Plugin/OptFile/validate_keys.hpp \
 	Plugin/OptHandler.cpp \
 	Plugin/OptHandler.hpp \
+	Plugin/ServerSpec.hpp \
+	Plugin/Setup.hpp \
 	plugin.cpp
 
 AM_DEFAULT_SOURCE_EXT = .cpp
