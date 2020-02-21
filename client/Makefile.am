@@ -11,6 +11,8 @@ cldcb_plugin_SOURCES = \
 	Plugin/Main.hpp \
 	Plugin/MainLoop.cpp \
 	Plugin/MainLoop.hpp \
+	Plugin/OptHandler.cpp \
+	Plugin/OptHandler.hpp \
 	plugin.cpp
 
 AM_DEFAULT_SOURCE_EXT = .cpp
