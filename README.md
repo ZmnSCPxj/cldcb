@@ -255,10 +255,35 @@ presumably lost as well.
 
 To let a newly-recovered C-Lightning node identify which client
 identifier it was using before backup, the C-Lightning node must
-provide a signature that signs the client public key.
+provide a signature that commits to the client public key.
 When the plugin connects to the server, it sends this signature
 as well, and the server keeps a list of client public keys and
 the signature.
+
+However, we should note that with a signature and the message it
+signs, it is possible to derive the public key that originally
+signed the message (i.e. public key recovery).
+To avoid leaking the C-Lightning node public key, we instead
+perform the following ritual:
+
+* We perform an ECDH of the client key and the C-Lightning node
+  key.
+* The C-Lightning node signs the resulting shared secret.
+
+The above commits to the client public key, as a different client
+keypair would yield a different shared secret; it also prevents the
+server from guessing the message that is signed, preventing it
+from being able to grind the node public key.
+
+(It would have been better for the client private key to be a
+hardened-derived key from the node private key, however the
+interface of `db_write` is awful and we cannot query anything
+from `lightningd`.
+With this technique we only need a signature once, which we can
+do during installation of the plugin to the C-Lightning plugin
+directory, not require continuous access to the `hsm_secret`
+(which might not exist as a file if a "true" HSM is designed
+someday).)
 
 On recovery:
 
