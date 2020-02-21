@@ -13,6 +13,8 @@ cldcb_plugin_SOURCES = \
 	Plugin/MainLoop.hpp \
 	Plugin/OptFile/parse.cpp \
 	Plugin/OptFile/parse.hpp \
+	Plugin/OptFile/validate_keys.cpp \
+	Plugin/OptFile/validate_keys.hpp \
 	Plugin/OptHandler.cpp \
 	Plugin/OptHandler.hpp \
 	plugin.cpp
@@ -25,7 +27,7 @@ AM_CXXFLAGS = -I$(top_srcdir)/common/ $(PTHREAD_CFLAGS)
 TESTS = \
 	test_ld_logger \
 	test_ld_writer \
-	test_optfile_parse
+	test_optfile
 check_PROGRAMS = $(TESTS)
 
 if USE_VALGRIND

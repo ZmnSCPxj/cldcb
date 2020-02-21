@@ -62,7 +62,7 @@ The plugin binary shell script has a format much like the following:
     # shost = 192.168.1.1:29735
     ## SOCKS5 proxy, used to communicate with the server.
     ## Optional; if unspecified, not used.
-    # socks5 = 127.0.0.1:9050
+    # proxy = 127.0.0.1:9050
 
     ## The line below actually starts the plugin binary.
     exec cldcb-plugin -- "$0"
