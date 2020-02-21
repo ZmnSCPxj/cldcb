@@ -2,6 +2,7 @@
 #include"config.h"
 #endif
 #include<utility>
+#include"LD/DbWrite.hpp"
 #include"LD/Logger.hpp"
 #include"LD/Writer.hpp"
 #include"Plugin/DbWriteHandler.hpp"
@@ -13,8 +14,7 @@ namespace {
 
 class NullDbWriteHandler : public Plugin::DbWriteHandler {
 public:
-	bool handle( std::uint32_t data_version
-		   , std::vector<std::string> writes
+	bool handle( LD::DbWrite const&
 		   ) override {
 		return true;
 	}

@@ -3,6 +3,7 @@
 #include<vector>
 #include"Jsmn/Object.hpp"
 #include"Jsmn/jsonify_string.hpp"
+#include"LD/DbWrite.hpp"
 #include"LD/Writer.hpp"
 #include"Plugin/DbWriteHandler.hpp"
 #include"Plugin/MainLoop.hpp"
@@ -101,9 +102,12 @@ int MainLoop::run() {
 		auto smethod = std::string(method);
 		auto os = std::ostringstream();
 		if (smethod == "db_write") {
-			std::vector<std::string> writes;
-			std::uint32_t data_version;
-			if (!validate_db_write_params(writes, data_version, o)) {
+			auto params = LD::DbWrite();
+			if (!validate_db_write_params( params.writes
+						     , params.data_version
+						     , o
+						     )
+			   ) {
 				log.unusual("Invalid db_write request");
 				send_error(writer, id, -32602, "Invalid parameters.");
 				continue;
@@ -111,7 +115,7 @@ int MainLoop::run() {
 
 			bool result;
 			try {
-				result = handler.handle(data_version, writes);
+				result = handler.handle(params);
 			} catch (std::exception e) {
 				log.BROKEN("Exception: %s", e.what());
 				result = false;

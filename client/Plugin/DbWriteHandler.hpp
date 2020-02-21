@@ -5,6 +5,8 @@
 #include<string>
 #include<vector>
 
+namespace LD { class DbWrite; }
+
 namespace Plugin {
 
 class DbWriteHandler {
@@ -12,8 +14,7 @@ public:
 	virtual ~DbWriteHandler() { }
 
 	/* Return true if handled OK, false if backing up failed.  */
-	virtual bool handle( std::uint32_t data_version
-			   , std::vector<std::string> writes
+	virtual bool handle( LD::DbWrite const&
 			   ) =0;
 };
 

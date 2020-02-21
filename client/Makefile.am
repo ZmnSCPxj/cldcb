@@ -1,6 +1,7 @@
 bin_PROGRAMS = cldcb-plugin
 
 cldcb_plugin_SOURCES = \
+	LD/DbWrite.hpp \
 	LD/Logger.cpp \
 	LD/Logger.hpp \
 	LD/Writer.cpp \
