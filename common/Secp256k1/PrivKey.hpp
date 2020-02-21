@@ -31,7 +31,7 @@ private:
 	PrivKey( std::uint8_t key_[32] );
 
 public:
-	PrivKey() =delete;
+	PrivKey();
 
 	/* Load private key from a hex-encoded string.  */
 	explicit PrivKey(std::string const&);

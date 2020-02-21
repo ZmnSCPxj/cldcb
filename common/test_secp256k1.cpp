@@ -50,5 +50,8 @@ int main() {
 	assert(Z - X == Y); /* 3 - 1 == 2 */
 	assert(x * Z == Z); /* 1 * 3 == 3 */
 
+	/* Default-constructed privkey is just "1".  */
+	assert((Secp256k1::PrivKey() * A) == A);
+
 	return 0;
 }

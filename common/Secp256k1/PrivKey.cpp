@@ -21,6 +21,13 @@ PrivKey::PrivKey(std::uint8_t key_[32]) {
 	memcpy(key, key_, 32);
 }
 
+PrivKey::PrivKey() {
+	/* 1 */
+	for (auto i = 0; i < 31; ++i)
+		key[i] = 0;
+	key[31] = 1;
+}
+
 PrivKey::PrivKey(std::string const& s) {
 	auto buf = Util::Str::hexread(s);
 	if (buf.size() != 32)
