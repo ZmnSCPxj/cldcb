@@ -42,6 +42,8 @@ libcldcb_common_la_SOURCES = \
 	Sha256/fun.hpp \
 	Sha256/hmac.cpp \
 	Sha256/hmac.hpp \
+	Stream/read_line.cpp \
+	Stream/read_line.hpp \
 	Sync/MVar.hpp \
 	Util/Logger.cpp \
 	Util/Logger.hpp \
@@ -66,6 +68,7 @@ TESTS = \
 	test_crypto_box \
 	test_jsmn \
 	test_logger \
+	test_read_line \
 	test_secp256k1 \
 	test_secret \
 	test_serialize \
