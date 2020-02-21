@@ -3,6 +3,10 @@ LIBSECP256K1_INCLUDE = -I../external/secp256k1/include/
 
 noinst_LTLIBRARIES = libcldcb-common.la
 libcldcb_common_la_SOURCES = \
+	Crypto/Box/Sealer.cpp \
+	Crypto/Box/Sealer.hpp \
+	Crypto/Box/Unsealer.cpp \
+	Crypto/Box/Unsealer.hpp \
 	Crypto/Secret.cpp \
 	Crypto/Secret.hpp \
 	Jsmn/Detail/EndAdvancer.cpp \
@@ -59,6 +63,7 @@ LDADD = libcldcb-common.la $(PTHREAD_LIBS)
 AM_DEFAULT_SOURCE_EXT = .cpp
 
 TESTS = \
+	test_crypto_box \
 	test_jsmn \
 	test_logger \
 	test_secp256k1 \
