@@ -56,8 +56,8 @@ to see the client identifier, it is the hex string starting with
 `c`.
 The `$CLIENT_PRIVKEY_FILE` will look like:
 
-    id = c3df949fa268776a789f321051211a9183fb9c2891b8dc2742cfc9107ec7f9d23f
-    pk = e49802ca07d9f3a579afefca067dd28f22c572de8756d8ef372c53873f82b25e
+    # cid = c3df949fa268776a789f321051211a9183fb9c2891b8dc2742cfc9107ec7f9d23f
+    # cpk = e49802ca07d9f3a579afefca067dd28f22c572de8756d8ef372c53873f82b25e
 
 The first is the client identifier you need to give to the backup
 server.
