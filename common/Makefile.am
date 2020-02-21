@@ -3,6 +3,8 @@ LIBSECP256K1_INCLUDE = -I../external/secp256k1/include/
 
 noinst_LTLIBRARIES = libcldcb-common.la
 libcldcb_common_la_SOURCES = \
+	Crypto/Secret.cpp \
+	Crypto/Secret.hpp \
 	Jsmn/Detail/EndAdvancer.cpp \
 	Jsmn/Detail/EndAdvancer.hpp \
 	Jsmn/Detail/ParseResult.hpp \
@@ -60,6 +62,7 @@ TESTS = \
 	test_jsmn \
 	test_logger \
 	test_secp256k1 \
+	test_secret \
 	test_serialize \
 	test_sha256 \
 	test_sync
