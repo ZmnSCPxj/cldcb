@@ -24,6 +24,11 @@ struct HexParseFailure : public std::runtime_error {
 };
 std::vector<std::uint8_t> hexread(std::string const&);
 
+/* Checks that the given string is a hex string with an
+ * even number of digits.
+ */
+bool ishex(std::string const&);
+
 std::string trim(std::string const& s);
 
 }}

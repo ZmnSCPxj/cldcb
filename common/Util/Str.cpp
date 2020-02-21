@@ -55,6 +55,20 @@ std::vector<std::uint8_t> hexread(std::string const& s) {
 	return buf;
 }
 
+bool ishex(std::string const& s) {
+	if ((s.size() % 2) != 0)
+		return false;
+	for (auto const& c : s) {
+		if ( ('0' <= c && c <= '9')
+		  || ('a' <= c && c <= 'f')
+		  || ('A' <= c && c <= 'F')
+		   )
+			continue;
+		return false;
+	}
+	return true;
+}
+
 std::string trim(std::string const& s) {
 	auto start = std::find_if_not(s.begin(), s.end(), isspace);
 	/* If all spaces, empty string.  */
