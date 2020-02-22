@@ -11,6 +11,8 @@ cldcb_plugin_SOURCES = \
 	Plugin/Main.hpp \
 	Plugin/MainLoop.cpp \
 	Plugin/MainLoop.hpp \
+	Plugin/OptFile/load.cpp \
+	Plugin/OptFile/load.hpp \
 	Plugin/OptFile/parse.cpp \
 	Plugin/OptFile/parse.hpp \
 	Plugin/OptFile/translate_setup.cpp \
@@ -33,6 +35,8 @@ TESTS = \
 	test_ld_writer \
 	test_optfile
 check_PROGRAMS = $(TESTS)
+
+EXTRA_DIST = optfile-example
 
 if USE_VALGRIND
 LOG_COMPILER = valgrind

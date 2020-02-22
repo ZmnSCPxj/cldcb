@@ -8,7 +8,9 @@
 #include"Plugin/DbWriteHandler.hpp"
 #include"Plugin/Main.hpp"
 #include"Plugin/MainLoop.hpp"
+#include"Plugin/OptFile/load.hpp"
 #include"Plugin/OptHandler.hpp"
+#include"Plugin/Setup.hpp"
 #include"Util/make_unique.hpp"
 
 namespace {
@@ -32,6 +34,8 @@ private:
 	LD::Logger log;
 	OptHandler options;
 
+	Plugin::Setup setup;
+
 public:
 	Impl( std::istream& stdin_, std::ostream& stdout_
 	    , int argc, char** argv
@@ -39,6 +43,7 @@ public:
 	      , writer(stdout_)
 	      , log(writer)
 	      , options(argc, argv)
+	      , setup()
 	      { }
 
 	int run() {
@@ -46,7 +51,11 @@ public:
 		if (options_result)
 			return *options_result;
 
-		/* TODO: reading of options file.  */
+		auto optload_result = Plugin::OptFile::load( setup
+							   , options.options_filename()
+							   );
+		if (optload_result)
+			return *optload_result;
 
 		auto handler = NullDbWriteHandler();
 		auto loop = Plugin::MainLoop(stdin, writer, log, handler);
