@@ -13,6 +13,8 @@ cldcb_plugin_SOURCES = \
 	Plugin/MainLoop.hpp \
 	Plugin/OptFile/parse.cpp \
 	Plugin/OptFile/parse.hpp \
+	Plugin/OptFile/translate_setup.cpp \
+	Plugin/OptFile/translate_setup.hpp \
 	Plugin/OptFile/validate_keys.cpp \
 	Plugin/OptFile/validate_keys.hpp \
 	Plugin/OptHandler.cpp \
