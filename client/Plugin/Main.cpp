@@ -11,15 +11,19 @@
 #include"Plugin/OptFile/load.hpp"
 #include"Plugin/OptHandler.hpp"
 #include"Plugin/Setup.hpp"
+#include"Plugin/ServerIf.hpp"
+#include"Plugin/ServerResult.hpp"
 #include"Util/make_unique.hpp"
 
 namespace {
 
-class NullDbWriteHandler : public Plugin::DbWriteHandler {
+class NullServerIf : public Plugin::ServerIf {
 public:
-	bool handle( LD::DbWrite const&
-		   ) override {
-		return true;
+	std::future<Plugin::ServerResult>
+	send(std::uint32_t, std::vector<std::uint8_t>) override {
+		auto p = std::promise<Plugin::ServerResult>();
+		p.set_value(Plugin::ServerResult::success());
+		return p.get_future();
 	}
 };
 
@@ -57,7 +61,8 @@ public:
 		if (optload_result)
 			return *optload_result;
 
-		auto handler = NullDbWriteHandler();
+		auto server = NullServerIf();
+		auto handler = Plugin::DbWriteHandler(setup, server);
 		auto loop = Plugin::MainLoop(stdin, writer, log, handler);
 
 		log.info( "cldcb-plugin %1$s "

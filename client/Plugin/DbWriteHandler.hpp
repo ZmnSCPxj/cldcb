@@ -2,20 +2,33 @@
 #define CLDCB_COMMON_PLUGIN_DBWRITEHANDLER_HPP
 
 #include<cstdint>
+#include<memory>
 #include<string>
 #include<vector>
 
 namespace LD { class DbWrite; }
+namespace Plugin { class ServerIf; }
+namespace Plugin { class Setup; }
 
 namespace Plugin {
 
 class DbWriteHandler {
+private:
+	class Impl;
+	std::unique_ptr<Impl> pimpl;
+
 public:
-	virtual ~DbWriteHandler() { }
+	DbWriteHandler() =delete;
+	DbWriteHandler(DbWriteHandler&&);
+	~DbWriteHandler();
+	DbWriteHandler& operator=(DbWriteHandler&& o) {
+		o.pimpl.swap(pimpl);
+		return *this;
+	}
+	explicit DbWriteHandler(Setup&, ServerIf&);
 
 	/* Return true if handled OK, false if backing up failed.  */
-	virtual bool handle( LD::DbWrite const&
-			   ) =0;
+	bool handle(LD::DbWrite const&);
 };
 
 }

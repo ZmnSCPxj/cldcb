@@ -6,6 +6,7 @@ cldcb_plugin_SOURCES = \
 	LD/Logger.hpp \
 	LD/Writer.cpp \
 	LD/Writer.hpp \
+	Plugin/DbWriteHandler.cpp \
 	Plugin/DbWriteHandler.hpp \
 	Plugin/Main.cpp \
 	Plugin/Main.hpp \
@@ -21,6 +22,9 @@ cldcb_plugin_SOURCES = \
 	Plugin/OptFile/validate_keys.hpp \
 	Plugin/OptHandler.cpp \
 	Plugin/OptHandler.hpp \
+	Plugin/ServerIf.hpp \
+	Plugin/ServerResult.hpp \
+	Plugin/ServerReuploadIf.hpp \
 	Plugin/ServerSpec.hpp \
 	Plugin/Setup.hpp \
 	plugin.cpp
