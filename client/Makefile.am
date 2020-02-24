@@ -6,6 +6,7 @@ cldcb_plugin_SOURCES = \
 	LD/Logger.hpp \
 	LD/Writer.cpp \
 	LD/Writer.hpp \
+	Plugin/DbFileReader.cpp \
 	Plugin/DbFileReader.hpp \
 	Plugin/DbWriteHandler.cpp \
 	Plugin/DbWriteHandler.hpp \

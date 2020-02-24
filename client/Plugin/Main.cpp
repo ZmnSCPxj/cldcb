@@ -27,20 +27,6 @@ public:
 		return p.get_future();
 	}
 };
-class NullDbFileReader : public Plugin::DbFileReader {
-private:
-	class NullSession : public Plugin::DbFileReader::Session {
-	public:
-		std::vector<std::uint8_t> read(unsigned int) override {
-			return std::vector<std::uint8_t>();
-		}
-	};
-public:
-	std::unique_ptr<Plugin::DbFileReader::Session>
-	start() override {
-		return Util::make_unique<NullSession>();
-	}
-};
 
 }
 
@@ -77,7 +63,8 @@ public:
 			return *optload_result;
 
 		auto server = NullServerIf();
-		auto db = NullDbFileReader();
+		/* FIXME: Make this an option in the optionfile.  */
+		auto db = DbFileReader("lightningd.sqlite3");
 		auto handler = Plugin::DbWriteHandler(setup, server, db);
 		auto loop = Plugin::MainLoop(stdin, writer, log, handler);
 
