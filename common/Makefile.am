@@ -75,6 +75,7 @@ TESTS = \
 	test_crypto_box \
 	test_jsmn \
 	test_logger \
+	test_net \
 	test_read_line \
 	test_secp256k1 \
 	test_secret \
