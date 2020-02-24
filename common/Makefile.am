@@ -24,6 +24,8 @@ libcldcb_common_la_SOURCES = \
 	Jsmn/jsonify_string.cpp \
 	Jsmn/jsonify_string.hpp \
 	Net/Connector.hpp \
+	Net/Detail/AddrInfoReleaser.cpp \
+	Net/Detail/AddrInfoReleaser.hpp \
 	Net/DirectConnector.cpp \
 	Net/DirectConnector.hpp \
 	Net/Fd.cpp \

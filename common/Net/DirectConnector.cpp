@@ -5,6 +5,7 @@
 #include<string.h>
 #include<sys/socket.h>
 #include<sys/types.h>
+#include"Net/Detail/AddrInfoReleaser.hpp"
 #include"Net/DirectConnector.hpp"
 #include"Net/Fd.hpp"
 #include"Net/SocketFd.hpp"
@@ -17,25 +18,6 @@ std::string stringify_int(int port) {
 	os << std::dec << port;
 	return os.str();
 }
-
-/* RAII class to release the addrinfo.  */
-class AddrInfoReleaser {
-private:
-	addrinfo* addrs;
-
-public:
-	AddrInfoReleaser() : addrs(nullptr) { }
-	AddrInfoReleaser(AddrInfoReleaser const&) =delete;
-	AddrInfoReleaser(AddrInfoReleaser&& o) {
-		addrs = o.addrs;
-		o.addrs = nullptr;
-	}
-	~AddrInfoReleaser() {
-		if (addrs)
-			freeaddrinfo(addrs);
-	}
-	addrinfo*& get() { return addrs; }
-};
 
 }
 
@@ -53,7 +35,7 @@ DirectConnector::connect(std::string const& host, int port) {
 	hint.ai_flags = AI_ADDRCONFIG     /* Use IPv6 only if we have IPv6 ourselves. */
 		      ;
 
-	auto addrs = AddrInfoReleaser();
+	auto addrs = Detail::AddrInfoReleaser();
 	auto res = getaddrinfo( host.c_str(), portstring.c_str()
 			      , &hint
 			      , &addrs.get()
