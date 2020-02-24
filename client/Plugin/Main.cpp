@@ -5,6 +5,7 @@
 #include"LD/DbWrite.hpp"
 #include"LD/Logger.hpp"
 #include"LD/Writer.hpp"
+#include"Plugin/DbFileReader.hpp"
 #include"Plugin/DbWriteHandler.hpp"
 #include"Plugin/Main.hpp"
 #include"Plugin/MainLoop.hpp"
@@ -24,6 +25,20 @@ public:
 		auto p = std::promise<Plugin::ServerResult>();
 		p.set_value(Plugin::ServerResult::success());
 		return p.get_future();
+	}
+};
+class NullDbFileReader : public Plugin::DbFileReader {
+private:
+	class NullSession : public Plugin::DbFileReader::Session {
+	public:
+		std::vector<std::uint8_t> read(unsigned int) override {
+			return std::vector<std::uint8_t>();
+		}
+	};
+public:
+	std::unique_ptr<Plugin::DbFileReader::Session>
+	start() override {
+		return Util::make_unique<NullSession>();
 	}
 };
 
@@ -62,7 +77,8 @@ public:
 			return *optload_result;
 
 		auto server = NullServerIf();
-		auto handler = Plugin::DbWriteHandler(setup, server);
+		auto db = NullDbFileReader();
+		auto handler = Plugin::DbWriteHandler(setup, server, db);
 		auto loop = Plugin::MainLoop(stdin, writer, log, handler);
 
 		log.info( "cldcb-plugin %1$s "

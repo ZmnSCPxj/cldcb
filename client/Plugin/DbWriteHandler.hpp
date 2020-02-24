@@ -7,6 +7,7 @@
 #include<vector>
 
 namespace LD { class DbWrite; }
+namespace Plugin { class DbFileReader; }
 namespace Plugin { class ServerIf; }
 namespace Plugin { class Setup; }
 
@@ -25,7 +26,7 @@ public:
 		o.pimpl.swap(pimpl);
 		return *this;
 	}
-	explicit DbWriteHandler(Setup&, ServerIf&);
+	explicit DbWriteHandler(Setup&, ServerIf&, DbFileReader&);
 
 	/* Return true if handled OK, false if backing up failed.  */
 	bool handle(LD::DbWrite const&);
