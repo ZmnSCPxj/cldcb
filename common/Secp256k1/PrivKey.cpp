@@ -15,7 +15,7 @@ using Secp256k1::Detail::context;
 
 namespace  Secp256k1 {
 
-PrivKey::PrivKey(std::uint8_t key_[32]) {
+PrivKey::PrivKey(std::uint8_t const key_[32]) {
 	if (!secp256k1_ec_seckey_verify(context.get(), key_))
 		throw InvalidPrivKey();
 	memcpy(key, key_, 32);
