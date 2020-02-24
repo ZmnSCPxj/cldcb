@@ -19,7 +19,7 @@ public:
 
 	/* Returns null if failed to connect.  */
 	virtual
-	std::unique_ptr<Net::SocketFd>
+	Net::SocketFd
 	connect(std::string const& host, int port) =0;
 };
 

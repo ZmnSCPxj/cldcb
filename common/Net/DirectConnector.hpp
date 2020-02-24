@@ -10,7 +10,7 @@ namespace Net {
  */
 class DirectConnector : public Connector {
 public:
-	std::unique_ptr<Net::SocketFd>
+	Net::SocketFd
 	connect(std::string const& host, int port) override;
 };
 

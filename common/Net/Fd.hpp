@@ -1,6 +1,8 @@
 #ifndef CLDCB_COMMON_NET_FD_HPP
 #define CLDCB_COMMON_NET_FD_HPP
 
+#include<cstddef>
+
 namespace Net {
 
 /* RAII class for a file descriptor.  */
@@ -9,7 +11,7 @@ private:
 	int fd;
 
 public:
-	Fd() : fd(-1) { }
+	Fd(std::nullptr_t _ = nullptr) : fd(-1) { }
 	explicit Fd(int fd_) : fd(fd_) { }
 	Fd(Fd const&) =delete;
 	Fd(Fd&& o) : fd(o.release()) { }

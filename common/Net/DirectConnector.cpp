@@ -23,7 +23,7 @@ std::string stringify_int(int port) {
 
 namespace Net {
 
-std::unique_ptr<Net::SocketFd>
+Net::SocketFd
 DirectConnector::connect(std::string const& host, int port) {
 	auto portstring = stringify_int(port);
 
@@ -61,7 +61,7 @@ DirectConnector::connect(std::string const& host, int port) {
 					);
 		} while (cres < 0 && errno == EINTR);
 		if (cres == 0)
-			return Util::make_unique<SocketFd>(std::move(sfd));
+			return SocketFd(std::move(sfd));
 
 		/* If bad, just continue.  */
 	}

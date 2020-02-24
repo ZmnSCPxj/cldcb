@@ -18,7 +18,7 @@ private:
 	Fd fd;
 
 public:
-	SocketFd() : fd() { }
+	SocketFd(nullptr_t _ = nullptr) : fd() { }
 	SocketFd(SocketFd&&) =default;
 	SocketFd& operator=(SocketFd&&) =default;
 

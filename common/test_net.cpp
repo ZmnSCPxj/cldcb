@@ -38,9 +38,8 @@ int main() {
 	if (1) /* Set to 0 if you do not have normal network access.  */
 	{
 		auto connector = Net::DirectConnector();
-		auto psfd = connector.connect("www.google.com", 80);
-		assert(psfd);
-		assert(*psfd);
+		auto sfd = connector.connect("www.google.com", 80);
+		assert(sfd);
 	}
 
 	return 0;
