@@ -23,6 +23,9 @@ libcldcb_common_la_SOURCES = \
 	Jsmn/Parser.hpp \
 	Jsmn/jsonify_string.cpp \
 	Jsmn/jsonify_string.hpp \
+	Net/Connector.hpp \
+	Net/DirectConnector.cpp \
+	Net/DirectConnector.hpp \
 	Net/Fd.cpp \
 	Net/Fd.hpp \
 	Net/SocketFd.cpp \
