@@ -2,6 +2,7 @@
 #include"Sha256/Hash.hpp"
 #include"Sha256/fun.hpp"
 #include"Sha256/hmac.hpp"
+#include"Sha256/hkdf.hpp"
 #include"Util/Str.hpp"
 
 int main () {
@@ -73,6 +74,27 @@ int main () {
 	hmactest( "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 		, "5468697320697320612074657374207573696e672061206c6172676572207468616e20626c6f636b2d73697a65206b657920616e642061206c6172676572207468616e20626c6f636b2d73697a6520646174612e20546865206b6579206e6565647320746f20626520686173686564206265666f7265206265696e6720757365642062792074686520484d414320616c676f726974686d2e"
 		, "9b09ffa71b942fcb27635fbcd5b0e944bfdc63644f0713938a7f51535c3a35e2"
+		);
+
+	auto hkdftest = []( std::string const& hexsalt
+			  , std::string const& hexikm
+			  , std::string const& hexokm
+			  ) {
+		auto salt = Util::Str::hexread(hexsalt);
+		auto ikm = Util::Str::hexread(hexikm);
+		auto okm = Util::Str::hexread(hexokm);
+		auto actual_okm = std::vector<std::uint8_t>(okm.size());
+		Sha256::hkdf( &actual_okm[0], actual_okm.size()
+			    , &salt[0], salt.size()
+			    , &ikm[0], ikm.size()
+			    );
+		assert(okm == actual_okm);
+	};
+	/* From RFC 5869. */
+	/* 3 */
+	hkdftest( ""
+		, "0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b"
+		, "8da4e775a563c18f715f802a063c5a31b8a11f5c5ee1879ec3454e5f3c738d2d9d201395faa4b61a96c8"
 		);
 
 	return 0;
