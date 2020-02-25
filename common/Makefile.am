@@ -35,6 +35,8 @@ libcldcb_common_la_SOURCES = \
 	Net/Listener.hpp \
 	Net/SocketFd.cpp \
 	Net/SocketFd.hpp \
+	Noise/Detail/CipherState.cpp \
+	Noise/Detail/CipherState.hpp \
 	S.hpp \
 	Secp256k1/Detail/context.cpp \
 	Secp256k1/Detail/context.hpp \
