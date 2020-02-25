@@ -60,6 +60,9 @@ libcldcb_common_la_SOURCES = \
 	Sha256/hkdf.hpp \
 	Sha256/hmac.cpp \
 	Sha256/hmac.hpp \
+	Stream/Sink.hpp \
+	Stream/SinkSource.hpp \
+	Stream/Source.hpp \
 	Stream/read_line.cpp \
 	Stream/read_line.hpp \
 	Sync/MVar.hpp \

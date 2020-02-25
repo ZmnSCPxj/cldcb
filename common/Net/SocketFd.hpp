@@ -3,6 +3,7 @@
 
 #include<utility>
 #include"Net/Fd.hpp"
+#include"Stream/SinkSource.hpp"
 
 namespace Net {
 
@@ -13,7 +14,7 @@ namespace Net {
  * that are bound for listening, or which we are still setting up
  * for binding.
  */
-class SocketFd {
+class SocketFd : public Stream::SinkSource {
 private:
 	Fd fd;
 
@@ -36,6 +37,10 @@ public:
 
 	operator bool() const { return (bool)fd; }
 	bool operator!() const {return !((bool)fd); }
+
+	/* Stream::SinkSource.  */
+	void write(std::vector<std::uint8_t> const&) override;
+	std::vector<std::uint8_t> read(std::size_t) override;
 };
 
 }
