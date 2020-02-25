@@ -4,7 +4,7 @@
 AC_PREREQ([2.69])
 AC_INIT([cldcb], [0.1A], [ZmnSCPxj@protonmail.com])
 AC_CONFIG_AUX_DIR([auxdir])
-AM_INIT_AUTOMAKE([subdir-objects])
+AM_INIT_AUTOMAKE([subdir-objects tar-ustar])
 AC_CONFIG_SRCDIR([client/plugin.cpp])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIRS([m4])
