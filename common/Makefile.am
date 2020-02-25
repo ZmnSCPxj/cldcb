@@ -37,6 +37,8 @@ libcldcb_common_la_SOURCES = \
 	Net/SocketFd.hpp \
 	Noise/Detail/CipherState.cpp \
 	Noise/Detail/CipherState.hpp \
+	Noise/Detail/hkdf2.cpp \
+	Noise/Detail/hkdf2.hpp \
 	S.hpp \
 	Secp256k1/Detail/context.cpp \
 	Secp256k1/Detail/context.hpp \
@@ -85,6 +87,7 @@ TESTS = \
 	test_jsmn \
 	test_logger \
 	test_net \
+	test_noise \
 	test_read_line \
 	test_secp256k1 \
 	test_secret \
