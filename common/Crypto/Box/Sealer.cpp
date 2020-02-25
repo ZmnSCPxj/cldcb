@@ -2,6 +2,7 @@
 #include<sodium/crypto_aead_chacha20poly1305.h>
 #include<sodium/utils.h>
 #include<stdexcept>
+#include"Crypto/Box/Detail/Nonce.hpp"
 #include"Crypto/Box/Sealer.hpp"
 #include"Crypto/Secret.hpp"
 #include"Secp256k1/PrivKey.hpp"
@@ -21,24 +22,9 @@ private:
 	Crypto::Secret shared_secret;
 
 	/* nonce counters.  */
-	std::uint8_t nonce[12];
+	Detail::Nonce nonce;
 
 	bool start;
-
-	void incr_nonce() {
-		for (auto i = 0; i < 12; ++i) {
-			/* Unsigned overflow is well-defined -- it is
-			 * wraparound.
-			 * If the nonce byte was 0 after incrementing,
-			 * proceed to increment the next, otherwise
-			 * just break now.
-			 */
-			++nonce[i];
-			if (nonce[i] == 0)
-				continue;
-			break;
-		}
-	}
 
 	Impl(Secp256k1::PubKey const& receiver_pubkey)
 		: rand()
@@ -47,9 +33,9 @@ private:
 						, receiver_pubkey
 						)
 			       )
+		, nonce()
 		, start(true)
 		{
-		sodium_memzero(nonce, sizeof(nonce));
 	}
 
 
@@ -102,12 +88,12 @@ public:
 			, (unsigned char const *) "CLDCB 00" /* associated data */
 			, 8 /* Length of associated data */
 			, NULL /* secret nonce -- nonexistent for chacha20 */
-			, nonce /* public nonce */
+			, nonce.get() /* public nonce */
 			, shared_secret.get_buffer() /* encryption key */
 			);
 		assert(res == 0);
 
-		incr_nonce();
+		++nonce;
 
 		return ret;
 	}

@@ -3,6 +3,7 @@ LIBSECP256K1_INCLUDE = -I../external/secp256k1/include/
 
 noinst_LTLIBRARIES = libcldcb-common.la
 libcldcb_common_la_SOURCES = \
+	Crypto/Box/Detail/Nonce.hpp \
 	Crypto/Box/Sealer.cpp \
 	Crypto/Box/Sealer.hpp \
 	Crypto/Box/Unsealer.cpp \

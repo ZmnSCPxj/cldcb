@@ -2,6 +2,7 @@
 #include<sodium/crypto_aead_chacha20poly1305.h>
 #include<sodium/utils.h>
 #include<stdexcept>
+#include"Crypto/Box/Detail/Nonce.hpp"
 #include"Crypto/Box/Unsealer.hpp"
 #include"Crypto/Secret.hpp"
 #include"S.hpp"
@@ -18,30 +19,15 @@ private:
 
 	std::uint8_t shared_secret_storage[sizeof(Crypto::Secret)];
 
-	std::uint8_t nonce[12];
+	Detail::Nonce nonce;
 
 	bool start;
 
-	void incr_nonce() {
-		for (auto i = 0; i < 12; ++i) {
-			/* Unsigned overflow is well-defined -- it is
-			 * wraparound.
-			 * If the nonce byte was 0 after incrementing,
-			 * proceed to increment the next, otherwise
-			 * just break now.
-			 */
-			++nonce[i];
-			if (nonce[i] == 0)
-				continue;
-			break;
-		}
-	}
-
 	Impl(Secp256k1::PrivKey const& receiver_privkey_)
 		: receiver_privkey(receiver_privkey_)
+		, nonce()
 		, start(true)
 		{
-		sodium_memzero(nonce, sizeof(nonce));
 	}
 
 	Crypto::Secret const& shared_secret() const {
@@ -108,13 +94,13 @@ public:
 			, msglen
 			, (unsigned char const*) "CLDCB 00" /* associated data */
 			, 8 /* associated data length */
-			, nonce /* public nonce */
+			, nonce.get() /* public nonce */
 			, shared_secret().get_buffer() /* encryption key */
 			);
 		if (res != 0)
 			return nullptr;
 
-		incr_nonce();
+		++nonce;
 
 		return Util::make_unique<std::vector<std::uint8_t>>(std::move(ret));
 	}
