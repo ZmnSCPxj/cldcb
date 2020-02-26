@@ -38,7 +38,7 @@ public:
 		if (!res)
 			throw InvalidPubKey();
 	}
-	Impl(std::uint8_t buffer[33]) {
+	Impl(std::uint8_t const buffer[33]) {
 		auto res = secp256k1_ec_pubkey_parse( context.get()
 						    , &key
 						    , buffer
@@ -154,7 +154,7 @@ PubKey::PubKey()
 
 PubKey::PubKey(secp256k1_context_struct *ctx, std::uint8_t buffer[33])
 	: pimpl(Util::make_unique<Impl>(ctx, buffer)) {}
-PubKey::PubKey(std::uint8_t buffer[33])
+PubKey::PubKey(std::uint8_t const buffer[33])
 	: pimpl(Util::make_unique<Impl>(buffer)) {}
 
 PubKey::PubKey(std::string const& s) {

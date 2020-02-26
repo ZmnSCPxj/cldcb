@@ -33,7 +33,7 @@ private:
 	std::unique_ptr<Impl> pimpl;
 
 	explicit PubKey(secp256k1_context_struct *, std::uint8_t buffer[33]);
-	explicit PubKey(std::uint8_t buffer[33]);
+	explicit PubKey(std::uint8_t const buffer[33]);
 
 public:
 	/* Get G.  */
@@ -98,7 +98,7 @@ public:
 
 	friend std::ostream& ::operator<<(std::ostream&, PubKey const&);
 
-	static PubKey from_buffer(std::uint8_t buffer[33]) {
+	static PubKey from_buffer(std::uint8_t const buffer[33]) {
 		return PubKey(buffer);
 	}
 	/* Needed for the generator point.  */
