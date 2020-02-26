@@ -47,6 +47,8 @@ libcldcb_common_la_SOURCES = \
 	Noise/Encryptor.hpp \
 	Noise/Initiator.cpp \
 	Noise/Initiator.hpp \
+	Noise/Responder.cpp \
+	Noise/Responder.hpp \
 	S.hpp \
 	Secp256k1/Detail/context.cpp \
 	Secp256k1/Detail/context.hpp \
