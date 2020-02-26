@@ -16,8 +16,9 @@ HS::HS( std::string const& prologue
 	h_hash.to_buffer(buffer);
 	h = Crypto::Secret::from_buffer(buffer);
 
-	mix_h(prologue.c_str(), prologue.length());
 	ck = h;
+
+	mix_h(prologue.c_str(), prologue.length());
 }
 void HS::mix_h(void const* p, std::size_t len) {
 	auto buffer = std::vector<std::uint8_t>(32 + len);

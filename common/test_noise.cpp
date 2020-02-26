@@ -1,12 +1,16 @@
 #include<assert.h>
 #include<cstdint>
+#include<iostream>
 #include<queue>
 #include<vector>
 #include"Crypto/Secret.hpp"
 #include"Noise/Detail/CipherState.hpp"
 #include"Noise/Detail/hkdf2.hpp"
 #include"Noise/Encryptor.hpp"
+#include"Noise/Initiator.hpp"
 #include"Stream/SinkSource.hpp"
+#include"Secp256k1/PrivKey.hpp"
+#include"Secp256k1/PubKey.hpp"
 #include"Util/Str.hpp"
 
 int main() {
@@ -92,6 +96,24 @@ int main() {
 			default: continue;
 			}
 		}
+	}
+
+	/* Handshake Initiator tests.  */
+	/* From BOLT 8.  */
+	{
+		auto s = Secp256k1::PrivKey("1111111111111111111111111111111111111111111111111111111111111111");
+		auto rs = Secp256k1::PubKey("028d7500dd4c12685d1f568b4c2b5048e8534b873319f3a8daa612b469132ec7f7");
+		auto e = Secp256k1::PrivKey("1212121212121212121212121212121212121212121212121212121212121212");
+		auto initiator = Noise::Initiator(s, rs, e);
+		auto act1 = initiator.act1();
+		{
+			for (auto& c : act1)
+				std::cout << Util::Str::hexbyte(c);
+			std::cout << std::endl;
+		}
+		assert( act1
+		     == Util::Str::hexread("00036360e856310ce5d294e8be33fc807077dc56ac80d95d9cd4ddbd21325eff73f70df6086551151f58b8afe6c195782c6a")
+		      );
 	}
 
 	return 0;
