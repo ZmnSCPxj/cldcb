@@ -39,6 +39,8 @@ libcldcb_common_la_SOURCES = \
 	Noise/Detail/CipherState.hpp \
 	Noise/Detail/Encryptor.cpp \
 	Noise/Detail/Encryptor.hpp \
+	Noise/Detail/HS.cpp \
+	Noise/Detail/HS.hpp \
 	Noise/Detail/hkdf2.cpp \
 	Noise/Detail/hkdf2.hpp \
 	S.hpp \
