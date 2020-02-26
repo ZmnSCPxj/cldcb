@@ -37,6 +37,7 @@ CipherState::~CipherState() { }
 void CipherState::initialize_key(Crypto::Secret const& k_) {
 	k = Util::make_unique<Crypto::Secret>(k_);
 	n = 0;
+	wrapped = false;
 }
 std::vector<std::uint8_t>
 CipherState::encrypt_with_ad( std::vector<std::uint8_t> const& ad
@@ -74,12 +75,12 @@ CipherState::encrypt_with_ad( std::vector<std::uint8_t> const& ad
 
 	return ciphertext;
 }
-std::vector<std::uint8_t>
+std::unique_ptr<std::vector<std::uint8_t>>
 CipherState::decrypt_with_ad( std::vector<std::uint8_t> const& ad
 			    , std::vector<std::uint8_t> const& ciphertext
 			    ) {
 	if (!k)
-		return ciphertext;
+		return Util::make_unique<std::vector<std::uint8_t>>(ciphertext);
 
 	if (wrapped)
 		throw std::range_error("Noise::Detail::CipherState::nonce already wrapped around, unsafe to encrypt");
@@ -102,13 +103,14 @@ CipherState::decrypt_with_ad( std::vector<std::uint8_t> const& ad
 		, nonce
 		, k->get_buffer()
 		);
-	assert(res == 0);
+	if (res != 0)
+		return nullptr;
 
 	++n;
 	if (n == 0)
 		wrapped = true;
 
-	return plaintext;
+	return Util::make_unique<std::vector<std::uint8_t>>(std::move(plaintext));
 }
 
 }}

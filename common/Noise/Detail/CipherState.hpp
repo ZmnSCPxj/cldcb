@@ -27,13 +27,14 @@ public:
 	~CipherState();
 
 	void initialize_key(Crypto::Secret const& k_);
+	std::unique_ptr<Crypto::Secret> const& get_key() const { return k; }
 	bool has_key() const {
 		if (k)
 			return true;
 		else
 			return false;
 	}
-	void set_nonce(uint64_t n_) { n = n_; }
+	void set_nonce(uint64_t n_) { n = n_; wrapped = false; }
 	uint64_t get_nonce() const { return n; }
 
 	bool can_encrypt() const { return !wrapped; }
@@ -41,7 +42,8 @@ public:
 	encrypt_with_ad( std::vector<std::uint8_t> const& ad
 		       , std::vector<std::uint8_t> const& plaintext
 		       );
-	std::vector<std::uint8_t>
+	/* Return nullptr on decryption failure.  */
+	std::unique_ptr<std::vector<std::uint8_t>>
 	decrypt_with_ad( std::vector<std::uint8_t> const& ad
 		       , std::vector<std::uint8_t> const& ciphertext
 		       );
