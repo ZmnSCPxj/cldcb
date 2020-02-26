@@ -1,7 +1,7 @@
 #include<assert.h>
 #include<stdexcept>
-#include"Noise/Detail/Encryptor.hpp"
 #include"Noise/Detail/hkdf2.hpp"
+#include"Noise/Encryptor.hpp"
 #include"Util/make_unique.hpp"
 
 namespace {
@@ -18,7 +18,7 @@ void rekey(Crypto::Secret& ck, Noise::Detail::CipherState& k) {
 
 }
 
-namespace Noise { namespace Detail {
+namespace Noise {
 
 void Encryptor::initial_checks() {
 	if ( r.get_nonce() != 0 || s.get_nonce() != 0
@@ -81,4 +81,4 @@ Encryptor::encrypt_message(std::vector<std::uint8_t> const& plaintext) {
 	return std::make_pair(std::move(l_ciphertext), std::move(m_ciphertext));
 }
 
-}}
+}

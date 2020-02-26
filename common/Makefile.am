@@ -37,12 +37,12 @@ libcldcb_common_la_SOURCES = \
 	Net/SocketFd.hpp \
 	Noise/Detail/CipherState.cpp \
 	Noise/Detail/CipherState.hpp \
-	Noise/Detail/Encryptor.cpp \
-	Noise/Detail/Encryptor.hpp \
 	Noise/Detail/HS.cpp \
 	Noise/Detail/HS.hpp \
 	Noise/Detail/hkdf2.cpp \
 	Noise/Detail/hkdf2.hpp \
+	Noise/Encryptor.cpp \
+	Noise/Encryptor.hpp \
 	S.hpp \
 	Secp256k1/Detail/context.cpp \
 	Secp256k1/Detail/context.hpp \

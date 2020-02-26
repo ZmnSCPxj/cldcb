@@ -1,5 +1,5 @@
-#ifndef CLDCB_COMMON_NOISE_DETAIL_ENCRYPTOR_HPP
-#define CLDCB_COMMON_NOISE_DETAIL_ENCRYPTOR_HPP
+#ifndef CLDCB_COMMON_NOISE_ENCRYPTOR_HPP
+#define CLDCB_COMMON_NOISE_ENCRYPTOR_HPP
 
 #include<cstdint>
 #include<memory>
@@ -8,17 +8,17 @@
 #include"Crypto/Secret.hpp"
 #include"Noise/Detail/CipherState.hpp"
 
-namespace Noise { namespace Detail {
+namespace Noise {
 
 /* Performs encryption and decryption for
  * the bidirectional message tunnel.
  */
 class Encryptor {
 private:
-	CipherState r;
+	Detail::CipherState r;
 	Crypto::Secret rck;
 	int r_state;
-	CipherState s;
+	Detail::CipherState s;
 	Crypto::Secret sck;
 
 	void initial_checks();
@@ -31,8 +31,8 @@ public:
 	Encryptor& operator=(Encryptor const&) =default;
 	Encryptor& operator=(Encryptor&&) =default;
 
-	Encryptor( CipherState&& r_
-		 , CipherState&& s_
+	Encryptor( Detail::CipherState&& r_
+		 , Detail::CipherState&& s_
 		 , Crypto::Secret const& ck_
 		 ) : r(std::move(r_))
 		   , r_state(0)
@@ -65,6 +65,6 @@ public:
 	encrypt_message(std::vector<std::uint8_t> const& plaintext);
 };
 
-}}
+}
 
-#endif /* CLDCB_COMMON_NOISE_DETAIL_ENCRYPTOR_HPP */
+#endif /* CLDCB_COMMON_NOISE_ENCRYPTOR_HPP */

@@ -4,8 +4,8 @@
 #include<vector>
 #include"Crypto/Secret.hpp"
 #include"Noise/Detail/CipherState.hpp"
-#include"Noise/Detail/Encryptor.hpp"
 #include"Noise/Detail/hkdf2.hpp"
+#include"Noise/Encryptor.hpp"
 #include"Stream/SinkSource.hpp"
 #include"Util/Str.hpp"
 
@@ -40,17 +40,17 @@ int main() {
 		auto r = Noise::Detail::CipherState();
 		r.initialize_key(rk);
 
-		auto enc = Noise::Detail::Encryptor( Noise::Detail::CipherState(r)
-						   , Noise::Detail::CipherState(s)
-						   , ck
-						   );
+		auto enc = Noise::Encryptor( Noise::Detail::CipherState(r)
+					   , Noise::Detail::CipherState(s)
+					   , ck
+					   );
 		/* The decryptor has the r and s swapped.
 		 * The r is normally first because it is earlier in the alphabet.
 		 */
-		auto dec = Noise::Detail::Encryptor( Noise::Detail::CipherState(s)
-						   , Noise::Detail::CipherState(r)
-						   , ck
-						   );
+		auto dec = Noise::Encryptor( Noise::Detail::CipherState(s)
+					   , Noise::Detail::CipherState(r)
+					   , ck
+					   );
 
 		auto m_string = std::string("hello");
 		auto m = std::vector<std::uint8_t>(m_string.begin(), m_string.end());
