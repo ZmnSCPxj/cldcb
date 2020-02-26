@@ -37,6 +37,8 @@ libcldcb_common_la_SOURCES = \
 	Net/SocketFd.hpp \
 	Noise/Detail/CipherState.cpp \
 	Noise/Detail/CipherState.hpp \
+	Noise/Detail/Encryptor.cpp \
+	Noise/Detail/Encryptor.hpp \
 	Noise/Detail/hkdf2.cpp \
 	Noise/Detail/hkdf2.hpp \
 	S.hpp \
