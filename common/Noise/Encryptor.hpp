@@ -63,6 +63,10 @@ public:
 	 */
 	std::pair<std::vector<std::uint8_t>, std::vector<std::uint8_t>>
 	encrypt_message(std::vector<std::uint8_t> const& plaintext);
+
+	/* Get the current rk and sk; primarily used for unit test.  */
+	Crypto::Secret const& get_rk() const { return *r.get_key(); }
+	Crypto::Secret const& get_sk() const { return *s.get_key(); }
 };
 
 }
