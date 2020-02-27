@@ -1,12 +1,17 @@
 bin_PROGRAMS = cldcb-server
 
 cldcb_server_SOURCES = \
+	Ev/Io.hpp \
+	Ev/concurrent.cpp \
+	Ev/concurrent.hpp \
+	Ev/start.cpp \
+	Ev/start.hpp \
 	server.cpp
 
 AM_DEFAULT_SOURCE_EXT = .cpp
 
-LDADD = ../common/libcldcb-common.la $(PTHREAD_LIBS)
-AM_CXXFLAGS = -I$(top_srcdir)/common/ $(PTHREAD_CFLAGS)
+LDADD = ../common/libcldcb-common.la $(PTHREAD_LIBS) $(libev_LIBS)
+AM_CXXFLAGS = -I$(top_srcdir)/common/ $(PTHREAD_CFLAGS) $(libev_CFLAGS)
 
 TESTS =
 check_PROGRAMS = $(TESTS)

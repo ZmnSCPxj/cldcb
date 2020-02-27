@@ -23,6 +23,7 @@ AM_CONDITIONAL([USE_VALGRIND], [test x"$enable_valgrind" = xyes])
 AX_PTHREAD([:],[
 	AC_MSG_ERROR([Need pthread,])
 ])
+AX_LIB_EV
 
 # Checks for header files.
 
