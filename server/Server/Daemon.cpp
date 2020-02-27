@@ -2,6 +2,8 @@
 #include<iostream>
 #include<unistd.h>
 #include"Server/Daemon.hpp"
+#include"Server/Logger.hpp"
+#include"Util/make_unique.hpp"
 #include"daemonize.hpp"
 
 namespace Server {
@@ -10,8 +12,14 @@ class Daemon::Impl {
 private:
 	std::vector<std::string> params;
 
+	std::unique_ptr<Server::Logger> plogger;
+
 	bool initialize() {
-		/* TODO */
+		/* TODO: get log path from options or something.  */
+		plogger = Util::make_unique<Server::Logger>("debug.log");
+
+		/* TODO: other inits */
+
 		return true;
 	}
 	void loop() {
@@ -45,6 +53,10 @@ private:
 
 		std::cout << "cldcb-server daemonizing." << std::endl;
 		complete_daemonize(0);
+		plogger->info("cldcb-server is now a daemon.");
+		plogger->info( "cldcb-server is Free Software "
+			       "WITHOUT ANY WARRANTY."
+			     );
 		loop();
 	}
 

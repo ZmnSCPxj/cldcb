@@ -6,6 +6,8 @@ cldcb_server_SOURCES = \
 	Ev/concurrent.hpp \
 	Ev/start.cpp \
 	Ev/start.hpp \
+	Server/Logger.cpp \
+	Server/Logger.hpp \
 	Server/Daemon.cpp \
 	Server/Daemon.hpp \
 	daemonize.cpp \
