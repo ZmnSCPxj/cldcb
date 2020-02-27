@@ -3,7 +3,8 @@ SUBDIRS = \
 	external/libsodium/ \
 	external/secp256k1/ \
 	common/ \
-	client/
+	client/ \
+	server/
 
 EXTRA_DIST = \
 	external/jsmn/LICENSE \
