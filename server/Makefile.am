@@ -6,6 +6,10 @@ cldcb_server_SOURCES = \
 	Ev/concurrent.hpp \
 	Ev/start.cpp \
 	Ev/start.hpp \
+	Server/Daemon.cpp \
+	Server/Daemon.hpp \
+	daemonize.cpp \
+	daemonize.hpp \
 	server.cpp
 
 AM_DEFAULT_SOURCE_EXT = .cpp
