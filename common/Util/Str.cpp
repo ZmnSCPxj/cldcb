@@ -48,7 +48,7 @@ std::vector<std::uint8_t> hexread(std::string const& s) {
 	auto buflen = s.length() / 2;
 	auto buf = std::vector<std::uint8_t>(buflen);
 
-	for (auto i = 0; i < buflen; ++i) {
+	for (auto i = std::size_t(0); i < buflen; ++i) {
 		buf[i] = parse_hex_byte(s[i * 2], s[i * 2 + 1]);
 	}
 

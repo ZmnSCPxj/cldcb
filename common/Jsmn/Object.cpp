@@ -124,13 +124,12 @@ public:
 		return false;
 	}
 	std::shared_ptr<Impl> operator[](std::string const& s) const {
-		auto my_i = i;
 		auto& tok = token();
 		if (tok.type != Detail::Object)
 			throw TypeError();
 
 		auto tokptr = &tok + 1;
-		for (auto i = 0; i < tok.size; ++i, ++tokptr, Detail::Token::next(tokptr)) {
+		for (auto i = int(0); i < tok.size; ++i, ++tokptr, Detail::Token::next(tokptr)) {
 			auto ekey = at(tokptr->start, tokptr->end);
 			auto key = Detail::Str::from_escaped(ekey);
 			if (key == s) {
@@ -145,16 +144,15 @@ public:
 
 	/* Array.  */
 	std::shared_ptr<Impl> operator[](std::size_t i) const {
-		auto my_i = this->i;
 		auto& tok = token();
 		if (tok.type != Detail::Array)
 			throw TypeError();
 
-		if (i >= tok.size)
+		if (int(i) >= tok.size)
 			return nullptr;
 
 		auto tokptr = &tok + 1;
-		for (auto step = 0; step < i; ++step)
+		for (auto step = 0; step < int(i); ++step)
 			Detail::Token::next(tokptr);
 
 		return std::make_shared<Impl>( parse_result
@@ -275,7 +273,7 @@ void print( std::ostream& os
 			os << "{ }";
 		} else {
 			os << "{" << std::endl;
-			for (auto i = 0; i < keys.size(); ++i) {
+			for (auto i = std::size_t(0); i < keys.size(); ++i) {
 				print_indent(os, indent + 1);
 
 				auto& key = keys[i];
@@ -296,7 +294,7 @@ void print( std::ostream& os
 			os << "[ ]";
 		} else {
 			os << '[' << std::endl;
-			for (auto i = 0; i < o.size(); ++i) {
+			for (auto i = std::size_t(0); i < o.size(); ++i) {
 				print_indent(os, indent + 1);
 
 				auto value = o[i];

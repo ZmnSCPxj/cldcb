@@ -21,12 +21,6 @@ std::vector<std::uint8_t> vectorize_secret(Crypto::Secret const& h) {
 	h.to_buffer(&ret[0]);
 	return ret;
 }
-/* Puts a 33-byte pubkey into an std::vector.  */
-std::vector<std::uint8_t> vectorize_pubkey(Secp256k1::PubKey const& pk) {
-	auto ret = std::vector<std::uint8_t>(33);
-	pk.to_buffer(&ret[0]);
-	return ret;
-}
 
 }
 

@@ -44,7 +44,7 @@ bool validate_db_write_params( std::vector<std::string>& writes
 	if (!o_writes.is_array())
 		return false;
 	auto n_writes = std::vector<std::string>();
-	for (auto i = 0; i < o_writes.size(); ++i) {
+	for (auto i = std::size_t(0); i < o_writes.size(); ++i) {
 		auto entry = o_writes[i];
 		if (!entry.is_string())
 			return false;
@@ -116,7 +116,7 @@ int MainLoop::run() {
 			bool result;
 			try {
 				result = handler.handle(params);
-			} catch (std::exception e) {
+			} catch (std::exception const& e) {
 				log.BROKEN("Exception: %s", e.what());
 				result = false;
 			} catch (...) {

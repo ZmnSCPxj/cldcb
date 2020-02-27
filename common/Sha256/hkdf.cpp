@@ -22,7 +22,7 @@ void hkdf( void* vokm, std::size_t okmlen
 	auto t = std::vector<std::uint8_t>();
 	auto inp = std::vector<std::uint8_t>();
 	auto okm_i = std::size_t(0);
-	for (auto i = 0; i < n; ++i) {
+	for (auto i = std::size_t(0); i < n; ++i) {
 		inp = std::move(t);
 		inp.push_back(std::uint8_t(i + 1));
 		auto t_hash = hmac( prk, sizeof(prk)

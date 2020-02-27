@@ -28,7 +28,7 @@ Hash hmac( void const *key, std::size_t keylen
 	auto fin_data = std::vector<std::uint8_t>(block_size + datalen);
 	/* Input padding.  */
 	std::memcpy(&fin_data[0], fin_key, block_size);
-	for (auto i = 0; i < block_size; ++i)
+	for (auto i = std::size_t(0); i < block_size; ++i)
 		fin_data[i] ^= 0x36;
 	/* Data.  */
 	std::memcpy(&fin_data[block_size], data, datalen);
@@ -39,7 +39,7 @@ Hash hmac( void const *key, std::size_t keylen
 	auto stage2 = std::vector<std::uint8_t>(block_size + sizeof(Hash));
 	/* Output padding.  */
 	std::memcpy(&stage2[0], fin_key, block_size);
-	for (auto i = 0; i < block_size; ++i)
+	for (auto i = std::size_t(0); i < block_size; ++i)
 		stage2[i] ^= 0x5c;
 	/* Inner hash.  */
 	hash1.to_buffer(&stage2[block_size]);

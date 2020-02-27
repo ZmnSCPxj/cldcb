@@ -77,17 +77,21 @@ int main() {
 			auto sock = listener.accept();
 			assert(sock);
 			auto data = std::vector<std::uint8_t>(len);
-			(void) ::read(sock.get(), &data[0], len);
-			(void) ::write(sock.get(), &data[0], len);
+			auto rres = ::read(sock.get(), &data[0], len);
+			assert(rres == ssize_t(len));
+			auto wres = ::write(sock.get(), &data[0], len);
+			assert(wres == ssize_t(len));
 		});
 		auto client = std::thread([&promise, &data, port, len]() {
 			auto connector = Net::DirectConnector();
 			promise.get_future().get();
 			auto sock = connector.connect("127.0.0.1", port);
 			assert(sock);
-			(void) ::write(sock.get(), &data[0], len);
+			auto wres = ::write(sock.get(), &data[0], len);
+			assert(wres == ssize_t(len));
 			auto ret_data = std::vector<std::uint8_t>(len);
-			(void) ::read(sock.get(), &ret_data[0], len);
+			auto rres = ::read(sock.get(), &ret_data[0], len);
+			assert(rres == ssize_t(len));
 			assert(data == ret_data);
 		});
 		server.join();

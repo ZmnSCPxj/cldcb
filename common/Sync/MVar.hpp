@@ -60,7 +60,7 @@ public:
 		auto ret = a(std::move(*get_storage()));
 		destroy_storage();
 		cv.notify_all();
-		return std::move(ret);
+		return ret;
 	}
 	void put(a value) {
 		std::unique_lock<std::mutex> g(mtx);

@@ -38,7 +38,7 @@ int main() {
 		std::uint8_t buffer[sizeof(Crypto::Secret)];
 		auto s = new(buffer) Crypto::Secret(rand);
 		s->~Secret();
-		for (auto i = 0; i < sizeof(Crypto::Secret); ++i)
+		for (auto i = std::size_t(0); i < sizeof(Crypto::Secret); ++i)
 			assert(buffer[i] == 0);
 	}
 

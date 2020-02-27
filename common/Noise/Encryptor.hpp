@@ -35,9 +35,9 @@ public:
 		 , Detail::CipherState&& s_
 		 , Crypto::Secret const& ck_
 		 ) : r(std::move(r_))
+		   , rck(ck_)
 		   , r_state(0)
 		   , s(std::move(s_))
-		   , rck(ck_)
 		   , sck(ck_)
 		   { initial_checks(); }
 

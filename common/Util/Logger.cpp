@@ -10,7 +10,6 @@ namespace {
 std::string format(char const *fmt, va_list va) {
 	auto buffer = std::vector<char>(9);
 	auto real_size = 0;
-	auto ok = false;
 
 	for(;;) {
 		va_list va2;
@@ -21,7 +20,7 @@ std::string format(char const *fmt, va_list va) {
 					  );
 		va_end(va2);
 
-		if (real_size >= buffer.size())
+		if (std::size_t(real_size) >= buffer.size())
 			buffer.resize(real_size + 1);
 		else
 			break;
