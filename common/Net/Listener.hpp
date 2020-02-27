@@ -5,16 +5,18 @@
 #include"Net/Fd.hpp"
 
 namespace Net { class SocketFd; }
+namespace Util { class Logger; }
 
 namespace Net {
 
 class Listener {
 private:
 	Net::Fd fd;
+	Util::Logger& logger;
 
 public:
 	Listener() =delete;
-	explicit Listener(int port);
+	explicit Listener(int port, Util::Logger& logger);
 	Listener(Listener&& o) =default;
 	Listener& operator=(Listener&& o) =default;
 	Listener(Listener const&) =delete;

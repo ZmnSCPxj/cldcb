@@ -12,6 +12,12 @@
 #include"Net/Listener.hpp"
 #include"Net/SocketFd.hpp"
 #include"Secp256k1/Random.hpp"
+#include"Util/Logger.hpp"
+
+class NullLogger : public Util::Logger {
+public:
+	void log(LogLevel, std::string) override { }
+};
 
 int main() {
 
@@ -72,7 +78,8 @@ int main() {
 			return data;
 		})();
 		auto server = std::thread([&promise, port, len]() {
-			auto listener = Net::Listener(port);
+			auto logger = NullLogger();
+			auto listener = Net::Listener(port, logger);
 			promise.set_value();
 			auto sock = listener.accept();
 			assert(sock);
