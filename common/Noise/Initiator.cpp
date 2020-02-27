@@ -130,7 +130,12 @@ public:
 			return nullptr;
 		if (re_data[0] != 0x02 && re_data[0] != 0x03)
 			return nullptr;
-		auto re = Secp256k1::PubKey::from_buffer(&re_data[0]);
+		auto re = Secp256k1::PubKey();
+		try {
+			re = Secp256k1::PubKey::from_buffer(&re_data[0]);
+		} catch (Secp256k1::InvalidPubKey const&) {
+			return nullptr;
+		}
 		/* 4. `h = SHA-256(h || re.serializeCompressed())` */
 		handshake.mix_h(&act2[1], 33);
 		/* 5. `ee = ECDH(e.priv, re)` */

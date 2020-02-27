@@ -84,7 +84,12 @@ public:
 			return nullptr;
 		if (re_data[0] != 0x02 && re_data[0] != 0x03)
 			return nullptr;
-		auto re = Secp256k1::PubKey::from_buffer(&re_data[0]);
+		auto re = Secp256k1::PubKey();
+		try {
+			re = Secp256k1::PubKey::from_buffer(&re_data[0]);
+		} catch (Secp256k1::InvalidPubKey const&) {
+			return nullptr;
+		}
 		/* 4. `h = SHA-256(h || re.serializeCompressed())` */
 		handshake.mix_h(&re_data[0], re_data.size());
 		/* 5. `es = ECDH(s.priv, re)` */
@@ -169,7 +174,12 @@ public:
 		auto& rs_data = *p_rs_data;
 		if (rs_data[0] != 0x02 && rs_data[0] != 0x03)
 			return nullptr;
-		auto rs = Secp256k1::PubKey::from_buffer(&rs_data[0]);
+		auto rs = Secp256k1::PubKey();
+		try {
+			rs = Secp256k1::PubKey::from_buffer(&rs_data[0]);
+		} catch (Secp256k1::InvalidPubKey const&) {
+			return nullptr;
+		}
 		/* 5. `h = SHA-256(h || c)` */
 		handshake.mix_h(&c[0], c.size());
 		/* 6. `se = ECDH(e.priv, rs)` */
