@@ -21,8 +21,11 @@ private:
 		/* TODO: get log path from options or something.  */
 		plogger = Util::make_unique<Server::Logger>("debug.log");
 
-		/* TODO: get port from options.  */
-		main = Util::make_unique<::Daemon::Main>(*plogger, 29735);
+		/* TODO: get options from params.  */
+		main = Util::make_unique<::Daemon::Main>( *plogger
+							, 29735
+							, "cldcb-server.pid"
+							);
 
 		/* TODO: other inits */
 

@@ -22,6 +22,7 @@ stamp-*
 *.m4
 !external/libsodium/m4/*.m4
 *.o
+*.pid
 *.scan
 *.trs
 *~

@@ -2,6 +2,7 @@
 #define CLDCB_SERVER_DAEMON_MAIN_HPP
 
 #include<memory>
+#include<string>
 
 namespace Util { class Logger; }
 
@@ -19,6 +20,7 @@ public:
 
 	Main( Util::Logger& logger
 	    , int port
+	    , std::string pid_path
 	    );
 	~Main();
 

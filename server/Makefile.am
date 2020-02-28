@@ -11,6 +11,8 @@ cldcb_server_SOURCES = \
 	Daemon/Connection.hpp \
 	Daemon/Main.cpp \
 	Daemon/Main.hpp \
+	Daemon/PidFiler.cpp \
+	Daemon/PidFiler.hpp \
 	Ev/Io.hpp \
 	Ev/concurrent.cpp \
 	Ev/concurrent.hpp \
