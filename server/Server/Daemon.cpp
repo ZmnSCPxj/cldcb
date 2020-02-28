@@ -1,6 +1,9 @@
 #include<exception>
 #include<iostream>
-#include<unistd.h>
+#include"Daemon/AcceptLoop.hpp"
+#include"Ev/Io.hpp"
+#include"Ev/start.hpp"
+#include"Net/SocketFd.hpp"
 #include"Server/Daemon.hpp"
 #include"Server/Logger.hpp"
 #include"Util/make_unique.hpp"
@@ -14,9 +17,18 @@ private:
 
 	std::unique_ptr<Server::Logger> plogger;
 
+	std::unique_ptr<::Daemon::AcceptLoop> acceptor;
+
 	bool initialize() {
 		/* TODO: get log path from options or something.  */
 		plogger = Util::make_unique<Server::Logger>("debug.log");
+
+		/* TODO: get port from options.  */
+		acceptor = Util::make_unique<::Daemon::AcceptLoop>( 29735
+								  , *plogger
+								  , [](Net::SocketFd) {
+			return Ev::lift_io(0);
+		});
 
 		/* TODO: other inits */
 
@@ -24,7 +36,7 @@ private:
 	}
 	void loop() {
 		/* TODO */
-		pause();
+		(void) Ev::start(acceptor->accept_loop());
 	}
 
 	void run(std::function<void(int)> complete_daemonize) {

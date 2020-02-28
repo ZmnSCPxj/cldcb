@@ -1,6 +1,8 @@
 bin_PROGRAMS = cldcb-server
 
 cldcb_server_SOURCES = \
+	Daemon/AcceptLoop.cpp \
+	Daemon/AcceptLoop.hpp \
 	Ev/Io.hpp \
 	Ev/concurrent.cpp \
 	Ev/concurrent.hpp \
