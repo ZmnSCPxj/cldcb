@@ -85,7 +85,9 @@ public:
 			      , std::back_inserter(wait_readable->waiters)
 			      , [&wait_readable] (int fd) {
 			auto ret = Util::make_unique<ev_io>();
-			ev_io_set(ret.get(), fd, EV_READ);
+			ev_io_init( ret.get(), &read_waiter_handler
+				  , fd, EV_READ
+				  );
 			ret->data = wait_readable.get();
 
 			return ret;
