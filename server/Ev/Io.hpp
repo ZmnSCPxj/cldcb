@@ -40,7 +40,7 @@ public:
 			      ) {
 			try {
 				core_copy( [f, pass, fail](a value) {
-					f(std::move(value)).run(pass, fail);
+					f(std::move(value)).core(pass, fail);
 				}
 					 , fail
 					 );
@@ -61,7 +61,7 @@ public:
 			try {
 				core_copy( pass
 					 , [handler, pass, fail](std::exception e) {
-					handler(std::move(e)).run(pass, fail);
+					handler(std::move(e)).core(pass, fail);
 				}
 					 );
 			} catch (std::exception const& e) {
