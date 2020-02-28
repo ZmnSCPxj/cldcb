@@ -23,13 +23,11 @@ void start_idle_handler(EV_P_ ev_idle *raw_idler, int revents) {
 
 	main.run([EV_A_ containerp](int exit_code) {
 		containerp->exit_code = exit_code;
-		ev_break(EV_A_ EVBREAK_ALL);
 	}, [EV_A_ containerp](std::exception e) {
 		std::cerr << "Unhandled exception!" << std::endl;
 		std::cerr << e.what() << std::endl;
 
 		containerp->exit_code = 254;
-		ev_break(EV_A_ EVBREAK_ALL);
 	});
 }
 
