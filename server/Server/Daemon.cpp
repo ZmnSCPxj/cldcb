@@ -1,5 +1,6 @@
 #include<exception>
 #include<iostream>
+#include"Daemon/AcceptHandler.hpp"
 #include"Daemon/AcceptLoop.hpp"
 #include"Daemon/Breaker.hpp"
 #include"Ev/Io.hpp"
@@ -20,6 +21,8 @@ private:
 
 	std::unique_ptr<::Daemon::Breaker> breaker;
 
+	std::unique_ptr<::Daemon::AcceptHandler> accept_handler;
+
 	std::unique_ptr<::Daemon::AcceptLoop> acceptor;
 
 	bool initialize() {
@@ -28,13 +31,17 @@ private:
 
 		breaker = ::Daemon::Breaker::initialize(*plogger);
 
+		accept_handler = Util::make_unique<::Daemon::AcceptHandler>
+			( *plogger
+			, *breaker
+			);
+
 		/* TODO: get port from options.  */
 		acceptor = Util::make_unique<::Daemon::AcceptLoop>( 29735
 								  , *plogger
 								  , *breaker
-								  , [](Net::SocketFd) {
-			return Ev::lift_io(0);
-		});
+								  , *accept_handler
+								  );
 
 		/* TODO: other inits */
 
