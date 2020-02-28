@@ -12,8 +12,26 @@ namespace {
 
 struct WaitIo {
 	std::vector<std::unique_ptr<ev_io>> waiters;
+	std::unique_ptr<ev_timer> timer;
 	std::function<void(int)> pass;
 };
+
+std::function<void(int)>
+stop_events(EV_P_ std::unique_ptr<WaitIo>& wait_io) {
+	/* Stop all waiters and the timer (if present), then
+	 * clear the given pointer.
+	 * Return the pass-function.
+	 */
+	auto pass = std::move(wait_io->pass);
+	for (auto& w : wait_io->waiters)
+		ev_io_stop(EV_A_ w.get());
+	if (wait_io->timer)
+		ev_timer_stop(EV_A_ wait_io->timer.get());
+
+	wait_io = nullptr;
+
+	return pass;
+}
 
 bool is_ready(int fd, int revent) {
 	auto pollarg = pollfd();
@@ -40,19 +58,9 @@ void io_waiter(EV_P_ ev_io *raw_io_waiter, int revents) {
 		/* Acquire ownership of the WaitIo.  */
 		auto wait_io = std::unique_ptr<WaitIo>();
 		wait_io.reset((WaitIo*)raw_io_waiter->data);
-		/* Cache the pass function.  */
-		auto pass = std::move(wait_io->pass);
 
-		/* Stop all waiters.
-		 * This lets us safely release the data structure.
-		 */
-		for (auto& w : wait_io->waiters)
-			ev_io_stop(EV_A_ w.get());
-
-		/* Release the data structure; we have cached what
-		 * we need.
-		 */
-		wait_io = nullptr;
+		/* Clear all waiters.  */
+		auto pass = stop_events(EV_A_ wait_io);
 
 		/* Pass the succeeding fd.  */
 		pass(fd);
@@ -61,11 +69,23 @@ void io_waiter(EV_P_ ev_io *raw_io_waiter, int revents) {
 		ev_io_start(EV_A_ raw_io_waiter);
 	}
 }
+void timer_waiter(EV_P_ ev_timer* raw_timer, int revents) {
+	/* Acquire ownership of the WaitIo.  */
+	auto wait_io = std::unique_ptr<WaitIo>();
+	wait_io.reset((WaitIo*) raw_timer->data);
+
+	/* Clear all waiters.  */
+	auto pass = stop_events(EV_A_ wait_io);
+
+	/* Indicate timeout.  */
+	pass(-1);
+}
 
 /* A functor that we can pass to Io<int>().  */
 class WaitIoFunctor {
 private:
 	std::vector<std::pair<int, Ev::WaitDirection>> fds;
+	double timeout;
 
 public:
 	WaitIoFunctor(WaitIoFunctor&&) =default;
@@ -73,8 +93,11 @@ public:
 	/* The only purpose of this class (instead of using a lambda)
 	 * is to be able to move-construct the fds vector.
 	 */
-	WaitIoFunctor(std::vector<std::pair<int, Ev::WaitDirection>> fds_)
-		: fds(std::move(fds_)) { }
+	WaitIoFunctor( std::vector<std::pair<int, Ev::WaitDirection>> fds_
+		     , double timeout_
+		     ) : fds(std::move(fds_))
+		       , timeout(timeout_)
+		       { }
 
 	void operator()( std::function<void(int)> pass
 		       , std::function<void(std::exception)> fail
@@ -97,6 +120,17 @@ public:
 
 			return ret;
 		});
+		/* Create timer if appropriate.  */
+		if (timeout >= 0.0) {
+			wait_io->timer = Util::make_unique<ev_timer>();
+			ev_timer_init( wait_io->timer.get()
+				     , &timer_waiter
+				     , timeout
+				     , 0.0
+				     );
+			wait_io->timer->data = wait_io.get();
+		} else
+			wait_io->timer = nullptr;
 		/* Now that all waiters were successfully created,
 		 * arm them.
 		 * This is a separate loop from the above, because
@@ -108,6 +142,8 @@ public:
 		 */
 		for (auto& w : wait_io->waiters)
 			ev_io_start(EV_DEFAULT_ w.get());
+		if (wait_io->timer)
+			ev_timer_start(EV_DEFAULT_ wait_io->timer.get());
 		/* The armed waiters are now the responsibility of
 		 * libev.
 		 * The armed waiters keep the WaitIo structure alive;
@@ -123,8 +159,33 @@ public:
 
 namespace Ev {
 
+Ev::Io<int> wait_io_until( std::vector<std::pair<int, WaitDirection>> fds
+			 , double timeout
+			 ) {
+	return Io<int>(WaitIoFunctor(std::move(fds), timeout));
+}
+
+Ev::Io<int> wait_io_until(int fd0, WaitDirection dir0, ...) {
+	auto fds = std::vector<std::pair<int, WaitDirection>>();
+	fds.push_back(std::make_pair(fd0, dir0));
+
+	va_list ap;
+	va_start(ap, dir0);
+	for (;;) {
+		auto fd = va_arg(ap, int);
+		if (fd < 0)
+			break;
+		auto dir = (WaitDirection)(va_arg(ap, int));
+		fds.push_back(std::make_pair(fd, dir));
+	}
+	double timeout = va_arg(ap, double);
+	va_end(ap);
+
+	return wait_io_until(std::move(fds), timeout);
+}
+
 Ev::Io<int> wait_io(std::vector<std::pair<int, WaitDirection>> fds) {
-	return Io<int>(WaitIoFunctor(std::move(fds)));
+	return wait_io_until(std::move(fds), -1.0);
 }
 
 Ev::Io<int> wait_io(int fd0, WaitDirection dir0, ...) {
