@@ -20,6 +20,9 @@ public:
 private:
 	CoreFunc core;
 
+	template<typename b>
+	friend class Io;
+
 public:
 	/* Copyable.  */
 	explicit Io(CoreFunc core_) : core(std::move(core_)) { }
