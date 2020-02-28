@@ -1,6 +1,7 @@
 #include<exception>
 #include<iostream>
 #include"Daemon/AcceptLoop.hpp"
+#include"Daemon/Breaker.hpp"
 #include"Ev/Io.hpp"
 #include"Ev/start.hpp"
 #include"Net/SocketFd.hpp"
@@ -17,15 +18,20 @@ private:
 
 	std::unique_ptr<Server::Logger> plogger;
 
+	std::unique_ptr<::Daemon::Breaker> breaker;
+
 	std::unique_ptr<::Daemon::AcceptLoop> acceptor;
 
 	bool initialize() {
 		/* TODO: get log path from options or something.  */
 		plogger = Util::make_unique<Server::Logger>("debug.log");
 
+		breaker = ::Daemon::Breaker::initialize(*plogger);
+
 		/* TODO: get port from options.  */
 		acceptor = Util::make_unique<::Daemon::AcceptLoop>( 29735
 								  , *plogger
+								  , *breaker
 								  , [](Net::SocketFd) {
 			return Ev::lift_io(0);
 		});

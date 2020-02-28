@@ -4,6 +4,7 @@
 #include<functional>
 #include<memory>
 
+namespace Daemon { class Breaker; }
 namespace Ev { template<typename a> class Io; }
 namespace Net { class SocketFd; }
 namespace Util { class Logger; }
@@ -25,6 +26,7 @@ public:
 	AcceptLoop(AcceptLoop const&) =delete;
 	AcceptLoop( int port
 		  , Util::Logger& logger
+		  , Daemon::Breaker& breaker
 		  , std::function<Ev::Io<int>(Net::SocketFd)> handler
 		  );
 
