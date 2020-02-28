@@ -20,8 +20,6 @@ cldcb_server_SOURCES = \
 	Ev/start.hpp \
 	Ev/wait_io.cpp \
 	Ev/wait_io.hpp \
-	Ev/wait_readable.cpp \
-	Ev/wait_readable.hpp \
 	Ev/yield.cpp \
 	Ev/yield.hpp \
 	Server/Logger.cpp \
