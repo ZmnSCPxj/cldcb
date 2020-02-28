@@ -1,4 +1,5 @@
 #include<fcntl.h>
+#include<poll.h>
 #include<signal.h>
 #include<stdexcept>
 #include<string.h>
@@ -138,6 +139,25 @@ Ev::Io<bool> Breaker::wait_writeable_or_break(int fd) {
 			return Ev::lift_io(false);
 		} else
 			return Ev::lift_io(true);
+	});
+}
+Ev::Io<bool> Breaker::is_unbroken() {
+	return Ev::Io<bool>([this]( std::function<void(bool)> pass
+				  , std::function<void(std::exception)> fail
+				  ) {
+		auto pollarg = pollfd();
+		pollarg.fd = pipe_read;
+		pollarg.events = POLLIN;
+		pollarg.revents = 0;
+
+		auto res = int();
+		do {
+			res = poll(&pollarg, 1, 0);
+		} while (res < 0 && errno == EINTR);
+		if (res < 0)
+			pass(false);
+		else
+			pass((pollarg.revents & POLLIN) != 0);
 	});
 }
 
