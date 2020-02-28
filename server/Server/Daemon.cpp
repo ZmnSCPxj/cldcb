@@ -1,10 +1,6 @@
 #include<exception>
 #include<iostream>
-#include"Daemon/AcceptHandler.hpp"
-#include"Daemon/AcceptLoop.hpp"
-#include"Daemon/Breaker.hpp"
-#include"Ev/Io.hpp"
-#include"Ev/start.hpp"
+#include"Daemon/Main.hpp"
 #include"Net/SocketFd.hpp"
 #include"Server/Daemon.hpp"
 #include"Server/Logger.hpp"
@@ -19,37 +15,21 @@ private:
 
 	std::unique_ptr<Server::Logger> plogger;
 
-	std::unique_ptr<::Daemon::Breaker> breaker;
-
-	std::unique_ptr<::Daemon::AcceptHandler> accept_handler;
-
-	std::unique_ptr<::Daemon::AcceptLoop> acceptor;
+	std::unique_ptr<::Daemon::Main> main;
 
 	bool initialize() {
 		/* TODO: get log path from options or something.  */
 		plogger = Util::make_unique<Server::Logger>("debug.log");
 
-		breaker = ::Daemon::Breaker::initialize(*plogger);
-
-		accept_handler = Util::make_unique<::Daemon::AcceptHandler>
-			( *plogger
-			, *breaker
-			);
-
 		/* TODO: get port from options.  */
-		acceptor = Util::make_unique<::Daemon::AcceptLoop>( 29735
-								  , *plogger
-								  , *breaker
-								  , *accept_handler
-								  );
+		main = Util::make_unique<::Daemon::Main>(*plogger, 29735);
 
 		/* TODO: other inits */
 
 		return true;
 	}
 	void loop() {
-		/* TODO */
-		(void) Ev::start(acceptor->accept_loop());
+		main->run();
 	}
 
 	void run(std::function<void(int)> complete_daemonize) {
@@ -83,6 +63,10 @@ private:
 			       "WITHOUT ANY WARRANTY."
 			     );
 		loop();
+
+		/* Clean up.  */
+		main = nullptr;
+		plogger = nullptr;
 	}
 
 public:

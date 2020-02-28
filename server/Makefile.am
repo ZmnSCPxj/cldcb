@@ -9,6 +9,8 @@ cldcb_server_SOURCES = \
 	Daemon/Breaker.hpp \
 	Daemon/Connection.cpp \
 	Daemon/Connection.hpp \
+	Daemon/Main.cpp \
+	Daemon/Main.hpp \
 	Ev/Io.hpp \
 	Ev/concurrent.cpp \
 	Ev/concurrent.hpp \
