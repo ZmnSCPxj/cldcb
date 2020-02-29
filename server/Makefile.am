@@ -9,6 +9,8 @@ cldcb_server_SOURCES = \
 	Daemon/Breaker.hpp \
 	Daemon/Connection.cpp \
 	Daemon/Connection.hpp \
+	Daemon/KeyKeeper.cpp \
+	Daemon/KeyKeeper.hpp \
 	Daemon/Main.cpp \
 	Daemon/Main.hpp \
 	Daemon/PidFiler.cpp \

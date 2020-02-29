@@ -12,6 +12,8 @@ configure
 libtool
 m4
 !external/libsodium/m4
+secret
+server_id
 stamp-*
 .deps
 .dirstamp

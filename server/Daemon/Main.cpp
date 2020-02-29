@@ -2,6 +2,7 @@
 #include"Daemon/AcceptHandler.hpp"
 #include"Daemon/AcceptLoop.hpp"
 #include"Daemon/Breaker.hpp"
+#include"Daemon/KeyKeeper.hpp"
 #include"Daemon/Main.hpp"
 #include"Daemon/PidFiler.hpp"
 #include"Ev/Io.hpp"
@@ -13,7 +14,9 @@ namespace Daemon {
 
 class Main::Impl {
 private:
+	/* This is in order of construction!  */
 	Daemon::PidFiler pidfiler;
+	Daemon::KeyKeeper keeper;
 	std::unique_ptr<Daemon::Breaker> breaker;
 	Daemon::AcceptHandler accept_handler;
 	Daemon::AcceptLoop acceptor;
@@ -24,6 +27,7 @@ public:
 	    , int port
 	    , std::string pid_path
 	    ) : pidfiler(logger, std::move(pid_path))
+	      , keeper(logger)
 	      , breaker(Daemon::Breaker::initialize(logger))
 	      , accept_handler(logger, *breaker)
 	      , acceptor(port, logger, *breaker, accept_handler)
