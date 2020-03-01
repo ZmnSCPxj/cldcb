@@ -128,9 +128,9 @@ KeyKeeper::KeyKeeper(Util::Logger& logger) {
 
 		auto os = std::ofstream("server_id", std::ios::trunc);
 		os << "# sid = " << sid << std::endl;
-		logger.info( "server_id: # sid = %s"
-			   , sid.c_str()
-			   );
+		logger.debug( "server_id: # sid = %s"
+			    , sid.c_str()
+			    );
 	} catch(...) {}
 }
 

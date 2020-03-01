@@ -15,22 +15,31 @@
 
 namespace {
 
-void describe_addrinfo(addrinfo& ai, Util::Logger& logger) {
-	auto family = (ai.ai_family == AF_INET) ?   "IPv4" :
-		      (ai.ai_family == AF_INET6) ?  "IPv6" :
-		      /*default*/                   "IP??" ;
+std::string describe_sockaddr(sockaddr* sa, socklen_t salen) {
 	char hostbuff[NI_MAXHOST];
 	char portbuff[NI_MAXSERV];
 	memset(hostbuff, 0, NI_MAXHOST);
 	memset(portbuff, 0, NI_MAXSERV);
-	getnameinfo( ai.ai_addr, ai.ai_addrlen
+	getnameinfo( sa, salen
 		   , hostbuff, sizeof(hostbuff)
 		   , portbuff, sizeof(portbuff)
 		   , NI_NUMERICHOST | NI_NUMERICSERV
 		   );
-	logger.info( "Attempt to listen on: %s [%s]:%s"
-		   , family, hostbuff, portbuff
-		   );
+	return std::string("[")
+	     + std::string(hostbuff)
+	     + "]:"
+	     + std::string(portbuff)
+	     ;
+}
+
+std::string describe_addrinfo(addrinfo& ai) {
+	auto family = (ai.ai_family == AF_INET) ?   "IPv4" :
+		      (ai.ai_family == AF_INET6) ?  "IPv6" :
+		      /*default*/                   "IP??" ;
+	return std::string(family)
+	     + " "
+	     + describe_sockaddr(ai.ai_addr, ai.ai_addrlen)
+	     ;
 }
 
 Net::Fd open_listener(int port, Util::Logger& logger) {
@@ -66,7 +75,10 @@ Net::Fd open_listener(int port, Util::Logger& logger) {
 	}
 
 	for (auto p = addrs.get(); p; p = p->ai_next) {
-		describe_addrinfo(*p, logger);
+		auto addrinfo_str = describe_addrinfo(*p);
+		logger.debug( "Attempt to listen on: %s"
+			    , addrinfo_str.c_str()
+			    );
 		auto fd = Net::Fd(socket( p->ai_family
 					, p->ai_socktype
 					, p->ai_protocol
@@ -84,7 +96,10 @@ Net::Fd open_listener(int port, Util::Logger& logger) {
 		if (lres < 0)
 			continue;
 
-		logger.info("Listen succeeded.");
+		logger.info( "Listen succeded. <fd %d> on %s."
+			   , fd.get()
+			   , addrinfo_str.c_str()
+			   );
 
 		return fd;
 	}
@@ -122,16 +137,13 @@ Net::SocketFd Listener::accept() {
 	} while (!ret_fd && errno == EINTR);
 
 	if (ret_fd) {
-		char hostbuff[NI_MAXHOST];
-		char portbuff[NI_MAXSERV];
-		memset(hostbuff, 0, NI_MAXHOST);
-		memset(portbuff, 0, NI_MAXSERV);
-		getnameinfo( reinterpret_cast<sockaddr*>(&addr), addrlen
-			   , hostbuff, sizeof(hostbuff)
-			   , portbuff, sizeof(portbuff)
-			   , NI_NUMERICHOST | NI_NUMERICSERV
+		logger.info( "Got socket <fd %d> from %s"
+			   , ret_fd.get()
+			   , describe_sockaddr( reinterpret_cast<sockaddr*>(&addr)
+					      , addrlen
+					      ).c_str()
 			   );
-		logger.info("Got socket from [%s]:%s", hostbuff, portbuff);
+		errno = 0;
 	}
 
 	/* Propagates error as well.  */

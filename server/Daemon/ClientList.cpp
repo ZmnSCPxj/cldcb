@@ -162,9 +162,10 @@ public:
 
 	Ev::Io<int> launch() {
 		return Ev::lift_io(0).then<int>([this](int){
-			logger.debug( "Monitoring SIGHUP --- "
+			logger.debug( "Monitoring SIGHUP on <fd %d> --- "
 				      "raise SIGHUP to reload "
 				      "`clients`."
+				    , pipe_read
 				    );
 			return Ev::concurrent(sighup_loop());
 		});

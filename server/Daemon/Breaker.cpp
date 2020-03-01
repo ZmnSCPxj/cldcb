@@ -124,9 +124,13 @@ Ev::Io<bool> Breaker::wait_readable_or_break(int fd) {
 	return Ev::wait_io( fd, Ev::WaitRead
 			  , pipe_read, Ev::WaitRead
 			  , -1
-			  ).then<bool>([this](int ready_fd) {
+			  ).then<bool>([this, fd](int ready_fd) {
 		if (ready_fd == pipe_read) {
-			logger.debug("Detected break signal while waiting for fd to be readable.");
+			logger.debug( "Detected break signal "
+				      "while waiting for <fd %d> "
+				      "to be readable."
+				    , fd
+				    );
 			return Ev::lift_io(false);
 		} else
 			return Ev::lift_io(true);
@@ -136,9 +140,13 @@ Ev::Io<bool> Breaker::wait_writeable_or_break(int fd) {
 	return Ev::wait_io( fd, Ev::WaitWrite
 			  , pipe_read, Ev::WaitRead
 			  , -1
-			  ).then<bool>([this](int ready_fd) {
+			  ).then<bool>([this, fd](int ready_fd) {
 		if (ready_fd == pipe_read) {
-			logger.debug("Detected break signal while waiting for fd to be writeable.");
+			logger.debug( "Detected break signal "
+				      "while waiting for <fd %d> "
+				      "to be writeable."
+				    , fd
+				    );
 			return Ev::lift_io(false);
 		} else
 			return Ev::lift_io(true);
@@ -245,11 +253,15 @@ public:
 private:
 	Ev::Io<IoResult>
 	postwait(int fd) {
-		if (fd == break_fd)
+		if (fd == break_fd) {
+			logger.debug( "Detected break signal "
+				      "while reading from <fd %d>."
+				    , this->fd
+				    );
 			return Ev::lift_io(IoResult{ IoBroken
 						   , std::move(data)
 						   });
-		else if (fd < 0)
+		} else if (fd < 0)
 			return Ev::lift_io(IoResult{ IoTimeout
 						   , std::move(data)
 						   });
@@ -400,9 +412,13 @@ public:
 private:
 	Ev::Io<IoResult>
 	postwait(int fd) {
-		if (fd == break_fd)
+		if (fd == break_fd) {
+			logger.debug( "Detected break signal "
+				      "while writing to <fd %d>."
+				    , this->fd
+				    );
 			return return_result(IoBroken);
-		else if (fd < 0)
+		} else if (fd < 0)
 			return return_result(IoTimeout);
 
 		/* Make a single write attempt.  */

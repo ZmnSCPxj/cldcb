@@ -48,7 +48,8 @@ public:
 		}).then<int>([this](bool ok) {
 			if (!ok) {
 				logger.debug("Break received, "
-					     "leaving listener."
+					     "leaving listener <fd %d>."
+					    , listener.get_fd()
 					    );
 				return Ev::lift_io(0);
 			} else {

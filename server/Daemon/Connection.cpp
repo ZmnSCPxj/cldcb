@@ -31,7 +31,6 @@ Connection::Connection( Util::Logger& logger_
 Connection::~Connection() { }
 
 Ev::Io<int> Connection::new_connection(std::shared_ptr<Connection> self) {
-	/* TODO.  */
 	return self->handshaker->handshake()
 	     .then<int>([self](std::unique_ptr<std::pair<Noise::Encryptor, Secp256k1::PubKey>> handshake_result) {
 		if (!handshake_result) {
@@ -50,10 +49,10 @@ Ev::Io<int> Connection::new_connection(std::shared_ptr<Connection> self) {
 		{
 			auto os = std::ostringstream();
 			os << incoming_id;
-			self->logger.debug( "<fd %d> is %s"
-					  , self->fd.get()
-					  , os.str().c_str()
-					  );
+			self->logger.info( "<fd %d> is %s"
+					 , self->fd.get()
+					 , os.str().c_str()
+					 );
 		}
 
 		/* TODO.  */
