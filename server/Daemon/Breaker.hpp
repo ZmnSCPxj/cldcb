@@ -1,9 +1,13 @@
 #ifndef CLDCB_SERVER_DAEMON_BREAKER_HPP
 #define CLDCB_SERVER_DAEMON_BREAKER_HPP
 
+#include<cstdint>
+#include<cstdlib>
 #include<memory>
+#include<vector>
 
 namespace Ev { template<typename a> class Io; }
+namespace Daemon { class IoResult; }
 namespace Util { class Logger; }
 
 namespace Daemon {
@@ -61,6 +65,35 @@ public:
 	 * received.
 	 */
 	Ev::Io<bool> is_unbroken();
+
+	/* Read the specified number of bytes from the
+	 * fd.
+	 * If reading takes longer than the specified
+	 * time, stop reading (returning any partial
+	 * data that was received).
+	 * Timeout is in units of seconds; if negative
+	 * or unspecified, no timeout.
+	 * Return immediately if end-of-file or if a
+	 * breaking signal was received.
+	 * If the given buffer is non-empty, then
+	 * instead get the difference between the
+	 * specified number of bytes and the length
+	 * of the given buffer, or return immediately
+	 * if the given buffer has been filled already.
+	 */
+	Ev::Io<IoResult>
+	read_timed( int fd
+		  , std::size_t bytes
+		  , double timeout = -1.0
+		  , std::vector<std::uint8_t> data
+			= std::vector<std::uint8_t>()
+		  );
+	/* Like above, but writing to the fd.  */
+	Ev::Io<IoResult>
+	write_timed( int fd
+		   , std::vector<std::uint8_t> data
+		   , double timeout = -1.0
+		   );
 };
 
 }
