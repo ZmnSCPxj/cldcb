@@ -8,7 +8,7 @@
 #include<vector>
 
 namespace Noise { class Encryptor; }
-namespace Secp256k1 { class PrivKey; }
+namespace Secp256k1 { class KeyPair; }
 namespace Secp256k1 { class PubKey; }
 
 namespace Noise {
@@ -57,9 +57,9 @@ public:
 	/* NOTE: The initiator keeps a reference to our static key s,
 	 * but copies our ephemeral key.
 	 */
-	Initiator( Secp256k1::PrivKey const& s /* Our static key.  */
+	Initiator( Secp256k1::KeyPair const& s /* Our static key.  */
 		 , Secp256k1::PubKey const& rs /* The responder static key.  */
-		 , Secp256k1::PrivKey const& e /* Our ephemeral key.  Should be random.  */
+		 , Secp256k1::KeyPair const& e /* Our ephemeral key.  Should be random.  */
 		 , std::string const& prologue = "lightning"
 		 , std::string const& protocol_name = "Noise_XK_secp256k1_ChaChaPoly_SHA256"
 		 );

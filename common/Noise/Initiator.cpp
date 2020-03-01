@@ -5,6 +5,7 @@
 #include"Noise/Detail/HS.hpp"
 #include"Noise/Encryptor.hpp"
 #include"Noise/Initiator.hpp"
+#include"Secp256k1/KeyPair.hpp"
 #include"Secp256k1/PrivKey.hpp"
 #include"Secp256k1/PubKey.hpp"
 #include"Secp256k1/ecdh.hpp"
@@ -36,30 +37,26 @@ private:
 	Detail::HS handshake;
 
 	/* Local static key.  */
-	Secp256k1::PrivKey const& s;
-	Secp256k1::PubKey s_pub;
+	Secp256k1::KeyPair const& s;
 
 	/* Remote static key*/
 	Secp256k1::PubKey rs;
 
 	/* Local ephemeral keypair.  */
-	Secp256k1::PrivKey e;
-	Secp256k1::PubKey e_pub;
+	Secp256k1::KeyPair e;
 
 	int act;
 
 public:
-	Impl( Secp256k1::PrivKey const& s_
+	Impl( Secp256k1::KeyPair const& s_
 	    , Secp256k1::PubKey const& rs_
-	    , Secp256k1::PrivKey const& e_
+	    , Secp256k1::KeyPair const& e_
 	    , std::string const& prologue
 	    , std::string const& protocol_name
 	    ) : handshake(prologue, protocol_name)
 	      , s(s_)
-	      , s_pub(s_)
 	      , rs(rs_)
 	      , e(e_)
-	      , e_pub(e_)
 	      , act(1)
 	      { }
 
@@ -81,11 +78,11 @@ public:
 		/* 2. `h = SHA-256(h || e.pub.serializeCompressed())` */
 		{
 			std::uint8_t buffer[33];
-			e_pub.to_buffer(buffer);
+			e.pub().to_buffer(buffer);
 			handshake.mix_h(buffer, sizeof(buffer));
 		}
 		/* 3. `es = ECDH(e.priv, rs)` */
-		auto es = Secp256k1::ecdh(e, rs);
+		auto es = Secp256k1::ecdh(e.priv(), rs);
 		/* 4. `ck, temp_k1 = HKDF(ck, es)` */
 		auto temp_k1 = handshake.mix_ck(es);
 		/* 5. `c = encryptWithAD(temp_k1, 0, h, zero)` */
@@ -102,7 +99,7 @@ public:
 						    + c.size()
 						    );
 		ret[0] = 0;
-		e_pub.to_buffer(&ret[1]);
+		e.pub().to_buffer(&ret[1]);
 		std::copy(c.begin(), c.end(), ret.begin() + 34);
 
 		assert(ret.size() == 50);
@@ -139,7 +136,7 @@ public:
 		/* 4. `h = SHA-256(h || re.serializeCompressed())` */
 		handshake.mix_h(&act2[1], 33);
 		/* 5. `ee = ECDH(e.priv, re)` */
-		auto ee = Secp256k1::ecdh(e, re);
+		auto ee = Secp256k1::ecdh(e.priv(), re);
 		/* 6. `ck, temp_k2 = HKDF(ck, ee)` */
 		auto temp_k2 = handshake.mix_ck(ee);
 		/* 7. `p = decryptWithAD(temp_k2, 0, h, c)` */
@@ -161,12 +158,12 @@ public:
 		auto c = Noise::Detail::Aead::encrypt( temp_k2
 						     , 1
 						     , vectorize_secret(handshake.get_h())
-						     , vectorize_pubkey(s_pub)
+						     , vectorize_pubkey(s.pub())
 						     );
 		/* 2. `h = SHA-256(h || c)` */
 		handshake.mix_h(&c[0], c.size());
 		/* 3. `se = ECDH(s.priv, re)` */
-		auto se = Secp256k1::ecdh(s, re);
+		auto se = Secp256k1::ecdh(s.priv(), re);
 		/* 4. `ck, temp_k3 = HKDF(ck, se)` */
 		auto temp_k3 = handshake.mix_ck(se);
 		/* 5. `t = encryptWithAD(temp_k3, 0, h, zero)` */
@@ -213,9 +210,9 @@ public:
 
 };
 
-Initiator::Initiator( Secp256k1::PrivKey const& s
+Initiator::Initiator( Secp256k1::KeyPair const& s
 		    , Secp256k1::PubKey const& rs
-		    , Secp256k1::PrivKey const& e
+		    , Secp256k1::KeyPair const& e
 		    , std::string const& prologue
 		    , std::string const& protocol_name
 		    ) : pimpl(Util::make_unique<Impl>( s, rs, e

@@ -9,6 +9,7 @@
 #include"Noise/Initiator.hpp"
 #include"Noise/Responder.hpp"
 #include"Stream/SinkSource.hpp"
+#include"Secp256k1/KeyPair.hpp"
 #include"Secp256k1/PrivKey.hpp"
 #include"Secp256k1/PubKey.hpp"
 #include"Secp256k1/Random.hpp"
@@ -102,9 +103,9 @@ int main() {
 	/* Handshake Initiator tests.  */
 	/* From BOLT 8.  */
 	{
-		auto s = Secp256k1::PrivKey("1111111111111111111111111111111111111111111111111111111111111111");
+		auto s = Secp256k1::KeyPair("1111111111111111111111111111111111111111111111111111111111111111");
 		auto rs = Secp256k1::PubKey("028d7500dd4c12685d1f568b4c2b5048e8534b873319f3a8daa612b469132ec7f7");
-		auto e = Secp256k1::PrivKey("1212121212121212121212121212121212121212121212121212121212121212");
+		auto e = Secp256k1::KeyPair("1212121212121212121212121212121212121212121212121212121212121212");
 		auto initiator = Noise::Initiator(s, rs, e);
 		auto act1 = initiator.act1();
 		assert( act1
@@ -128,8 +129,8 @@ int main() {
 	/* Handshake Responder tests.  */
 	/* From BOLT 8.  */
 	{
-		auto s = Secp256k1::PrivKey("2121212121212121212121212121212121212121212121212121212121212121");
-		auto e = Secp256k1::PrivKey("2222222222222222222222222222222222222222222222222222222222222222");
+		auto s = Secp256k1::KeyPair("2121212121212121212121212121212121212121212121212121212121212121");
+		auto e = Secp256k1::KeyPair("2222222222222222222222222222222222222222222222222222222222222222");
 		auto responder = Noise::Responder(s, e);
 		auto act1 = Util::Str::hexread("00036360e856310ce5d294e8be33fc807077dc56ac80d95d9cd4ddbd21325eff73f70df6086551151f58b8afe6c195782c6a");
 		auto act2 = responder.act1_and_2(act1);
@@ -155,13 +156,12 @@ int main() {
 	/* Handshake Initiator-Responder test.  */
 	{
 		Secp256k1::Random rand;
-		auto responder_s = Secp256k1::PrivKey(rand);
-		auto responder_s_pub = Secp256k1::PubKey(responder_s);
-		auto responder_e = Secp256k1::PrivKey(rand);
-		auto initiator_s = Secp256k1::PrivKey(rand);
-		auto initiator_e = Secp256k1::PrivKey(rand);
+		auto responder_s = Secp256k1::KeyPair(rand);
+		auto responder_e = Secp256k1::KeyPair(rand);
+		auto initiator_s = Secp256k1::KeyPair(rand);
+		auto initiator_e = Secp256k1::KeyPair(rand);
 		auto initiator = Noise::Initiator( initiator_s
-						 , responder_s_pub
+						 , responder_s.pub()
 						 , initiator_e
 						 , "CLDCB"
 						 );
@@ -176,7 +176,7 @@ int main() {
 		assert(act3);
 		auto rs = responder.act3(*act3);
 		assert(rs);
-		assert(*rs == Secp256k1::PubKey(initiator_s));
+		assert(*rs == initiator_s.pub());
 		auto initiator_encryptor = initiator.get_encryptor();
 		auto responder_encryptor = responder.get_encryptor();
 		assert(initiator_encryptor.get_rk() == responder_encryptor.get_sk());

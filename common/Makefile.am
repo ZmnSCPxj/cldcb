@@ -57,6 +57,7 @@ libcldcb_common_la_SOURCES = \
 	Secp256k1/Detail/context.hpp \
 	Secp256k1/G.cpp \
 	Secp256k1/G.hpp \
+	Secp256k1/KeyPair.hpp \
 	Secp256k1/PrivKey.cpp \
 	Secp256k1/PrivKey.hpp \
 	Secp256k1/PubKey.cpp \
