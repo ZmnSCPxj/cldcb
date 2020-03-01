@@ -111,7 +111,7 @@ Net::SocketFd Listener::accept() {
 		throw std::logic_error("Attempt to use Net::Listener after being moved from.");
 
 	auto addr = sockaddr_in6();
-	auto addrlen = socklen_t();
+	auto addrlen = socklen_t(sizeof(addr));
 
 	auto ret_fd = Net::Fd();
 	do {
