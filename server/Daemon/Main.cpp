@@ -2,6 +2,7 @@
 #include"Daemon/AcceptHandler.hpp"
 #include"Daemon/AcceptLoop.hpp"
 #include"Daemon/Breaker.hpp"
+#include"Daemon/ClientList.hpp"
 #include"Daemon/KeyKeeper.hpp"
 #include"Daemon/Main.hpp"
 #include"Daemon/PidFiler.hpp"
@@ -18,6 +19,7 @@ private:
 	Daemon::PidFiler pidfiler;
 	Daemon::KeyKeeper keeper;
 	std::unique_ptr<Daemon::Breaker> breaker;
+	std::unique_ptr<Daemon::ClientList> clients;
 	Daemon::AcceptHandler accept_handler;
 	Daemon::AcceptLoop acceptor;
 
@@ -29,12 +31,15 @@ public:
 	    ) : pidfiler(logger, std::move(pid_path))
 	      , keeper(logger)
 	      , breaker(Daemon::Breaker::initialize(logger))
+	      , clients(Daemon::ClientList::initialize(logger, *breaker))
 	      , accept_handler(logger, *breaker)
 	      , acceptor(port, logger, *breaker, accept_handler)
 	      { }
 
 	void run() {
-		(void) Ev::start(acceptor.accept_loop());
+		(void) Ev::start(clients->launch().then<int>([this](int) {
+			return acceptor.accept_loop();
+		}));
 	}
 };
 

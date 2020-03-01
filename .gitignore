@@ -4,6 +4,7 @@ Makefile.in
 TAGS
 autom4te*
 auxdir
+clients
 config.h
 config.h.in
 config.log

@@ -7,6 +7,8 @@ cldcb_server_SOURCES = \
 	Daemon/AcceptLoop.hpp \
 	Daemon/Breaker.cpp \
 	Daemon/Breaker.hpp \
+	Daemon/ClientList.cpp \
+	Daemon/ClientList.hpp \
 	Daemon/Connection.cpp \
 	Daemon/Connection.hpp \
 	Daemon/KeyKeeper.cpp \
