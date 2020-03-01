@@ -14,6 +14,7 @@ class Connection {
 private:
 	Util::Logger& logger;
 	Daemon::Breaker& breaker;
+	std::string const& prologue;
 	Net::SocketFd fd;
 
 public:
@@ -21,6 +22,7 @@ public:
 
 	Connection( Util::Logger& logger
 		  , Daemon::Breaker& breaker
+		  , std::string const& prologue
 		  , Net::SocketFd fd
 		  );
 

@@ -8,9 +8,11 @@ namespace Daemon {
 
 Connection::Connection( Util::Logger& logger_
 		      , Daemon::Breaker& breaker_
+		      , std::string const& prologue_
 		      , Net::SocketFd fd_
 		      ) : logger(logger_)
 			, breaker(breaker_)
+			, prologue(prologue_)
 			, fd(std::move(fd_))
 			{ }
 

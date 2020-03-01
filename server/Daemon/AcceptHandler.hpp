@@ -1,6 +1,8 @@
 #ifndef CLDCB_SERVER_DAEMON_ACCEPTHANDLER_HPP
 #define CLDCB_SERVER_DAEMON_ACCEPTHANDLER_HPP
 
+#include<string>
+
 namespace Daemon { class Breaker; }
 namespace Ev { template<typename a> class Io; }
 namespace Net { class SocketFd; }
@@ -16,11 +18,16 @@ class AcceptHandler {
 private:
 	Util::Logger& logger;
 	Daemon::Breaker& breaker;
+	std::string prologue;
 
 public:
 	AcceptHandler( Util::Logger& logger_
 		     , Daemon::Breaker& breaker_
-		     ) : logger(logger_), breaker(breaker_) { }
+		     , std::string const& prologue_ = "lightning"
+		     ) : logger(logger_)
+		       , breaker(breaker_)
+		       , prologue(prologue_)
+		       { }
 
 	Ev::Io<int> operator()(Net::SocketFd);
 };

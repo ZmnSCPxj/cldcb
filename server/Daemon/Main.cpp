@@ -32,7 +32,7 @@ public:
 	      , keeper(logger)
 	      , breaker(Daemon::Breaker::initialize(logger))
 	      , clients(Daemon::ClientList::initialize(logger, *breaker))
-	      , accept_handler(logger, *breaker)
+	      , accept_handler(logger, *breaker, "CLDCB")
 	      , acceptor(port, logger, *breaker, accept_handler)
 	      { }
 
