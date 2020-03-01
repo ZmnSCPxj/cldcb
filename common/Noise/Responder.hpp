@@ -62,6 +62,8 @@ public:
 	std::unique_ptr<std::vector<std::uint8_t>>
 	act1_and_2(std::vector<std::uint8_t> const& act1);
 
+	static constexpr auto act1_size = std::size_t(50);
+
 	/* Accept the Act 3 message and return the initiator
 	 * public key.
 	 * The given argument must be 66 bytes from the
@@ -79,6 +81,8 @@ public:
 	 */
 	std::unique_ptr<Secp256k1::PubKey>
 	act3(std::vector<std::uint8_t> const& act3);
+
+	static constexpr auto act3_size = std::size_t(66);
 
 	/* Construct the encryptor that will be used
 	 * in future message communications.

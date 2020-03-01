@@ -11,6 +11,8 @@ cldcb_server_SOURCES = \
 	Daemon/ClientList.hpp \
 	Daemon/Connection.cpp \
 	Daemon/Connection.hpp \
+	Daemon/ConnectionHandshaker.cpp \
+	Daemon/ConnectionHandshaker.hpp \
 	Daemon/IoResult.hpp \
 	Daemon/KeyKeeper.cpp \
 	Daemon/KeyKeeper.hpp \

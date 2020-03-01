@@ -5,6 +5,7 @@
 #include"Net/SocketFd.hpp"
 
 namespace Daemon { class Breaker; }
+namespace Daemon { class ConnectionHandshaker; }
 namespace Ev { template<typename a> class Io; }
 namespace Secp256k1 { class KeyPair; }
 namespace Util { class Logger; }
@@ -15,9 +16,8 @@ class Connection {
 private:
 	Util::Logger& logger;
 	Daemon::Breaker& breaker;
-	Secp256k1::KeyPair const& identity;
-	std::string const& prologue;
 	Net::SocketFd fd;
+	std::unique_ptr<Daemon::ConnectionHandshaker> handshaker;
 
 public:
 	Connection() =delete;
@@ -28,6 +28,8 @@ public:
 		  , std::string const& prologue
 		  , Net::SocketFd fd
 		  );
+
+	~Connection();
 
 	/* This function is passed in a shared pointer so that
 	 * the resulting Io<int> can keep the Connection object
