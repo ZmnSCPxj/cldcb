@@ -1,5 +1,6 @@
 #undef NDEBUG
 #include<assert.h>
+#include<functional>
 #include"Crypto/Secret.hpp"
 #include"Secp256k1/G.hpp"
 #include"Secp256k1/PrivKey.hpp"
@@ -25,6 +26,10 @@ int main() {
 
 	/* We already know a != b, so... */
 	assert(A != B);
+	/* Except with low probability.  */
+	assert( std::hash<Secp256k1::PubKey>()(A)
+	     != std::hash<Secp256k1::PubKey>()(B)
+	      );
 
 	assert(A == Secp256k1::PubKey(a));
 	assert(B == Secp256k1::PubKey(b));

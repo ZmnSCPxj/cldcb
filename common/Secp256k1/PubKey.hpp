@@ -2,6 +2,7 @@
 #define CLDCB_COMMON_SECP256K1_PUBKEY_HPP
 
 #include<cstdint>
+#include<functional>
 #include<istream>
 #include<memory>
 #include<ostream>
@@ -141,6 +142,31 @@ void deserialize(A& a, ::Secp256k1::PubKey& pk) {
 		buffer[i] = get_byte(a);
 	pk = ::Secp256k1::PubKey::from_buffer(buffer);
 }
+
+}
+
+namespace std {
+
+template<>
+struct hash<Secp256k1::PubKey> {
+	std::size_t operator()(Secp256k1::PubKey const& p) const {
+		std::uint8_t buffer[33];
+		p.to_buffer(buffer);
+		/* FIXME: Use a real hash function.
+		 * Or maybe load into an std::string
+		 * and hash that.
+		 */
+		return std::size_t(buffer[1]) << 56
+		     | std::size_t(buffer[2]) << 48
+		     | std::size_t(buffer[3]) << 40
+		     | std::size_t(buffer[4]) << 32
+		     | std::size_t(buffer[5]) << 24
+		     | std::size_t(buffer[6]) << 16
+		     | std::size_t(buffer[7]) << 8
+		     | std::size_t(buffer[8]) << 0
+		     ;
+	}
+};
 
 }
 
