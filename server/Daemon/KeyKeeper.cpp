@@ -109,15 +109,14 @@ KeyKeeper::KeyKeeper(Util::Logger& logger) {
 		s -= std::size_t(res);
 	} while (s > 0);
 
-	server_pk = Secp256k1::PrivKey::from_buffer(buffer);
-	server_id = Secp256k1::PubKey(server_pk);
+	k = Secp256k1::PrivKey::from_buffer(buffer);
 
 	try {
 		auto sid = ([this]() {
 			auto os = std::ostringstream();
 
 			std::uint8_t id_buffer[33];
-			server_id.to_buffer(id_buffer);
+			get_server_id().to_buffer(id_buffer);
 			id_buffer[0] |= 0x50;
 
 			for (auto b : id_buffer) {
