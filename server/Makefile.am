@@ -20,6 +20,8 @@ cldcb_server_SOURCES = \
 	Ev/Io.hpp \
 	Ev/concurrent.cpp \
 	Ev/concurrent.hpp \
+	Ev/now.cpp \
+	Ev/now.hpp \
 	Ev/start.cpp \
 	Ev/start.hpp \
 	Ev/wait_io.cpp \
