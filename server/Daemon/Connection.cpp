@@ -8,10 +8,12 @@ namespace Daemon {
 
 Connection::Connection( Util::Logger& logger_
 		      , Daemon::Breaker& breaker_
+		      , Secp256k1::KeyPair const& identity_
 		      , std::string const& prologue_
 		      , Net::SocketFd fd_
 		      ) : logger(logger_)
 			, breaker(breaker_)
+			, identity(identity_)
 			, prologue(prologue_)
 			, fd(std::move(fd_))
 			{ }

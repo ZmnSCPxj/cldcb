@@ -9,6 +9,7 @@ namespace Daemon {
 Ev::Io<int> AcceptHandler::operator()(Net::SocketFd fd) {
 	auto connection = std::make_shared<Daemon::Connection>( logger
 							      , breaker
+							      , identity
 							      , prologue
 							      , std::move(fd)
 							      );

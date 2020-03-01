@@ -6,6 +6,7 @@
 
 namespace Daemon { class Breaker; }
 namespace Ev { template<typename a> class Io; }
+namespace Secp256k1 { class KeyPair; }
 namespace Util { class Logger; }
 
 namespace Daemon {
@@ -14,6 +15,7 @@ class Connection {
 private:
 	Util::Logger& logger;
 	Daemon::Breaker& breaker;
+	Secp256k1::KeyPair const& identity;
 	std::string const& prologue;
 	Net::SocketFd fd;
 
@@ -22,6 +24,7 @@ public:
 
 	Connection( Util::Logger& logger
 		  , Daemon::Breaker& breaker
+		  , Secp256k1::KeyPair const& identity
 		  , std::string const& prologue
 		  , Net::SocketFd fd
 		  );

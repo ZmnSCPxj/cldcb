@@ -6,6 +6,7 @@
 namespace Daemon { class Breaker; }
 namespace Ev { template<typename a> class Io; }
 namespace Net { class SocketFd; }
+namespace Secp256k1 { class KeyPair; }
 namespace Util { class Logger; }
 
 namespace Daemon {
@@ -18,14 +19,17 @@ class AcceptHandler {
 private:
 	Util::Logger& logger;
 	Daemon::Breaker& breaker;
+	Secp256k1::KeyPair const& identity;
 	std::string prologue;
 
 public:
 	AcceptHandler( Util::Logger& logger_
 		     , Daemon::Breaker& breaker_
+		     , Secp256k1::KeyPair const& identity_
 		     , std::string const& prologue_ = "lightning"
 		     ) : logger(logger_)
 		       , breaker(breaker_)
+		       , identity(identity_)
 		       , prologue(prologue_)
 		       { }
 
