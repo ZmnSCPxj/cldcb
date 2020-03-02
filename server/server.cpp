@@ -4,8 +4,8 @@
 
 int main(int argc, char **argv) {
 	return Main("cldcb-server")
-	     . add_method("daemon", Server::Daemon())
-	     . add_method("add", Server::Add())
+	     . add_method("daemon", "Start server daemon.", Server::Daemon())
+	     . add_method("add", "Add allowed clients.", Server::Add())
 	     . main(argc, argv)
 	     ;;
 }

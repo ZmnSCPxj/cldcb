@@ -1,6 +1,7 @@
 #ifdef HAVE_CONFIG_H
 #include"config.h"
 #endif
+#include<iomanip>
 #include<map>
 #include"Main.hpp"
 #include"Util/make_unique.hpp"
@@ -22,23 +23,33 @@ private:
 	std::map< std::string
 		, std::function<int (std::vector<std::string>)>
 		> methods;
+	std::map<std::string, std::string> helps;
 
 	void do_help(std::ostream& cout) {
 		cout << "Usage: " << program_name << " <method> [params]" << std::endl
 		     << std::endl
 		     << "Supported options outside of methods:" << std::endl
-		     << "  -h, --help     Display this help." << std::endl
-		     << "  -v, --version  Display version." << std::endl
+		     << "  -h, --help          Display this help." << std::endl
+		     << "  -v, --version       Display version." << std::endl
 		     << std::endl
 		      ;
 		if (!methods.empty())
 			cout << "Supported methods:" << std::endl;
-		for (auto& method : methods) {
-			cout << "  " << method.first << std::endl;
+		for (auto& method : helps) {
+			cout << "  " << std::setfill(' ') << std::setw(20)
+			     << std::setiosflags(std::ios::left)
+			     << method.first
+			     << std::setw(0)
+			     << method.second
+			     << std::endl
+			      ;
 		}
 		if (!methods.empty())
 			cout << std::endl;
-		cout << program_name << " is Free Software WITHOUT ANY WARRANTY." << std::endl;
+		cout << program_name << " is Free Software WITHOUT ANY WARRANTY."
+		     << std::endl
+		     << std::endl
+		      ;
 	}
 
 public:
@@ -48,9 +59,11 @@ public:
 		{ }
 
 	void add_method( std::string const& method_name
+		       , std::string const& short_desc
 		       , std::function<int (std::vector<std::string>)> method
 		       ) {
 		methods.insert(std::make_pair(method_name, method));
+		helps.insert(std::make_pair(method_name, short_desc));
 	}
 
 	int main( int argc
@@ -106,10 +119,11 @@ Main::~Main() { }
 Main::Main(Main&& o) : pimpl(std::move(o.pimpl)) { }
 
 Main& Main::add_method( std::string const& method_name
+		      , std::string const& short_desc
 		      , std::function<int (std::vector<std::string>)> method
 		      ) {
 	if (pimpl)
-		pimpl->add_method(method_name, method);
+		pimpl->add_method(method_name, short_desc, method);
 	return *this;
 }
 int Main::main( int argc, char** argv

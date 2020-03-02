@@ -33,6 +33,7 @@ public:
 	~Main();
 
 	Main& add_method( std::string const& method_name
+			, std::string const& short_desc
 			, std::function<int (std::vector<std::string>)> method
 			);
 
