@@ -1,6 +1,6 @@
 #include<sstream>
 #include"Secp256k1/PubKey.hpp"
-#include"Server/Add.hpp"
+#include"Server/AddRemove.hpp"
 #include"Server/TermLogger.hpp"
 #include"Server/change_clients.hpp"
 
@@ -19,7 +19,7 @@ std::string get_client_id(Secp256k1::PubKey const& pk) {
 namespace Server {
 
 int
-Add::operator()(std::vector<std::string> params) {
+AddRemove::operator()(std::vector<std::string> params) {
 	auto logger = Server::TermLogger();
 
 	/* TODO: options, like the server directory.  */
@@ -63,17 +63,33 @@ Add::operator()(std::vector<std::string> params) {
 	auto error = Server::change_clients( logger
 					   , [ &new_clients
 					     , &logger
+					     , this
 					     ](Server::ClientSet& clients) {
 		for (auto& new_client : new_clients) {
+			auto cid = get_client_id(new_client);
 			if (clients.find(new_client) != clients.end()) {
-				logger.info( "%s already exists."
-					   , get_client_id(new_client).c_str()
-					   );
+				/* Exists in the clients file.  */
+				if (mode == AddMode)
+					logger.info( "%s already exists."
+						   , cid.c_str()
+						   );
+				else {
+					logger.debug( "%s being removed."
+						    , cid.c_str()
+						    );
+					clients.erase(new_client);
+				}
 			} else {
-				logger.debug( "%s being added."
-					    , get_client_id(new_client).c_str()
-					    );
-				clients.insert(new_client);
+				/* Does not exist in the client file.  */
+				if (mode == AddMode) {
+					logger.debug( "%s being added."
+						    , cid.c_str()
+						    );
+					clients.insert(new_client);
+				} else
+					logger.info( "%s already nonexistent."
+						   , cid.c_str()
+						   );
 			}
 		}
 	});

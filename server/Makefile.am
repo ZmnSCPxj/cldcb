@@ -31,8 +31,8 @@ cldcb_server_SOURCES = \
 	Ev/wait_io.hpp \
 	Ev/yield.cpp \
 	Ev/yield.hpp \
-	Server/Add.cpp \
-	Server/Add.hpp \
+	Server/AddRemove.cpp \
+	Server/AddRemove.hpp \
 	Server/Daemon.cpp \
 	Server/Daemon.hpp \
 	Server/Logger.cpp \
