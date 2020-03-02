@@ -31,10 +31,12 @@ cldcb_server_SOURCES = \
 	Ev/wait_io.hpp \
 	Ev/yield.cpp \
 	Ev/yield.hpp \
-	Server/Logger.cpp \
-	Server/Logger.hpp \
 	Server/Daemon.cpp \
 	Server/Daemon.hpp \
+	Server/Logger.cpp \
+	Server/Logger.hpp \
+	Server/TermLogger.cpp \
+	Server/TermLogger.hpp \
 	daemonize.cpp \
 	daemonize.hpp \
 	server.cpp
