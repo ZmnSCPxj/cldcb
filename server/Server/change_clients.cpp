@@ -13,6 +13,7 @@
 #include"Net/Fd.hpp"
 #include"Secp256k1/PubKey.hpp"
 #include"Server/change_clients.hpp"
+#include"Server/send_signal.hpp"
 #include"Util/Logger.hpp"
 #include"Util/make_unique.hpp"
 
@@ -160,15 +161,6 @@ read_clients(Util::Logger& logger) {
 
 auto constexpr max_tries = 5;
 
-pid_t get_server_pid() {
-	auto is = std::ifstream("cldcb-server.pid");
-	if (!is || is.bad() || !is.good())
-		return (pid_t)-1;
-	auto ret = pid_t();
-	is >> ret;
-	return ret;
-}
-
 }
 
 namespace Server {
@@ -240,8 +232,7 @@ change_clients( Util::Logger& logger
 	}
 	unlinker.do_not_unlink();
 
-	auto server_pid = get_server_pid();
-	if (server_pid > 0 && kill(server_pid, SIGHUP) == 0)
+	if (Server::send_signal(SIGHUP))
 		logger.info("Triggered reload at server.");
 
 	error = "";

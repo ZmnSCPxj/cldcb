@@ -41,6 +41,8 @@ cldcb_server_SOURCES = \
 	Server/TermLogger.hpp \
 	Server/change_clients.cpp \
 	Server/change_clients.hpp \
+	Server/send_signal.cpp \
+	Server/send_signal.hpp \
 	daemonize.cpp \
 	daemonize.hpp \
 	server.cpp
