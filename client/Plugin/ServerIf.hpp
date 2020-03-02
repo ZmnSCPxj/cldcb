@@ -3,32 +3,36 @@
 
 #include<cstdint>
 #include<future>
-#include<vector>
 
 namespace Plugin { class ServerResult; }
 
 namespace Plugin {
 
 /* Abstract interface to a backup server.
+ *
+ * The server interface is stateful; you should only call
+ * new_update if the previous ServerIncrementIf
+ * or ServerReuploadIf have been finished.
  */
 class ServerIf {
 public:
 	virtual ~ServerIf() { }
 
-	/* Send the specified incremental ciphertext to the
-	 * server, with the specified data version.
-	 * If the server is able to back it up, returns a
-	 * successful result.
-	 * If the server is unable to back up, returns a
-	 * failure result.
+	/* Tell the server the data version of an
+	 * upcoming update.
+	 * If the data version is fine, it returns an
+	 * increment result, yielding a ServerIncrementIf
+	 * interface.
 	 * If the server wants to get a reupload of the
-	 * original file, returns a reupload result.
+	 * original file, returns a reupload result,
+	 * yielding a ServerReuploadIf interface.
+	 * If the server is unable to back up, returns 
+	 * failure result.
 	 */
 	virtual
 	std::future<Plugin::ServerResult>
-	send( std::uint32_t data_version
-	    , std::vector<std::uint8_t> ciphertext
-	    ) =0;
+	new_update( std::uint32_t data_version
+		  ) =0;
 };
 
 }

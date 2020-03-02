@@ -3,7 +3,10 @@
 
 #include<cstdint>
 #include<future>
+#include<memory>
 #include<vector>
+
+namespace Plugin { class ServerIncrementIf; }
 
 namespace Plugin {
 
@@ -16,7 +19,7 @@ public:
 	virtual ~ServerReuploadIf() { }
 
 	/* Send a chunk of the encrypted database.
-	 * The chunk must be <= 65535 bytes.
+	 * The chunk must be <= 65000 bytes.
 	 * Returns true if the server backed it up
 	 * okay, false otherwise.
 	 * Precondition: completed() must not have
@@ -26,14 +29,19 @@ public:
 	 */
 	virtual
 	std::future<bool>
-	send_chunk(std::vector<std::uint8_t> ciphertext) =0;
+	send_reupload_chunk(std::vector<std::uint8_t> ciphertext) =0;
 
 	/* Signal complete sending of the database.
-	 * Precondition: any previous send_chunk()
+	 * Returns an increment interface if backup was
+	 * okay, nullptr if failed.
+	 * Precondition: any previous send_reupload_chunk()
 	 * call has had its future already valid.
+	 * Postcondition: this object can no longer be used after
+	 * this call is invoked.
 	 */
 	virtual
-	std::future<void> completed() =0;
+	std::future<std::unique_ptr<ServerIncrementIf>>
+	reupload_completed() =0;
 };
 
 }

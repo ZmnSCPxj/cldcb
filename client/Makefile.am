@@ -25,6 +25,7 @@ cldcb_plugin_SOURCES = \
 	Plugin/OptHandler.cpp \
 	Plugin/OptHandler.hpp \
 	Plugin/ServerIf.hpp \
+	Plugin/ServerIncrementIf.hpp \
 	Plugin/ServerResult.hpp \
 	Plugin/ServerReuploadIf.hpp \
 	Plugin/ServerSpec.hpp \

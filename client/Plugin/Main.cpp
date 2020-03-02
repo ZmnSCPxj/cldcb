@@ -13,17 +13,35 @@
 #include"Plugin/OptHandler.hpp"
 #include"Plugin/Setup.hpp"
 #include"Plugin/ServerIf.hpp"
+#include"Plugin/ServerIncrementIf.hpp"
 #include"Plugin/ServerResult.hpp"
 #include"Util/make_unique.hpp"
 
 namespace {
 
+class NullIncrementIf : public Plugin::ServerIncrementIf {
+public:
+	std::future<bool>
+	send_increment_chunk(std::vector<std::uint8_t>) override {
+		auto p = std::promise<bool>();
+		p.set_value(true);
+		return p.get_future();
+	}
+	std::future<bool>
+	increment_completed() override {
+		auto p = std::promise<bool>();
+		p.set_value(true);
+		return p.get_future();
+	}
+};
+
 class NullServerIf : public Plugin::ServerIf {
 public:
 	std::future<Plugin::ServerResult>
-	send(std::uint32_t, std::vector<std::uint8_t>) override {
+	new_update(std::uint32_t) override {
+		auto incr_if = Util::make_unique<NullIncrementIf>();
 		auto p = std::promise<Plugin::ServerResult>();
-		p.set_value(Plugin::ServerResult::success());
+		p.set_value(Plugin::ServerResult::increment(std::move(incr_if)));
 		return p.get_future();
 	}
 };
