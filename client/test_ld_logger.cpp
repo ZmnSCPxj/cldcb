@@ -1,9 +1,8 @@
 #include<assert.h>
 #include<sstream>
 #include"Jsmn/Object.hpp"
-
-# include"LD/Logger.cpp"
-# include"LD/Writer.cpp"
+#include"LD/Logger.hpp"
+#include"LD/Writer.hpp"
 
 int main() {
 	std::ostringstream os;

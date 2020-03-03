@@ -1,6 +1,9 @@
 bin_PROGRAMS = cldcb-server
-
 cldcb_server_SOURCES = \
+	server.cpp
+
+noinst_LTLIBRARIES = libcldcb-server.la
+libcldcb_server_la_SOURCES = \
 	Daemon/AcceptHandler.cpp \
 	Daemon/AcceptHandler.hpp \
 	Daemon/AcceptLoop.cpp \
@@ -48,12 +51,12 @@ cldcb_server_SOURCES = \
 	Server/send_signal.cpp \
 	Server/send_signal.hpp \
 	daemonize.cpp \
-	daemonize.hpp \
-	server.cpp
+	daemonize.hpp
+libcldcb_server_la_LIBADD = ../common/libcldcb-common.la
 
 AM_DEFAULT_SOURCE_EXT = .cpp
 
-LDADD = ../common/libcldcb-common.la $(PTHREAD_LIBS) $(libev_LIBS)
+LDADD = libcldcb-server.la $(PTHREAD_LIBS) $(libev_LIBS)
 AM_CXXFLAGS = -I$(top_srcdir)/common/ $(PTHREAD_CFLAGS) $(libev_CFLAGS)
 
 TESTS =

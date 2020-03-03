@@ -1,11 +1,11 @@
 #include<assert.h>
 #include<sstream>
+#include"Plugin/OptFile/parse.hpp"
+#include"Plugin/OptFile/translate_setup.hpp"
+#include"Plugin/OptFile/validate_keys.hpp"
 #include"Plugin/ServerSpec.hpp"
 #include"Plugin/Setup.hpp"
 
-# include"Plugin/OptFile/parse.cpp"
-# include"Plugin/OptFile/translate_setup.cpp"
-# include"Plugin/OptFile/validate_keys.cpp"
 
 auto parse_testdata = R"(#!/bin/sh
 ## A true comment

@@ -3,9 +3,9 @@
 #include<sstream>
 #include<thread>
 #include<vector>
+#include"LD/Writer.hpp"
 #include"Util/make_unique.hpp"
 
-# include"LD/Writer.cpp"
 
 int main() {
 

@@ -1,6 +1,14 @@
 bin_PROGRAMS = cldcb-plugin
 
+# Programs are just a single cpp file.
 cldcb_plugin_SOURCES = \
+	plugin.cpp
+
+# The rest of the program is in a convenience library,
+# to facilitate testing.
+# A program is a library.
+noinst_LTLIBRARIES = libcldcb-client.la
+libcldcb_client_la_SOURCES = \
 	LD/DbWrite.hpp \
 	LD/Logger.cpp \
 	LD/Logger.hpp \
@@ -29,12 +37,12 @@ cldcb_plugin_SOURCES = \
 	Plugin/ServerResult.hpp \
 	Plugin/ServerReuploadIf.hpp \
 	Plugin/ServerSpec.hpp \
-	Plugin/Setup.hpp \
-	plugin.cpp
+	Plugin/Setup.hpp
+libcldcb_client_la_LIBADD = ../common/libcldcb-common.la
 
 AM_DEFAULT_SOURCE_EXT = .cpp
 
-LDADD = ../common/libcldcb-common.la $(PTHREAD_LIBS)
+LDADD = libcldcb-client.la $(PTHREAD_LIBS)
 AM_CXXFLAGS = -I$(top_srcdir)/common/ $(PTHREAD_CFLAGS)
 
 TESTS = \
