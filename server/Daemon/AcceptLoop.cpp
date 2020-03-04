@@ -9,6 +9,7 @@
 #include"Daemon/AcceptLoop.hpp"
 #include"Net/Listener.hpp"
 #include"Net/SocketFd.hpp"
+#include"Net/make_nonblocking.hpp"
 #include"Util/Logger.hpp"
 #include"Util/make_unique.hpp"
 
@@ -21,11 +22,6 @@ private:
 	Daemon::Breaker& breaker;
 	std::function<Ev::Io<int>(Net::SocketFd)> handler;
 
-	void make_nonblocking(int fd) {
-		auto flags = fcntl(fd, F_GETFL);
-		flags |= O_NONBLOCK;
-		fcntl(fd, F_SETFL, flags);
-	}
 
 public:
 	Impl() =delete;
@@ -39,7 +35,7 @@ public:
 	      , handler(std::move(handler_))
 	      {
 		/* Make listening socket nonblocking.  */
-		make_nonblocking(listener.get_fd());
+		Net::make_nonblocking(listener.get_fd());
 	}
 
 	Ev::Io<int> accept_loop() {
@@ -61,7 +57,7 @@ public:
 						    );
 					return accept_loop();
 				} else {
-					make_nonblocking(socket_fd.get());
+					Net::make_nonblocking(socket_fd.get());
 					auto forked = handler(std::move(socket_fd));
 					return Ev::concurrent(forked)
 					     .then<int>([this](int) {

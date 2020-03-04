@@ -12,15 +12,10 @@
 #include<unistd.h>
 #include<vector>
 #include"Ev/ThreadPool.hpp"
+#include"Net/make_nonblocking.hpp"
 #include"Util/make_unique.hpp"
 
 namespace {
-
-void make_nonblocking(int fd) {
-	auto flags = fcntl(fd, F_GETFL);
-	flags |= O_NONBLOCK;
-	fcntl(fd, F_SETFL, flags);
-}
 
 /* RAII class to block all signals while still alive.  */
 class SigBlocker {
@@ -195,7 +190,7 @@ public:
 
 		pipe_read = pipes[0];
 		pipe_write = pipes[1];
-		make_nonblocking(pipe_read);
+		Net::make_nonblocking(pipe_read);
 
 		/* Launch threads with all signals blocked.
 		 * On exit from this function, the current
