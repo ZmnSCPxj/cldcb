@@ -36,6 +36,15 @@ public:
 
 	Ev::Io<std::unique_ptr<std::pair<Noise::Encryptor, Secp256k1::PubKey>>>
 	handshake();
+
+	/* Steps of handshake process.  */
+private:
+	typedef std::pair<Noise::Encryptor, Secp256k1::PubKey> PairT;
+	typedef std::unique_ptr<std::pair<Noise::Encryptor, Secp256k1::PubKey>> RetT;
+
+	Ev::Io<RetT> post_act1(std::vector<std::uint8_t> act1);
+	Ev::Io<RetT> post_act2();
+	Ev::Io<RetT> post_act3(std::vector<std::uint8_t> act3);
 };
 
 }
