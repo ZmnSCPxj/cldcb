@@ -57,7 +57,7 @@ void deserialize(A& a, ::Protocol::Message& t) {
 		auto len = std::uint16_t();
 		deserialize(a, len);
 		auto value = std::vector<std::uint8_t>(std::size_t(len));
-		for (auto i = std::uint16_t(0); i < l; ++i)
+		for (auto i = std::uint16_t(0); i < len; ++i)
 			deserialize(a, value[0]);
 		t.tlvs.insert(std::make_pair(type, std::move(value)));
 		if (type == 0xFF)
