@@ -35,6 +35,9 @@ bool read_all(int fd, void* p, std::size_t& size) {
 				    ));
 		if (res < 0)
 			return false;
+		if (res == 0)
+			/* EOF.  */
+			return false;
 
 		size += size_t(res);
 		s -= size_t(res);
