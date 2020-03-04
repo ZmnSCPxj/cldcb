@@ -23,8 +23,8 @@ private:
 public:
 	ConnectionHandshaker() =delete;
 	/* We only keep references to the logger, breaker,
-	 * and fd.
-	 * Client code is responsible for keeping those
+	 * identity, and fd.
+	 * Calling code is responsible for keeping those
 	 * objects alive.
 	 */
 	ConnectionHandshaker( Util::Logger& logger
