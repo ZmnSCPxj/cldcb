@@ -101,6 +101,9 @@ public:
 	 */
 	std::unique_ptr<std::vector<std::uint8_t>>
 	act2_and_3(std::vector<std::uint8_t> const& act2);
+
+	static constexpr auto act2_size = std::size_t(50);
+
 	/* Construct the encryptor that will be used in
 	 * future message communications.
 	 * Precondition: act1 and act2_and_3 have been
