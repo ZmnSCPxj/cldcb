@@ -1,10 +1,13 @@
 
+# Subdirectories need to be built
+# in this specific order.
 SUBDIRS = \
 	external/libsodium/ \
 	external/secp256k1/ \
 	common/ \
 	client/ \
-	server/
+	server/ \
+	integration/
 
 EXTRA_DIST = \
 	external/jsmn/LICENSE \

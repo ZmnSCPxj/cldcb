@@ -39,6 +39,7 @@ AC_SUBST([PTHREAD_LIBS])
 AC_CONFIG_FILES([Makefile
 		 client/Makefile
 		 common/Makefile
+		 integration/Makefile
                  server/Makefile
 		])
 AC_CONFIG_SUBDIRS([external/libsodium
