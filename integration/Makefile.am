@@ -3,15 +3,18 @@ AM_CXXFLAGS = \
 	-I$(top_srcdir)/client/ \
 	-I$(top_srcdir)/common/ \
 	-I$(top_srcdir)/server/ \
-	$(PTHREAD_CFLAGS)
+	$(PTHREAD_CFLAGS) \
+	$(libev_CFLAGS)
 LDADD = \
 	../client/libcldcb-client.la \
 	../server/libcldcb-server.la \
-	$(PTHREAD_LIBS)
+	$(PTHREAD_LIBS) \
+	$(libev_LIBS)
 
 AM_DEFAULT_SOURCE_EXT = .cpp
 
-TESTS =
+TESTS = \
+	test_handshake
 
 check_PROGRAMS = $(TESTS)
 
