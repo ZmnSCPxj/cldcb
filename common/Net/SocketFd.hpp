@@ -33,7 +33,7 @@ public:
 	int get() const { return fd.get(); }
 	int release() { return fd.release(); }
 	void swap(SocketFd& o) { fd.swap(o.fd); }
-	void reset(int fd_) { fd.reset(fd_); }
+	void reset(int fd_ = -1) { fd.reset(fd_); }
 
 	operator bool() const { return (bool)fd; }
 	bool operator!() const {return !((bool)fd); }

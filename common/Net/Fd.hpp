@@ -31,7 +31,7 @@ public:
 		o.fd = fd;
 		fd = tmp;
 	}
-	void reset(int fd_) {
+	void reset(int fd_ = -1) {
 		*this = Fd(fd_);
 	}
 

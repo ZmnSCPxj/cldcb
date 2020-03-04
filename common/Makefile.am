@@ -39,6 +39,8 @@ libcldcb_common_la_SOURCES = \
 	Net/SocketFd.hpp \
 	Net/make_nonblocking.cpp \
 	Net/make_nonblocking.hpp \
+	Net/socketpair.cpp \
+	Net/socketpair.hpp \
 	Noise/Detail/Aead.cpp \
 	Noise/Detail/Aead.hpp \
 	Noise/Detail/CipherState.cpp \

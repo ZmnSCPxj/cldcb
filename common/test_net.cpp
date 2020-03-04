@@ -2,6 +2,7 @@
 #include<cstdint>
 #include<fcntl.h>
 #include<future>
+#include<iostream>
 #include<sys/stat.h>
 #include<sys/types.h>
 #include<thread>
@@ -11,6 +12,7 @@
 #include"Net/Fd.hpp"
 #include"Net/Listener.hpp"
 #include"Net/SocketFd.hpp"
+#include"Net/socketpair.hpp"
 #include"Secp256k1/Random.hpp"
 #include"Util/Logger.hpp"
 
@@ -100,6 +102,47 @@ int main() {
 			auto rres = ::read(sock.get(), &ret_data[0], len);
 			assert(rres == ssize_t(len));
 			assert(data == ret_data);
+		});
+		server.join();
+		client.join();
+	}
+
+	{
+		auto len = 6;
+
+		Secp256k1::Random rand;
+		auto socks = Net::socketpair();
+		auto& ssock = socks.first;
+		auto& csock = socks.second;
+
+		auto data = ([&rand, len]() {
+			auto data = std::vector<std::uint8_t>();
+			for (auto i = 0; i < len; ++i)
+				data.push_back(rand.get());
+			return data;
+		})();
+		auto server = std::thread([&ssock, len]() {
+			auto& sock = ssock;
+			assert(sock);
+			auto data = std::vector<std::uint8_t>(len);
+			auto rres = ::read(sock.get(), &data[0], len);
+			assert(rres == ssize_t(len));
+			auto wres = ::write(sock.get(), &data[0], len);
+			assert(wres == ssize_t(len));
+			/* Close socket in the thread, else would block.  */
+			sock.reset();
+		});
+		auto client = std::thread([&csock, &data, len]() {
+			auto& sock = csock;
+			assert(sock);
+			auto wres = ::write(sock.get(), &data[0], len);
+			assert(wres == ssize_t(len));
+			auto ret_data = std::vector<std::uint8_t>(len);
+			auto rres = ::read(sock.get(), &ret_data[0], len);
+			assert(rres == ssize_t(len));
+			assert(data == ret_data);
+			/* Close socket in the thread, else would block.  */
+			sock.reset();
 		});
 		server.join();
 		client.join();
