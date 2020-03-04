@@ -5,6 +5,8 @@
 #include<future>
 #include<vector>
 
+namespace Plugin { class ServerResult; }
+
 namespace Plugin {
 
 class ServerIncrementIf {
@@ -25,6 +27,8 @@ public:
 	std::future<bool>
 	send_increment_chunk(std::vector<std::uint8_t> ciphertext) =0;
 
+	static auto constexpr max_chunk_size = std::size_t(65000);
+
 	/* Signal complete sending of the current increment.
 	 * Returns true if the server backed it up okay,
 	 * false otherwise.
@@ -34,7 +38,8 @@ public:
 	 * this call is invoked.
 	 */
 	virtual
-	std::future<bool> increment_completed() =0;
+	std::future<Plugin::ServerResult>
+	increment_completed() =0;
 };
 
 }

@@ -4,7 +4,7 @@
 #include<cstdint>
 #include<future>
 
-namespace Plugin { class ServerResult; }
+namespace Plugin { class ServerIncrementIf; }
 
 namespace Plugin {
 
@@ -20,17 +20,17 @@ public:
 
 	/* Tell the server the data version of an
 	 * upcoming update.
-	 * If the data version is fine, it returns an
-	 * increment result, yielding a ServerIncrementIf
-	 * interface.
-	 * If the server wants to get a reupload of the
-	 * original file, returns a reupload result,
-	 * yielding a ServerReuploadIf interface.
+	 * Then it returns an incremental-update
+	 * interface to send the upcoming update
+	 * on.
+	 * Do *not* use this ServerIf until you
+	 * have completely sent the incremental
+	 * update.
 	 * If the server is unable to back up, returns 
-	 * failure result.
+	 * nullptr.
 	 */
 	virtual
-	std::future<Plugin::ServerResult>
+	std::future<std::unique_ptr<Plugin::ServerIncrementIf>>
 	new_update( std::uint32_t data_version
 		  ) =0;
 };

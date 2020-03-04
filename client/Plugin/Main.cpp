@@ -27,21 +27,21 @@ public:
 		p.set_value(true);
 		return p.get_future();
 	}
-	std::future<bool>
+	std::future<Plugin::ServerResult>
 	increment_completed() override {
-		auto p = std::promise<bool>();
-		p.set_value(true);
+		auto p = std::promise<Plugin::ServerResult>();
+		p.set_value(Plugin::ServerResult::success());
 		return p.get_future();
 	}
 };
 
 class NullServerIf : public Plugin::ServerIf {
 public:
-	std::future<Plugin::ServerResult>
+	std::future<std::unique_ptr<Plugin::ServerIncrementIf>>
 	new_update(std::uint32_t) override {
 		auto incr_if = Util::make_unique<NullIncrementIf>();
-		auto p = std::promise<Plugin::ServerResult>();
-		p.set_value(Plugin::ServerResult::increment(std::move(incr_if)));
+		auto p = std::promise<std::unique_ptr<Plugin::ServerIncrementIf>>();
+		p.set_value(std::move(incr_if));
 		return p.get_future();
 	}
 };

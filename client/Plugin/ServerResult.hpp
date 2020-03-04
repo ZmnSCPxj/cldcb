@@ -19,20 +19,14 @@ namespace Plugin {
 class ServerResult {
 private:
 	std::shared_ptr<Plugin::ServerReuploadIf> reupload_ptr;
-	std::shared_ptr<Plugin::ServerIncrementIf> increment_ptr;
+	bool succeeded;
 public:
-	ServerResult() : reupload_ptr(nullptr), increment_ptr(nullptr) { }
+	ServerResult() : reupload_ptr(nullptr), succeeded(false) { }
 	ServerResult(ServerResult&&) =default;
 	ServerResult& operator=(ServerResult&&) =default;
 	ServerResult(ServerResult const&) =default;
 	ServerResult& operator=(ServerResult const&) =default;
 
-	static
-	ServerResult increment(std::unique_ptr<Plugin::ServerIncrementIf> increment) {
-		auto ret = ServerResult();
-		ret.increment_ptr = std::move(increment);
-		return ret;
-	}
 	static
 	ServerResult reupload(std::unique_ptr<Plugin::ServerReuploadIf> reupload) {
 		auto ret = ServerResult();
@@ -40,18 +34,24 @@ public:
 		return ret;
 	}
 	static
+	ServerResult success() {
+		auto ret = ServerResult();
+		ret.succeeded = true;
+		return ret;
+	}
+	static
 	ServerResult failure() {
 		return ServerResult();
 	}
 
-	ServerIncrementIf* is_increment() const {
-		return increment_ptr.get();
-	}
 	ServerReuploadIf* is_reupload() const {
 		return reupload_ptr.get();
 	}
+	bool is_success() const {
+		return !reupload_ptr && succeeded;
+	}
 	bool is_failure() const {
-		return !is_increment() && !is_reupload();
+		return !reupload_ptr && !succeeded;
 	}
 };
 

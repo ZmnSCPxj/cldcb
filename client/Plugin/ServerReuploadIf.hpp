@@ -31,16 +31,17 @@ public:
 	std::future<bool>
 	send_reupload_chunk(std::vector<std::uint8_t> ciphertext) =0;
 
+	static auto constexpr max_chunk_size = std::size_t(65000);
+
 	/* Signal complete sending of the database.
-	 * Returns an increment interface if backup was
-	 * okay, nullptr if failed.
+	 * Returns true if backup was okay, false if failed.
 	 * Precondition: any previous send_reupload_chunk()
 	 * call has had its future already valid.
 	 * Postcondition: this object can no longer be used after
 	 * this call is invoked.
 	 */
 	virtual
-	std::future<std::unique_ptr<ServerIncrementIf>>
+	std::future<bool>
 	reupload_completed() =0;
 };
 
