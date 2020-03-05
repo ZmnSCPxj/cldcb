@@ -14,7 +14,8 @@ LDADD = \
 AM_DEFAULT_SOURCE_EXT = .cpp
 
 TESTS = \
-	test_handshake
+	test_handshake \
+	test_messenger
 
 check_PROGRAMS = $(TESTS)
 
