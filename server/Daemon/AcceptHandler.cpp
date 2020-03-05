@@ -12,6 +12,7 @@ Ev::Io<int> AcceptHandler::operator()(Net::SocketFd fd) {
 							      , identity
 							      , prologue
 							      , std::move(fd)
+							      , looper
 							      );
 	return Daemon::Connection::new_connection(std::move(connection));
 }

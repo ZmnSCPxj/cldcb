@@ -16,6 +16,7 @@ libcldcb_server_la_SOURCES = \
 	Daemon/Connection.hpp \
 	Daemon/ConnectionHandshaker.cpp \
 	Daemon/ConnectionHandshaker.hpp \
+	Daemon/ConnectionLoop.hpp \
 	Daemon/IoResult.hpp \
 	Daemon/KeyKeeper.cpp \
 	Daemon/KeyKeeper.hpp \

@@ -3,7 +3,9 @@
 #include"Daemon/Breaker.hpp"
 #include"Daemon/Connection.hpp"
 #include"Daemon/ConnectionHandshaker.hpp"
+#include"Daemon/ConnectionLoop.hpp"
 #include"Ev/Io.hpp"
+#include"Ev/yield.hpp"
 #include"Noise/Encryptor.hpp"
 #include"Secp256k1/PubKey.hpp"
 #include"Util/Logger.hpp"
@@ -16,9 +18,11 @@ Connection::Connection( Util::Logger& logger_
 		      , Secp256k1::KeyPair const& identity_
 		      , std::string const& prologue_
 		      , Net::SocketFd fd_
+		      , Daemon::ConnectionLoop& looper_
 		      ) : logger(logger_)
 			, breaker(breaker_)
 			, fd(std::move(fd_))
+			, looper(looper_)
 			, handshaker(Util::make_unique<ConnectionHandshaker>
 				( logger
 				, breaker
@@ -55,9 +59,23 @@ Ev::Io<int> Connection::new_connection(std::shared_ptr<Connection> self) {
 					 );
 		}
 
-		/* TODO.  */
-		(void) encryptor;
-		return Ev::lift_io(0);
+		auto fd_num = self->fd.get();
+		auto ret = self->looper
+			 .new_handshaked_connection( std::move(self->fd)
+						   , std::move(encryptor)
+						   , incoming_id
+						   )
+			 ;
+		if (!ret) {
+			self->logger.info( "Connection rejected after "
+					   "handshake <fd %d>"
+					 , fd_num
+					 );
+			return Ev::lift_io(0);
+		}
+		return Ev::yield().then<int>([ret](int) {
+			return ret();
+		});
 	});
 }
 

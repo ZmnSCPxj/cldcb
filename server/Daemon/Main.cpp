@@ -3,13 +3,33 @@
 #include"Daemon/AcceptLoop.hpp"
 #include"Daemon/Breaker.hpp"
 #include"Daemon/ClientList.hpp"
+#include"Daemon/ConnectionLoop.hpp"
 #include"Daemon/KeyKeeper.hpp"
 #include"Daemon/Main.hpp"
 #include"Daemon/PidFiler.hpp"
 #include"Ev/Io.hpp"
 #include"Ev/start.hpp"
 #include"Net/SocketFd.hpp"
+#include"Noise/Encryptor.hpp"
+#include"Secp256k1/PubKey.hpp"
 #include"Util/make_unique.hpp"
+
+namespace {
+
+class NullConnectionLoop : public Daemon::ConnectionLoop {
+public:
+	std::function<Ev::Io<int>()>
+	new_handshaked_connection( Net::SocketFd fd
+				 , Noise::Encryptor enc
+				 , Secp256k1::PubKey const& incoming
+				 ) override {
+		return []() {
+			return Ev::lift_io(0);
+		};
+	}
+};
+
+}
 
 namespace Daemon {
 
@@ -20,6 +40,7 @@ private:
 	Daemon::KeyKeeper keeper;
 	std::unique_ptr<Daemon::Breaker> breaker;
 	std::unique_ptr<Daemon::ClientList> clients;
+	NullConnectionLoop looper; /* TODO: Dummy.  */
 	Daemon::AcceptHandler accept_handler;
 	Daemon::AcceptLoop acceptor;
 
@@ -34,6 +55,7 @@ public:
 	      , clients(Daemon::ClientList::initialize(logger, *breaker))
 	      , accept_handler( logger
 			      , *breaker
+			      , looper
 			      , keeper.get_server_keypair()
 			      , "CLDCB"
 			      )

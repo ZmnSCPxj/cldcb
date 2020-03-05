@@ -6,6 +6,7 @@
 
 namespace Daemon { class Breaker; }
 namespace Daemon { class ConnectionHandshaker; }
+namespace Daemon { class ConnectionLoop; }
 namespace Ev { template<typename a> class Io; }
 namespace Secp256k1 { class KeyPair; }
 namespace Util { class Logger; }
@@ -17,6 +18,7 @@ private:
 	Util::Logger& logger;
 	Daemon::Breaker& breaker;
 	Net::SocketFd fd;
+	Daemon::ConnectionLoop& looper;
 	std::unique_ptr<Daemon::ConnectionHandshaker> handshaker;
 
 public:
@@ -27,6 +29,7 @@ public:
 		  , Secp256k1::KeyPair const& identity
 		  , std::string const& prologue
 		  , Net::SocketFd fd
+		  , Daemon::ConnectionLoop& looper
 		  );
 
 	~Connection();
