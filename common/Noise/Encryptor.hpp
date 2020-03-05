@@ -49,11 +49,16 @@ public:
 	 */
 	std::unique_ptr<std::uint16_t>
 	decrypt_length(std::vector<std::uint8_t> const &l_ciphertext);
+
+	static auto constexpr l_ciphertext_size = 18;
+
 	/* Decrypt the actual message.
 	 * Returns nullptr on decryption failure
 	 */
 	std::unique_ptr<std::vector<std::uint8_t>>
 	decrypt_message(std::vector<std::uint8_t> const& m_ciphertext);
+
+	static auto constexpr m_ciphertext_additional_size = 16;
 
 	/* Encrypt the message.
 	 * The first returned value is the encrypted length,

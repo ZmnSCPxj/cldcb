@@ -21,6 +21,8 @@ libcldcb_server_la_SOURCES = \
 	Daemon/KeyKeeper.hpp \
 	Daemon/Main.cpp \
 	Daemon/Main.hpp \
+	Daemon/Messenger.cpp \
+	Daemon/Messenger.hpp \
 	Daemon/PidFiler.cpp \
 	Daemon/PidFiler.hpp \
 	Ev/Io.hpp \
