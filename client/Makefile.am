@@ -40,6 +40,8 @@ libcldcb_client_la_SOURCES = \
 	Plugin/Setup.hpp \
 	ServerTalker/Handshaker.cpp \
 	ServerTalker/Handshaker.hpp \
+	ServerTalker/Messenger.cpp \
+	ServerTalker/Messenger.hpp \
 	ServerTalker/rw.cpp \
 	ServerTalker/rw.hpp
 libcldcb_client_la_LIBADD = ../common/libcldcb-common.la
