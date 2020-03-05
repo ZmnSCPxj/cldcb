@@ -19,6 +19,14 @@ std::string hexbyte(std::uint8_t v) {
 	return os.str();
 }
 
+std::string hexdump(void const* vp, std::size_t s) {
+	auto os = std::ostringstream();
+	auto p = (std::uint8_t const*) vp;
+	for (auto i = std::size_t(0); i < s; ++p, ++i)
+		os << hexbyte(*p);
+	return os.str();
+}
+
 namespace {
 
 std::uint8_t parse_hex(char c) {

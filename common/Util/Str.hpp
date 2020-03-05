@@ -15,6 +15,8 @@ namespace Str {
 
 /* Outputs a two-digit hex string of the given byte.  */
 std::string hexbyte(std::uint8_t);
+/* Outputs a string of the given data.  */
+std::string hexdump(void const* p, std::size_t s);
 
 /* Creates a buffer from the given hex string.  */
 /* FIXME: use a backtrace-extracting exception. */
