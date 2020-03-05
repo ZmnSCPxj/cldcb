@@ -204,7 +204,7 @@ private:
 		   , bytes(bytes_)
 		   , has_timeout(timeout_ >= 0.0)
 		   , endtime(Ev::now() + timeout_)
-		   , data(std::move(data))
+		   , data(std::move(data_))
 		   , break_fd(break_fd_)
 		   , logger(logger_)
 		   { }
