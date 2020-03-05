@@ -1,6 +1,8 @@
 #ifndef CLDCB_COMMON_PROTOCOL_MID_HPP
 #define CLDCB_COMMON_PROTOCOL_MID_HPP
 
+#include<cstdint>
+
 namespace Protocol { namespace MID {
 
 /* Message IDs.  */

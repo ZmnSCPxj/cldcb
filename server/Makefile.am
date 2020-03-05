@@ -4,6 +4,10 @@ cldcb_server_SOURCES = \
 
 noinst_LTLIBRARIES = libcldcb-server.la
 libcldcb_server_la_SOURCES = \
+	Backup/ConnectionLoop.cpp \
+	Backup/ConnectionLoop.hpp \
+	Backup/ServiceLoop.cpp \
+	Backup/ServiceLoop.hpp \
 	Daemon/AcceptHandler.cpp \
 	Daemon/AcceptHandler.hpp \
 	Daemon/AcceptLoop.cpp \
