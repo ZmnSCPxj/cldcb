@@ -6,8 +6,15 @@ noinst_LTLIBRARIES = libcldcb-server.la
 libcldcb_server_la_SOURCES = \
 	Backup/ConnectionLoop.cpp \
 	Backup/ConnectionLoop.hpp \
+	Backup/DataReader.hpp \
+	Backup/DataStorage.cpp \
+	Backup/DataStorage.hpp \
+	Backup/IncrementalStorage.hpp \
+	Backup/RecognitionStorage.hpp \
+	Backup/ReuploadStorage.hpp \
 	Backup/ServiceLoop.cpp \
 	Backup/ServiceLoop.hpp \
+	Backup/StorageIf.hpp \
 	Daemon/AcceptHandler.cpp \
 	Daemon/AcceptHandler.hpp \
 	Daemon/AcceptLoop.cpp \

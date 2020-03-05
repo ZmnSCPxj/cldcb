@@ -6,6 +6,7 @@
 #include"Daemon/Messenger.hpp"
 #include"Secp256k1/PubKey.hpp"
 
+namespace Backup { class StorageIf; }
 namespace Daemon { class Breaker; }
 namespace Ev { template<typename a> class Io; }
 namespace Protocol { class Message; }
@@ -25,8 +26,11 @@ private:
 	int fd_num;
 	Daemon::Messenger messenger;
 	Secp256k1::PubKey cid;
+	Backup::StorageIf& storage;
 
 	bool timedout;
+
+	void init();
 
 	ServiceLoop( Util::Logger& logger_
 		   , Daemon::Breaker& breaker_
@@ -34,6 +38,7 @@ private:
 		   , Net::SocketFd fd_
 		   , Noise::Encryptor enc_
 		   , Secp256k1::PubKey cid_
+		   , Backup::StorageIf& storage_
 		   ) : logger(logger_)
 		     , fd_num(fd_num_)
 		     , messenger( logger_
@@ -42,16 +47,21 @@ private:
 				, std::move(enc_)
 				)
 		     , cid(std::move(cid_))
+		     , storage(storage_)
 		     , timedout(false)
-		     { }
+		     {
+		init();
+	}
 
 public:
+	~ServiceLoop();
 	static
 	std::shared_ptr<ServiceLoop> create( Util::Logger& logger
 					   , Daemon::Breaker& breaker
 					   , Net::SocketFd fd
 					   , Noise::Encryptor enc
 					   , Secp256k1::PubKey cid
+					   , Backup::StorageIf& storage
 					   ) {
 		auto fd_num = fd.get();
 		auto rv = std::shared_ptr<ServiceLoop>(
@@ -60,6 +70,7 @@ public:
 				       , std::move(fd)
 				       , std::move(enc)
 				       , std::move(cid)
+				       , storage
 				       )
 		);
 		rv->weak_self = rv;

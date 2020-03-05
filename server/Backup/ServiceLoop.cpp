@@ -1,5 +1,6 @@
 #include<sstream>
 #include"Backup/ServiceLoop.hpp"
+#include"Backup/StorageIf.hpp"
 #include"Ev/Io.hpp"
 #include"Protocol/Message.hpp"
 #include"Protocol/MID.hpp"
@@ -7,6 +8,13 @@
 #include"Util/Str.hpp"
 
 namespace Backup {
+
+void ServiceLoop::init() {
+	storage.connect_cid(cid);
+}
+ServiceLoop::~ServiceLoop() {
+	storage.disconnect_cid(cid);
+}
 
 Ev::Io<int>
 ServiceLoop::enter_loop() {
