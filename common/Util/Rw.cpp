@@ -1,8 +1,8 @@
 #include<errno.h>
 #include<unistd.h>
-#include"ServerTalker/rw.hpp"
+#include"Util/Rw.hpp"
 
-namespace ServerTalker {
+namespace Util { namespace Rw {
 
 bool write_all(int fd, void const* p, std::size_t s) {
 	do  {
@@ -46,4 +46,4 @@ bool read_all(int fd, void* p, std::size_t& size) {
 	return true;
 }
 
-}
+}}

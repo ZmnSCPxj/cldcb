@@ -87,6 +87,8 @@ libcldcb_common_la_SOURCES = \
 	Sync/MVar.hpp \
 	Util/Logger.cpp \
 	Util/Logger.hpp \
+	Util/Rw.cpp \
+	Util/Rw.hpp \
 	Util/Str.cpp \
 	Util/Str.hpp \
 	Util/make_unique.hpp
