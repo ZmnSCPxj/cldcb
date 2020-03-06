@@ -4,6 +4,8 @@ cldcb_server_SOURCES = \
 
 noinst_LTLIBRARIES = libcldcb-server.la
 libcldcb_server_la_SOURCES = \
+	Archive/IncrementalWriter.cpp \
+	Archive/IncrementalWriter.hpp \
 	Backup/ConnectionLoop.cpp \
 	Backup/ConnectionLoop.hpp \
 	Backup/DataReader.hpp \
