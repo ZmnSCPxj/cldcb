@@ -11,6 +11,8 @@ libcldcb_server_la_SOURCES = \
 	Archive/IncrementalWriter.hpp \
 	Archive/ReuploadWriter.cpp \
 	Archive/ReuploadWriter.hpp \
+	Archive/Unlinker.cpp \
+	Archive/Unlinker.hpp \
 	Backup/ConnectionLoop.cpp \
 	Backup/ConnectionLoop.hpp \
 	Backup/DataReader.hpp \
