@@ -43,6 +43,10 @@ ReuploadSequence::create_writer() {
 		    , fd.get()
 		    );
 
+	unlinker = Util::make_unique<Archive::Unlinker>
+		/* Do not std::move: we need this later to rename.  */
+		( temp_reupload_filename
+		);
 	writer = Util::make_unique<Archive::ReuploadWriter>
 		( logger
 		, threadpool
@@ -50,9 +54,6 @@ ReuploadSequence::create_writer() {
 		, [this](Net::Fd fd) {
 			return appender.append_to(std::move(fd));
 		}
-		);
-	unlinker = Util::make_unique<Archive::Unlinker>
-		( temp_reupload_filename
 		);
 
 	return Ev::lift_io(true);
