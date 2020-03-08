@@ -167,6 +167,7 @@ IncrementalWriter::increment_end_back() {
 	}
 
 	/* Close.  */
+	logger.debug( "Closing <fd %d>." , fd.get());
 	fd.reset();
 
 	return true;

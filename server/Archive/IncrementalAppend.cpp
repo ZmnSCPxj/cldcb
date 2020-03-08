@@ -119,10 +119,10 @@ IncrementalAppend::append_to_back(Net::Fd dst_fd) {
 		return false;
 	}
 
+	logger.debug("Cloing <fd %d>.", src_fd.get());
 	src_fd.reset();
-	logger.debug("Closed <fd %d>.", src_fd.get());
+	logger.debug("Closing <fd %d>.", dst_fd.get());
 	dst_fd.reset();
-	logger.debug("Closed <fd %d>.", dst_fd.get());
 
 	return true;
 }
