@@ -4,6 +4,7 @@ cldcb_server_SOURCES = \
 
 noinst_LTLIBRARIES = libcldcb-server.la
 libcldcb_server_la_SOURCES = \
+	Archive/IncrementalOnlySequence.hpp \
 	Archive/IncrementalWriter.cpp \
 	Archive/IncrementalWriter.hpp \
 	Archive/ReuploadWriter.cpp \
