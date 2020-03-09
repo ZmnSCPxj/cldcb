@@ -4,6 +4,8 @@ cldcb_server_SOURCES = \
 
 noinst_LTLIBRARIES = libcldcb-server.la
 libcldcb_server_la_SOURCES = \
+	Archive/FooterJudge.cpp \
+	Archive/FooterJudge.hpp \
 	Archive/IncrementalAppend.cpp \
 	Archive/IncrementalAppend.hpp \
 	Archive/IncrementalOnlySequence.hpp \
