@@ -68,6 +68,9 @@ private:
 public:
 	Ev::Io<bool>
 	send_message(Protocol::Message message);
+
+	/* Get the fd, for log messages.  */
+	int get_fd() const { return fd.get(); }
 };
 
 }

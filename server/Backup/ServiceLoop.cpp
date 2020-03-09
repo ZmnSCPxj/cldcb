@@ -32,7 +32,7 @@ ServiceLoop::enter_loop() {
 		})(self->cid);
 		self->logger.info("Disconnecting %s from <fd %d>"
 				 , cid_string.c_str()
-				 , self->fd_num
+				 , self->messenger.get_fd()
 				 );
 		return Ev::lift_io(0);
 	});
@@ -50,7 +50,7 @@ ServiceLoop::loop() {
 		else {
 			logger.debug( "Could not get message in "
 				      "Backup::ServiceLoop::loop <fd %d>"
-				    , fd_num
+				    , messenger.get_fd()
 				    );
 			return Ev::lift_io(0);
 		}
@@ -68,7 +68,7 @@ ServiceLoop::ping() {
 	     .then<int>([this](bool res) {
 		if (!res) {
 			logger.unusual( "Failed to send ping <fd %d>."
-				      , fd_num
+				      , messenger.get_fd()
 				      );
 			return Ev::lift_io(0);
 		}
@@ -89,7 +89,7 @@ ServiceLoop::dispatch_msg(Protocol::Message msg) {
 
 	default:
 		logger.unusual( "<fd %d> got unexpected message %s"
-			      , fd_num
+			      , messenger.get_fd()
 			      , describe_msg(msg).c_str()
 			      );
 		return Ev::lift_io(0);
@@ -134,7 +134,7 @@ ServiceLoop::pong() {
 	     .then<int>([this](bool res) {
 		if (!res) {
 			logger.unusual( "Failed to send pong <fd %d>."
-				      , fd_num
+				      , messenger.get_fd()
 				      );
 			return Ev::lift_io(0);
 		}

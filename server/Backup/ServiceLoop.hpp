@@ -17,7 +17,6 @@ namespace Backup {
 class ServiceLoop : public std::enable_shared_from_this<ServiceLoop> {
 private:
 	Util::Logger& logger;
-	int fd_num;
 	Daemon::Messenger messenger;
 	Secp256k1::PubKey cid;
 	Backup::StorageIf& storage;
@@ -28,13 +27,11 @@ private:
 
 	ServiceLoop( Util::Logger& logger_
 		   , Daemon::Breaker& breaker_
-		   , int fd_num_
 		   , Net::SocketFd fd_
 		   , Noise::Encryptor enc_
 		   , Secp256k1::PubKey cid_
 		   , Backup::StorageIf& storage_
 		   ) : logger(logger_)
-		     , fd_num(fd_num_)
 		     , messenger( logger_
 				, breaker_
 				, std::move(fd_)
@@ -57,10 +54,8 @@ public:
 					   , Secp256k1::PubKey cid
 					   , Backup::StorageIf& storage
 					   ) {
-		auto fd_num = fd.get();
 		auto rv = std::shared_ptr<ServiceLoop>(
 			new ServiceLoop( logger, breaker
-				       , fd_num
 				       , std::move(fd)
 				       , std::move(enc)
 				       , std::move(cid)
