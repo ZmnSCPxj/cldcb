@@ -14,14 +14,8 @@ namespace Util { class Logger; }
 
 namespace Backup {
 
-class ServiceLoop {
+class ServiceLoop : public std::enable_shared_from_this<ServiceLoop> {
 private:
-	/* self-from-this pattern.  */
-	std::weak_ptr<ServiceLoop> weak_self;
-	std::shared_ptr<ServiceLoop> get_self() const {
-		return std::shared_ptr<ServiceLoop>(weak_self);
-	}
-
 	Util::Logger& logger;
 	int fd_num;
 	Daemon::Messenger messenger;
@@ -73,7 +67,6 @@ public:
 				       , storage
 				       )
 		);
-		rv->weak_self = rv;
 		return rv;
 	}
 

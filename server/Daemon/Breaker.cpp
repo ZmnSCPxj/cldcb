@@ -174,18 +174,8 @@ Ev::Io<bool> Breaker::is_unbroken() {
 
 namespace {
 
-class ReadTimed {
+class ReadTimed : public std::enable_shared_from_this<ReadTimed> {
 private:
-	/* Shaed-pointer-to-this pattern.
-	 * We want to use a shared pointer to this since we need
-	 * to keep this object alive while we are waiting.
-	 */
-	std::weak_ptr<ReadTimed> weak_self;
-
-	std::shared_ptr<ReadTimed> get_self() const {
-		return std::shared_ptr<ReadTimed>(weak_self);
-	}
-
 	int fd;
 	std::size_t bytes;
 	bool has_timeout;
@@ -227,7 +217,6 @@ public:
 				       , break_fd
 				       , logger
 				       ));
-		ret->weak_self = ret;
 		return ret;
 	}
 
@@ -240,7 +229,7 @@ public:
 			return Ev::lift_io(IoResult{ IoTimeout
 						   , std::move(data)
 						   });
-		auto self = get_self();
+		auto self = shared_from_this();
 		auto timediff = has_timeout ? endtime - Ev::now() : -1.0;
 		return Ev::wait_io_until( fd, Ev::WaitRead
 					, break_fd, Ev::WaitRead
@@ -330,14 +319,8 @@ Breaker::read_timed( int fd
 
 namespace {
 
-class WriteTimed {
+class WriteTimed : public std::enable_shared_from_this<WriteTimed> {
 private:
-	std::weak_ptr<WriteTimed> weak_self;
-
-	std::shared_ptr<WriteTimed> get_self() const {
-		return std::shared_ptr<WriteTimed>(weak_self);
-	}
-
 	int fd;
 	std::vector<std::uint8_t> data;
 	std::vector<std::uint8_t>::const_iterator start;
@@ -376,7 +359,6 @@ public:
 					, break_fd
 					, logger
 					));
-		ret->weak_self = ret;
 		return ret;
 	}
 
@@ -399,7 +381,7 @@ public:
 			/* Timed out while writing.  */
 			return return_result(IoTimeout);
 
-		auto self = get_self();
+		auto self = shared_from_this();
 		auto timeout = has_timeout ? endtime - Ev::now() : -1.0;
 		return Ev::wait_io_until( fd, Ev::WaitWrite
 					, break_fd, Ev::WaitRead

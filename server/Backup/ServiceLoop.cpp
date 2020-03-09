@@ -21,7 +21,7 @@ ServiceLoop::enter_loop() {
 	/* This function ensures that this object remains
 	 * alive via the self-pointer.
 	 */
-	auto self = get_self();
+	auto self = shared_from_this();
 	return self->loop().then<int>([self](int) {
 		auto cid_string = ([](Secp256k1::PubKey const& cid) {
 			auto os = std::ostringstream();
