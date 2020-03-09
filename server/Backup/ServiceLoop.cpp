@@ -1,4 +1,5 @@
 #include<sstream>
+#include"Backup/RequestIncremental.hpp"
 #include"Backup/ServiceLoop.hpp"
 #include"Backup/StorageIf.hpp"
 #include"Ev/Io.hpp"
@@ -85,6 +86,38 @@ ServiceLoop::dispatch_msg(Protocol::Message msg) {
 	case Protocol::MID::ping:
 		return pong();
 
+	case Protocol::MID::request_incremental: {
+		auto it = msg.tlvs.find(std::uint8_t(0));
+		if (it == msg.tlvs.end()) {
+			logger.unusual( "<fd %d> request_incremental "
+					"does not have data_version tlv 0."
+				      , messenger.get_fd()
+				      );
+			return Ev::lift_io(0);
+		}
+		auto& data_version_buff = it->second;
+		if (data_version_buff.size() != 4) {
+			logger.unusual( "<fd %d> request_incremental "
+					"has data_version tlv 0 of incorrect "
+					"size %ld (should be 4)."
+				      , messenger.get_fd()
+				      , long(data_version_buff.size())
+				      );
+			return Ev::lift_io(0);
+		}
+		auto data_version = (std::uint32_t(data_version_buff[0]) << 24)
+				  + (std::uint32_t(data_version_buff[1]) << 16)
+				  + (std::uint32_t(data_version_buff[2]) << 8)
+				  + (std::uint32_t(data_version_buff[3]) << 0)
+				  ;
+		auto sequence = Backup::RequestIncremental::create
+			( logger
+			, messenger
+			, storage
+			, [this]() { return loop(); }
+			);
+		return sequence->run(cid, data_version);
+	}
 	/* FIXME: Other messages.  */
 
 	default:
