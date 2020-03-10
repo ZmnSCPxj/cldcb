@@ -91,6 +91,8 @@ libcldcb_common_la_SOURCES = \
 	Util/Rw.hpp \
 	Util/Str.cpp \
 	Util/Str.hpp \
+	Util/fork_test.cpp \
+	Util/fork_test.hpp \
 	Util/make_unique.hpp
 
 libcldcb_common_la_LIBADD =\
@@ -108,6 +110,7 @@ AM_DEFAULT_SOURCE_EXT = .cpp
 
 TESTS = \
 	test_crypto_box \
+	test_fork_test \
 	test_jsmn \
 	test_logger \
 	test_net \
