@@ -1,1 +1,3 @@
 cldcb-server
+test_*
+!test_*.cpp

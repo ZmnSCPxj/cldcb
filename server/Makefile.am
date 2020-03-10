@@ -92,7 +92,8 @@ AM_DEFAULT_SOURCE_EXT = .cpp
 LDADD = libcldcb-server.la $(PTHREAD_LIBS) $(libev_LIBS)
 AM_CXXFLAGS = -I$(top_srcdir)/common/ $(PTHREAD_CFLAGS) $(libev_CFLAGS)
 
-TESTS =
+TESTS = \
+	test_archive_abort
 check_PROGRAMS = $(TESTS)
 
 if USE_VALGRIND
