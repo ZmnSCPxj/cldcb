@@ -32,7 +32,7 @@ public:
 	      , Net::Fd fd_
 	      ) : logger(logger_)
 		, threadpool(threadpool_)
-		, fd(std::move(fd))
+		, fd(std::move(fd_))
 		, reupload_done(false)
 		, incremental_started(false)
 		{ }
