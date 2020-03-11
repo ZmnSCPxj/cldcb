@@ -29,6 +29,8 @@ private:
 	std::uint16_t count;
 	Net::Fd fd;
 
+	bool wrote_data_version;
+
 	std::uint64_t orig_size;
 
 public:
@@ -51,6 +53,7 @@ public:
 private:
 	bool increment_chunk_back(std::vector<std::uint8_t> chunk);
 	bool increment_end_back();
+	bool write_data_version();
 
 };
 

@@ -25,6 +25,7 @@ IncrementalWriter::IncrementalWriter( Util::Logger& logger_
 				      , data_version(data_version_)
 				      , count(count_)
 				      , fd(std::move(fd_))
+				      , wrote_data_version(false)
 				      , orig_size()
 				      {
 	if (!fd)
@@ -85,6 +86,8 @@ IncrementalWriter::incremental_end() {
 
 bool
 IncrementalWriter::increment_chunk_back(std::vector<std::uint8_t> chunk) {
+	if (!write_data_version())
+		return false;
 	/* Write the size.  */
 	auto size = std::uint16_t(chunk.size());
 	auto sizebuff = std::vector<std::uint8_t>();
@@ -120,6 +123,8 @@ IncrementalWriter::increment_chunk_back(std::vector<std::uint8_t> chunk) {
 
 bool
 IncrementalWriter::increment_end_back() {
+	if (!write_data_version())
+		return false;
 	/* Write the terminating 0-size chunk.  */
 	auto size = std::uint16_t(0);
 	auto sizebuff = std::vector<std::uint8_t>();
@@ -170,6 +175,33 @@ IncrementalWriter::increment_end_back() {
 	logger.debug( "Closing <fd %d>." , fd.get());
 	fd.reset();
 
+	return true;
+}
+
+bool
+IncrementalWriter::write_data_version() {
+	if (wrote_data_version)
+		return true;
+
+	/* Serialize data_version.  */
+	auto data = std::vector<std::uint8_t>();
+	S::serialize(data, data_version);
+
+	/* Write.  */
+	auto wres = Util::Rw::write_all( fd.get()
+				       , &data[0]
+				       , data.size()
+				       );
+	if (!wres) {
+		auto my_errno = errno;
+		logger.BROKEN( "Failed to write data_version to <fd %d>"
+			     , fd.get()
+			     );
+		return false;
+	}
+	last_length += data.size();
+
+	wrote_data_version = true;
 	return true;
 }
 

@@ -95,11 +95,13 @@ int main() {
 			     == Archive::FooterJudge::TruncateThenAppend
 			      );
 			assert(res.fd);
-			/* 2 + chunk_size == size-prefixed chunk.
+			/* 4 == data_version
+			 * 2 + chunk_size == size-prefixed chunk.
 			 * 2 == terminating 0-sized chunk.
 			 * 8 + 4 + 2 + 32 == footer size.
 			 */
-			assert(res.to_remove == 2 + chunk_size
+			assert(res.to_remove == 4
+					      + 2 + chunk_size
 					      + 2
 					      + 8 + 4 + 2 + 32
 					      );
