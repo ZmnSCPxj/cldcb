@@ -33,6 +33,19 @@ public:
 		std::uint32_t data_version;
 		/* Filled in if type == Chunk.  */
 		std::vector<std::uint8_t> chunk;
+
+		IncrementMsg() =default;
+		IncrementMsg(IncrementMsg&&) =default;
+		IncrementMsg& operator=(IncrementMsg&&) =default;
+		IncrementMsg(IncrementMsg const&) =default;
+		IncrementMsg& operator=(IncrementMsg const&) =default;
+		IncrementMsg( IncrementType type_
+			    , std::uint32_t data_version_
+			    , std::vector<std::uint8_t> chunk_
+			    ) : type(type_)
+			      , data_version(data_version_)
+			      , chunk(std::move(chunk_))
+			      {  }
 	};
 
 	/* Returns nullptr if an error occurred.
