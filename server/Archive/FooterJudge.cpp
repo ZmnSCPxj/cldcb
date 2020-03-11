@@ -128,7 +128,7 @@ FooterJudge::judge_back( std::string filename
 	auto prev_count = (std::uint16_t(buffer[12]) << 8)
 			+ (std::uint16_t(buffer[13]) << 0)
 			;
-	if (prev_count == max_count) {
+	if (prev_count >= max_count) {
 		logger.info( "Archive::FooterJudge: <fd %d> has %d "
 			     "incremental updates, will close and "
 			     "reupload from client."
