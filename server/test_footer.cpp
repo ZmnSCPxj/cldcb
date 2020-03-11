@@ -166,5 +166,7 @@ int main() {
 	if (res3)
 		return *res3;
 
+	unlink(archive_filename.c_str());
+
 	return 0;
 }
