@@ -151,5 +151,7 @@ int main() {
 	}
 
 	unlink(archive_filename.c_str());
+
+	return 0;
 }
 
