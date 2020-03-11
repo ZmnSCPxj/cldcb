@@ -93,7 +93,8 @@ LDADD = libcldcb-server.la $(PTHREAD_LIBS) $(libev_LIBS)
 AM_CXXFLAGS = -I$(top_srcdir)/common/ $(PTHREAD_CFLAGS) $(libev_CFLAGS)
 
 TESTS = \
-	test_archive_abort
+	test_archive_abort \
+	test_footer
 check_PROGRAMS = $(TESTS)
 
 if USE_VALGRIND
