@@ -59,6 +59,8 @@ libcldcb_server_la_SOURCES = \
 	Ev/Io.hpp \
 	Ev/Join.cpp \
 	Ev/Join.hpp \
+	Ev/Semaphore.cpp \
+	Ev/Semaphore.hpp \
 	Ev/ThreadPool.cpp \
 	Ev/ThreadPool.hpp \
 	Ev/concurrent.cpp \
