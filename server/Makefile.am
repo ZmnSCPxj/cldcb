@@ -15,6 +15,8 @@ libcldcb_server_la_SOURCES = \
 	Archive/IncrementalWriter.hpp \
 	Archive/Reader.cpp \
 	Archive/Reader.hpp \
+	Archive/RecognitionStorageImpl.cpp \
+	Archive/RecognitionStorageImpl.hpp \
 	Archive/ReuploadSequence.cpp \
 	Archive/ReuploadSequence.hpp \
 	Archive/ReuploadWriter.cpp \
