@@ -1,6 +1,8 @@
 #ifndef CLDCB_SERVER_EV_YIELD_HPP
 #define CLDCB_SERVER_EV_YIELD_HPP
 
+#include<functional>
+
 namespace Ev { template<typename a> class Io; }
 
 namespace Ev {
@@ -19,6 +21,13 @@ namespace Ev {
  * }
  */
 Io<int> yield();
+
+/* Shared by some other Ev objects.  */
+namespace Detail {
+
+void yield_pass(std::function<void()> pass);
+
+}
 
 }
 

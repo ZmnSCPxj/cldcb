@@ -13,14 +13,12 @@ Ev::Io<int> Join::join() {
 		if (num == max_num) {
 			auto my_passes = std::move(passes);
 			num = 0;
-			for (auto& p : my_passes) {
-				try {
+			for (auto& p : my_passes)
+				Ev::Detail::yield_pass([p]() {
 					p(0);
-				} catch (...) { }
-				p = nullptr;
-			}
+				});
 		}
-	}).then<int>([](int) { return Ev::yield(); });
+	});
 }
 
 }
