@@ -25,6 +25,7 @@ libcldcb_server_la_SOURCES = \
 	Archive/ReuploadSequence.hpp \
 	Archive/ReuploadWriter.cpp \
 	Archive/ReuploadWriter.hpp \
+	Archive/StorageImpl.hpp \
 	Archive/Unlinker.cpp \
 	Archive/Unlinker.hpp \
 	Backup/ConnectionLoop.cpp \
