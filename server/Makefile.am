@@ -4,6 +4,8 @@ cldcb_server_SOURCES = \
 
 noinst_LTLIBRARIES = libcldcb-server.la
 libcldcb_server_la_SOURCES = \
+	Archive/DataStorageImpl.cpp \
+	Archive/DataStorageImpl.hpp \
 	Archive/FileNamer.cpp \
 	Archive/FileNamer.hpp \
 	Archive/FooterJudge.cpp \
