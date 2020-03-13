@@ -9,6 +9,14 @@
 #include<unistd.h>
 #include"daemonize.hpp"
 
+#ifdef HAVE_CONFIG_H
+# include"config.h"
+#endif
+
+#ifndef HAVE_WORKING_FORK
+# error Require working fork().
+#endif
+
 namespace {
 
 bool write_all(int fd, void const* data, size_t size) {

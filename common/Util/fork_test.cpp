@@ -7,6 +7,10 @@
 #include"Util/fork_test.hpp"
 #include"Util/make_unique.hpp"
 
+#ifdef HAVE_CONFIG_H
+# include"config.h"
+#endif
+
 namespace Util {
 
 std::unique_ptr<int>

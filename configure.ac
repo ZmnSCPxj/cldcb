@@ -16,6 +16,11 @@ AC_PROG_CXX
 AX_CXX_COMPILE_STDCXX_11
 AC_LANG([C++])
 
+AC_PROG_AWK
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+
 AX_VALGRIND_CHECK()
 AM_CONDITIONAL([USE_VALGRIND], [test x"$enable_valgrind" = xyes])
 
@@ -26,10 +31,18 @@ AX_PTHREAD([:],[
 AX_LIB_EV
 
 # Checks for header files.
+AC_CHECK_HEADERS([fcntl.h netdb.h stddef.h stdlib.h string.h sys/socket.h unistd.h], [:], [
+	AC_MSG_ERROR([Missing required header file ${ac_header}.])
+])
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_TYPE_PID_T
 
 # Checks for library functions.
+AC_FUNC_FORK
+AC_CHECK_FUNCS([dup2 ftruncate gethostname memset socket strerror], [:], [
+	AC_MSG_ERROR([Missing required system function ${ac_func}.])
+])
 
 # Outputs.
 AC_SUBST([PTHREAD_CC])

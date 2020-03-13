@@ -3,6 +3,10 @@
 #include<sys/types.h>
 #include"Server/send_signal.hpp"  
 
+#ifdef HAVE_CONFIG_H
+# include"config.h"
+#endif
+
 namespace {
 pid_t get_server_pid() {
 	auto is = std::ifstream("cldcb-server.pid");
