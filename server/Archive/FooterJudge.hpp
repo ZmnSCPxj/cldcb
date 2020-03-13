@@ -38,6 +38,11 @@ public:
 		 * bytes to remove.
 		 */
 		std::size_t to_remove;
+		/* If Append or TruncateThenAppend, the
+		 * most recent count.
+		 * You should use the next count.
+		 */
+		std::uint16_t count;
 	};
 
 	FooterJudge() =delete;

@@ -150,6 +150,7 @@ FooterJudge::judge_back( std::string filename
 		rv.to_remove = std::size_t(prev_size)
 			     + std::size_t(footer_size)
 			     ;
+		rv.count = prev_count;
 		return rv;
 	} else if ((prev_data_version + 1) == data_version) {
 		logger.info( "Archive::FooterJudge: will append update to "
@@ -158,6 +159,7 @@ FooterJudge::judge_back( std::string filename
 			   , long(data_version)
 			   );
 		rv.type = Append;
+		rv.count = prev_count;
 		return rv;
 	} else {
 		logger.unusual( "Archive::FooterJudge: <fd %d> has "
