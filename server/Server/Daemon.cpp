@@ -1,7 +1,9 @@
 #include<exception>
 #include<iostream>
+#include"Archive/StorageImpl.hpp"
 #include"Backup/ConnectionLoop.hpp"
 #include"Daemon/Main.hpp"
+#include"Ev/ThreadPool.hpp"
 #include"Net/SocketFd.hpp"
 #include"Server/Daemon.hpp"
 #include"Server/Logger.hpp"
@@ -16,31 +18,46 @@ private:
 
 	std::unique_ptr<Server::Logger> plogger;
 
+	std::unique_ptr<Ev::ThreadPool> threadpool;
+
 	std::unique_ptr<::Daemon::Main> main;
 
 	bool initialize() {
-		/* TODO: get log path from options or something.  */
-		plogger = Util::make_unique<Server::Logger>("debug.log");
+		/* TODO: get from params or something.  */
+		auto logfile = std::string("debug.log");
+		auto max_count = std::uint16_t(19999);
+		auto bindport = int(29735);
+		auto pidfile = std::string("cldcb-server.pid");
 
-		auto looper_constructor = []( Util::Logger& logger
-					    , ::Daemon::Breaker& breaker
-					    , ::Daemon::ClientList& clients
-					    ) {
-			/* TODO: Archive::StorageImpl.  */
+		plogger = Util::make_unique<Server::Logger>(logfile);
+
+		threadpool = Util::make_unique<Ev::ThreadPool>();
+
+		auto looper_constructor = [ this
+					  , max_count
+					  ]( Util::Logger& logger
+					   , ::Daemon::Breaker& breaker
+					   , ::Daemon::ClientList& clients
+					   ) {
+			auto storage = Util::make_unique<Archive::StorageImpl>
+				( logger
+				, clients
+				, *threadpool
+				, max_count
+				);
+
 			return Util::make_unique<Backup::ConnectionLoop>
 				( logger
 				, breaker
+				, std::move(storage)
 				);
 		};
 
-		/* TODO: get options from params.  */
 		main = Util::make_unique<::Daemon::Main>( *plogger
-							, 29735
-							, "cldcb-server.pid"
+							, bindport
+							, pidfile
 							, looper_constructor
 							);
-
-		/* TODO: other inits */
 
 		return true;
 	}

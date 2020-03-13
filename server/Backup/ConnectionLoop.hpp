@@ -19,6 +19,7 @@ private:
 public:
 	ConnectionLoop( Util::Logger& logger_
 		      , Daemon::Breaker& breaker_
+		      , std::unique_ptr<Backup::StorageIf> storage_
 		      );
 	~ConnectionLoop();
 
