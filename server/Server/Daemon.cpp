@@ -1,5 +1,6 @@
 #include<exception>
 #include<iostream>
+#include"Backup/ConnectionLoop.hpp"
 #include"Daemon/Main.hpp"
 #include"Net/SocketFd.hpp"
 #include"Server/Daemon.hpp"
@@ -21,10 +22,22 @@ private:
 		/* TODO: get log path from options or something.  */
 		plogger = Util::make_unique<Server::Logger>("debug.log");
 
+		auto looper_constructor = []( Util::Logger& logger
+					    , ::Daemon::Breaker& breaker
+					    , ::Daemon::ClientList& clients
+					    ) {
+			/* TODO: Archive::StorageImpl.  */
+			return Util::make_unique<Backup::ConnectionLoop>
+				( logger
+				, breaker
+				);
+		};
+
 		/* TODO: get options from params.  */
 		main = Util::make_unique<::Daemon::Main>( *plogger
 							, 29735
 							, "cldcb-server.pid"
+							, looper_constructor
 							);
 
 		/* TODO: other inits */
