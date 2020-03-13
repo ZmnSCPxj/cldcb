@@ -5,12 +5,12 @@
 #include<functional>
 #include<memory>
 #include<utility>
+#include"Backup/PingPongMessenger.hpp"
 #include"Ev/Join.hpp"
 
 namespace Backup { class IncrementalStorage; }
 namespace Backup { class ReuploadStorage; }
 namespace Backup { class StorageIf; }
-namespace Daemon { class Messenger; }
 namespace Ev { template<typename a> class Io; }
 namespace Secp256k1 { class PubKey; }
 namespace Util { class Logger; }
@@ -24,7 +24,7 @@ class RequestIncremental
 		: public std::enable_shared_from_this<RequestIncremental> {
 private:
 	Util::Logger& logger;
-	Daemon::Messenger& messenger;
+	Backup::PingPongMessenger messenger;
 	Backup::StorageIf& storage;
 	std::function<Ev::Io<int>()> enter_loop;
 
@@ -34,8 +34,6 @@ private:
 	std::unique_ptr<Ev::Join> joiner;
 
 	double start_time;
-
-	bool timedout;
 
 	RequestIncremental( Util::Logger& logger_
 			  , Daemon::Messenger& messenger_

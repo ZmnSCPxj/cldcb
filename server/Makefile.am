@@ -34,6 +34,8 @@ libcldcb_server_la_SOURCES = \
 	Backup/DataStorage.cpp \
 	Backup/DataStorage.hpp \
 	Backup/IncrementalStorage.hpp \
+	Backup/PingPongMessenger.cpp \
+	Backup/PingPongMessenger.hpp \
 	Backup/RecognitionStorage.hpp \
 	Backup/RequestIncremental.cpp \
 	Backup/RequestIncremental.hpp \

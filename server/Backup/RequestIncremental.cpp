@@ -29,7 +29,6 @@ RequestIncremental::RequestIncremental( Util::Logger& logger_
 					, reupload_storage()
 					, joiner()
 					, start_time(0.0)
-					, timedout(false)
 					{ }
 RequestIncremental::~RequestIncremental() { }
 
@@ -139,7 +138,7 @@ Ev::Io<bool> RequestIncremental::read_incremental() {
 	assert(incremental_storage);
 	return Ev::yield()
 	     .then<std::unique_ptr<Protocol::Message>>([this](int) {
-		return messenger.receive_message(5.0, timedout);
+		return messenger.receive_message();
 	}).then<bool>([this](std::unique_ptr<Protocol::Message> msg) {
 		if (!msg)
 			return Ev::lift_io(false);
@@ -183,7 +182,7 @@ Ev::Io<bool> RequestIncremental::read_reupload() {
 	assert(reupload_storage);
 	return Ev::yield()
 	     .then<std::unique_ptr<Protocol::Message>>([this](int) {
-		return messenger.receive_message(5.0, timedout);
+		return messenger.receive_message();
 	}).then<bool>([this](std::unique_ptr<Protocol::Message> msg) {
 		if (!msg)
 			return Ev::lift_io(false);
