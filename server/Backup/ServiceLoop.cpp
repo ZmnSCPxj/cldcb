@@ -118,6 +118,32 @@ ServiceLoop::dispatch_msg(Protocol::Message msg) {
 			);
 		return sequence->run(cid, data_version);
 	}
+
+	case Protocol::MID::give_recognition_code: {
+		auto it = msg.tlvs.find(std::uint8_t(0));
+		if (it == msg.tlvs.end()) {
+			logger.unusual( "<fd %d> give_recognition_code "
+					"does not have recognition_code tlv 0."
+				      , messenger.get_fd()
+				      );
+			return Ev::lift_io(0);
+		}
+		if (it->second.size() != 64) {
+			logger.unusual( "<fd %d> give_recognition_code "
+					"has recognition_code tlv 0 of "
+					"incorrect size %ld (should be 64)."
+				      , messenger.get_fd()
+				      , (long) it->second.size()
+				      );
+			return Ev::lift_io(0);
+		}
+		return storage.give_recognition_code(cid, it->second)
+		     .then<int>([this](bool res) {
+			if (!res)
+				return Ev::lift_io(0);
+			return loop();
+		});
+	}
 	/* FIXME: Other messages.  */
 
 	default:
