@@ -39,6 +39,8 @@ libcldcb_server_la_SOURCES = \
 	Backup/RecognitionStorage.hpp \
 	Backup/RequestIncremental.cpp \
 	Backup/RequestIncremental.hpp \
+	Backup/RequestRecognitionCodes.cpp \
+	Backup/RequestRecognitionCodes.hpp \
 	Backup/ReuploadStorage.hpp \
 	Backup/ServiceLoop.cpp \
 	Backup/ServiceLoop.hpp \

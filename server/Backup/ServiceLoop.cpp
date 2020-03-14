@@ -1,5 +1,6 @@
 #include<sstream>
 #include"Backup/RequestIncremental.hpp"
+#include"Backup/RequestRecognitionCodes.hpp"
 #include"Backup/ServiceLoop.hpp"
 #include"Backup/StorageIf.hpp"
 #include"Ev/Io.hpp"
@@ -143,6 +144,16 @@ ServiceLoop::dispatch_msg(Protocol::Message msg) {
 				return Ev::lift_io(0);
 			return loop();
 		});
+	}
+
+	case Protocol::MID::request_recognition_codes: {
+		auto sequence = Backup::RequestRecognitionCodes::create
+			( logger
+			, messenger
+			, storage
+			, [this]() { return loop(); }
+			);
+		return sequence->run();
 	}
 	/* FIXME: Other messages.  */
 
