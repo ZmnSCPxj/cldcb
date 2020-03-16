@@ -1,4 +1,5 @@
 #include<sstream>
+#include"Backup/RequestBackupData.hpp"
 #include"Backup/RequestIncremental.hpp"
 #include"Backup/RequestRecognitionCodes.hpp"
 #include"Backup/ServiceLoop.hpp"
@@ -6,6 +7,7 @@
 #include"Ev/Io.hpp"
 #include"Protocol/Message.hpp"
 #include"Protocol/MID.hpp"
+#include"Secp256k1/PubKey.hpp"
 #include"Util/Logger.hpp"
 #include"Util/Str.hpp"
 
@@ -155,7 +157,49 @@ ServiceLoop::dispatch_msg(Protocol::Message msg) {
 			);
 		return sequence->run();
 	}
-	/* FIXME: Other messages.  */
+
+	case Protocol::MID::request_backup_data: {
+		auto it = msg.tlvs.find(std::uint8_t(0));
+		if (it == msg.tlvs.end()) {
+			logger.unusual( "<fd %d> gave request_backup_data "
+					"without cid tlv 0."
+				      , messenger.get_fd()
+				      );
+			return Ev::lift_io(0);
+		}
+		if (it->second.size() != 33) {
+			logger.unusual( "<fd %d> request_backup_data has "
+					"cid tlv 0 of incorrect size %d "
+					"(should be 33)."
+				      , messenger.get_fd()
+				      , int(it->second.size())
+				      );
+			return Ev::lift_io(0);
+		}
+
+		auto cid = Secp256k1::PubKey();
+		try {
+			cid = Secp256k1::PubKey::from_buffer(&it->second[0]);
+		} catch (Secp256k1::InvalidPubKey const&) {
+			logger.unusual( "<fd %d> request_backup_Data has "
+					"cid tlv 0 that is invalid public key "
+					"%s."
+				      , messenger.get_fd()
+				      , Util::Str::hexdump( &it->second[0]
+							  , it->second.size()
+							  )
+				      );
+			return Ev::lift_io(0);
+		}
+
+		auto sequence = Backup::RequestBackupData::create
+			( logger
+			, messenger
+			, storage
+			, [this]() { return loop(); }
+			);
+		return sequence->run(cid);
+	}
 
 	default:
 		logger.unusual( "<fd %d> got unexpected message %s"
