@@ -99,6 +99,7 @@ private:
 
 		/* Clean up.  */
 		main = nullptr;
+		threadpool = nullptr;
 		plogger = nullptr;
 	}
 
