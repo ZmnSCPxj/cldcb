@@ -35,6 +35,8 @@ libcldcb_common_la_SOURCES = \
 	Net/Fd.hpp \
 	Net/Listener.cpp \
 	Net/Listener.hpp \
+	Net/ProxyConnector.cpp \
+	Net/ProxyConnector.hpp \
 	Net/SocketFd.cpp \
 	Net/SocketFd.hpp \
 	Net/make_nonblocking.cpp \

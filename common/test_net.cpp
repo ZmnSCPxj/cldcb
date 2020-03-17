@@ -2,7 +2,6 @@
 #include<cstdint>
 #include<fcntl.h>
 #include<future>
-#include<iostream>
 #include<sys/stat.h>
 #include<sys/types.h>
 #include<thread>
@@ -11,10 +10,12 @@
 #include"Net/DirectConnector.hpp"
 #include"Net/Fd.hpp"
 #include"Net/Listener.hpp"
+#include"Net/ProxyConnector.hpp"
 #include"Net/SocketFd.hpp"
 #include"Net/socketpair.hpp"
 #include"Secp256k1/Random.hpp"
 #include"Util/Logger.hpp"
+#include"Util/make_unique.hpp"
 
 class NullLogger : public Util::Logger {
 public:
@@ -53,6 +54,24 @@ int main() {
 	{
 		auto connector = Net::DirectConnector();
 		auto sfd = connector.connect("www.google.com", 80);
+		assert(sfd);
+	}
+
+	/* Only works if you have Tor installed and set its SOCKS5 proxy
+	 * to 9050.
+	 * Does not work in valgrind since we are too slow in valgrind
+	 * mode.
+	 */
+	if (0) /* Set to 1 if you have Tor installed and running on 9050 and not on valgrind.  */
+	{
+		auto proxy_port = 9050;
+		auto connector = Net::ProxyConnector
+			( Util::make_unique<Net::DirectConnector>()
+			, "127.0.0.1"
+			, proxy_port
+			);
+		errno = 0;
+		auto sfd = connector.connect("www.torproject.org", 443);
 		assert(sfd);
 	}
 

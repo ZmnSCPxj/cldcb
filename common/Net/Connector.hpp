@@ -1,7 +1,6 @@
 #ifndef CLDCB_COMMON_NET_CONNECTOR_HPP
 #define CLDCB_COMMON_NET_CONNECTOR_HPP
 
-#include<memory>
 #include<string>
 
 namespace Net { class SocketFd; }
