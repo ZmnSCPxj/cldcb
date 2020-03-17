@@ -92,6 +92,8 @@ libcldcb_server_la_SOURCES = \
 	Server/Daemon.hpp \
 	Server/Logger.cpp \
 	Server/Logger.hpp \
+	Server/OptionsHandler.cpp \
+	Server/OptionsHandler.hpp \
 	Server/Stop.cpp \
 	Server/Stop.hpp \
 	Server/TermLogger.cpp \

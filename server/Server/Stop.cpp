@@ -1,12 +1,18 @@
 #include<iostream>
 #include<signal.h>
 #include"Server/Stop.hpp"
+#include"Server/OptionsHandler.hpp"
+#include"Server/TermLogger.hpp"
 #include"Server/send_signal.hpp"
 
 namespace Server {
 
 int Stop::operator()(std::vector<std::string> params) {
-	/* TODO: check params.  */
+	auto logger = Server::TermLogger();
+	auto options = Server::OptionsHandler(logger);
+	auto optret = options.handle(params);
+	if (optret)
+		return *optret;
 
 	if (!params.empty()) {
 		std::cerr << "**BROKEN** Unexpected paramter to stop method."

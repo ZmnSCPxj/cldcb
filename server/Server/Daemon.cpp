@@ -7,6 +7,8 @@
 #include"Net/SocketFd.hpp"
 #include"Server/Daemon.hpp"
 #include"Server/Logger.hpp"
+#include"Server/OptionsHandler.hpp"
+#include"Server/TermLogger.hpp"
 #include"Util/make_unique.hpp"
 #include"daemonize.hpp"
 
@@ -14,7 +16,11 @@ namespace Server {
 
 class Daemon::Impl {
 private:
-	std::vector<std::string> params;
+	/* The termlogger is only used for options, otherwise the
+	 * rest of the daemon uses the plogger.
+	 */
+	Server::TermLogger termlogger;
+	Server::OptionsHandler options;
 
 	std::unique_ptr<Server::Logger> plogger;
 
@@ -23,11 +29,10 @@ private:
 	std::unique_ptr<::Daemon::Main> main;
 
 	bool initialize() {
-		/* TODO: get from params or something.  */
-		auto logfile = std::string("debug.log");
-		auto max_count = std::uint16_t(19999);
-		auto bindport = int(29735);
-		auto pidfile = std::string("cldcb-server.pid");
+		auto logfile = options.logfile();
+		auto max_count = options.max_count();
+		auto bindport = options.port();
+		auto pidfile = options.pidfile();
 
 		plogger = Util::make_unique<Server::Logger>(logfile);
 
@@ -104,8 +109,13 @@ private:
 	}
 
 public:
-	int daemonize_and_run(std::vector<std::string> params_) {
-		params = params_;
+	Impl() : termlogger(), options(termlogger) { }
+
+	int daemonize_and_run(std::vector<std::string> params) {
+		auto optret = options.handle(params);
+		if (optret)
+			return *optret;
+
 		return daemonize([this](std::function<void(int)> complete) {
 			this->run(complete);
 		});

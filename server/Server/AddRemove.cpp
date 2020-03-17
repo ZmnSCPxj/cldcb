@@ -1,6 +1,7 @@
 #include<sstream>
 #include"Secp256k1/PubKey.hpp"
 #include"Server/AddRemove.hpp"
+#include"Server/OptionsHandler.hpp"
 #include"Server/TermLogger.hpp"
 #include"Server/change_clients.hpp"
 
@@ -23,6 +24,10 @@ AddRemove::operator()(std::vector<std::string> params) {
 	auto logger = Server::TermLogger();
 
 	/* TODO: options, like the server directory.  */
+	auto options = Server::OptionsHandler(logger);
+	auto optret = options.handle(params);
+	if (optret)
+		return *optret;
 
 	if (params.empty()) {
 		logger.BROKEN("Nothing to add!");
