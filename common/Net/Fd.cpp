@@ -13,9 +13,16 @@ Fd& Fd::operator=(Fd&& o) {
 
 Fd::~Fd() {
 	if (fd >= 0) {
+		/* Ignore errors.
+		 * This is a destructor, so it is
+		 * entirely possible that this
+		 * occurred due to errno-based
+		 * errors.
+		 * So, we should preserve the errno.
+		 */
+		auto my_errno = errno;
 		close(fd);
-		/* Ignore errors.  */
-		errno = 0;
+		errno = my_errno;
 	}
 }
 

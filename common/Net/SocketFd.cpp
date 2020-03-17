@@ -11,6 +11,12 @@ SocketFd::~SocketFd() {
 	if (!fd)
 		return;
 
+	/* Save the errno; it is possible we are shutting down FDs
+	 * due to failures, so make sure the reported failure is
+	 * the one that is saved in the current errno.
+	 */
+	auto my_errno = errno;
+
 	char unused[64];
 	auto sys_res = int();
 
@@ -18,9 +24,12 @@ SocketFd::~SocketFd() {
 	 * trigger an EOF there.
 	 */
 	sys_res = shutdown(fd.get(), SHUT_WR);
-	if (sys_res < 0)
+	if (sys_res < 0) {
+		/* Restore the previous errno.  */
+		errno = my_errno;
 		/* Normal ~Fd() will close the socket file descriptor.  */
 		return;
+	}
 
 	/* Drain the incoming socket until EOF.  */
 	for (;;) {
@@ -30,8 +39,11 @@ SocketFd::~SocketFd() {
 		/* Let normal ~Fd() close.
 		 * sys_res is 0 at EOF, and -1 at error.
 		 */
-		if (sys_res <= 0)
+		if (sys_res <= 0) {
+			/* Restore the previous errno.  */
+			errno = my_errno;
 			return;
+		}
 	}
 }
 
