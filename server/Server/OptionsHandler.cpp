@@ -1,4 +1,5 @@
 #include<errno.h>
+#include<iostream>
 #include<string.h>
 #include<sys/stat.h>
 #include<sys/types.h>
@@ -11,6 +12,9 @@ namespace Server {
 
 class OptionsHandler::Impl {
 private:
+	std::string helpline;
+	Supported supp;
+
 	Util::Logger& logger;
 	std::string serverdir;
 	std::string pidfile;
@@ -23,9 +27,131 @@ private:
 		return std::string(getenv("HOME"));
 	}
 
+	static
+	bool is_opt(std::string const& param) {
+		return (param.length() > 0) && (param[0] == '-');
+	}
+	/* Given is_equals_opt(param, "--foo"), checks if param
+	 * starts with "--foo=".
+	 */
+	static
+	bool is_equals_opt( std::string const& param
+			  , std::string const& opt
+			  ) {
+		if (opt.length() > param.length())
+			return false;
+		auto preparam = param.substr(0, opt.length() + 1);
+		return preparam == (opt + "=");
+	}
+	static
+	std::string get_equals_opt(std::string const& param) {
+		auto it = param.find('=');
+		if (it == std::string::npos)
+			return "";
+		return std::string(param.begin() + it + 1, param.end());
+	}
+
+	/* Remove this option from the params, return the equivalenti
+	 * iterator afterwards.
+	 */
+	static void
+	shift( std::vector<std::string>& params
+	     , std::vector<std::string>::iterator& it
+	     ) {
+		auto pos = it - params.begin();
+		params.erase(it);
+		it = params.begin() + pos;
+	}
+
+	void do_help() const {
+		std::cout << "Usage: " << helpline << std::endl
+			  << std::endl
+			  << "Supported options of this method:" << std::endl
+			  << "  -h, --help          Display this help." << std::endl
+			  << "  --server-dir=<dir>  Directory to keep everything in." << std::endl
+			  << "                       (clients, secret, server_id, archive files...)" << std::endl
+			  << "  --pidfile=<file>    File to contain PID of running daemon." << std::endl
+			  << "                       (relative to server-dir)" << std::endl
+			   ;
+		if (supp == All) {
+			std::cout
+			  << "  --logfile=<file>    File to put logs in (relative to server-dir)." << std::endl
+			  << "  --maxcount=<num>    Maximum number of increments before forcing reupload." << std::endl
+			  << "  --port=<num>        Port to listen on." << std::endl
+			   ;
+		}
+		std::cout << std::endl
+			  << "cldcb-server is Free Software WITHOUT ANY WARRANTY." << std::endl
+			  << std::endl
+			   ;
+	}
+
+	struct BadArg {};
+
+	bool param_string( std::vector<std::string>& params
+			 , std::vector<std::string>::iterator& pt
+			 , std::string option
+			 , std::string& target
+			 ) {
+		if (pt == params.end())
+			return true;
+		if (*pt == option) {
+			shift(params, pt);
+			if (pt == params.end()) {
+				logger.BROKEN( "Missing arg for: %s"
+					     , option.c_str()
+					     );
+				throw BadArg();
+			}
+			target = *pt;
+			shift(params, pt);
+			return true;
+		}
+		if (is_equals_opt(*pt, option)) {
+			target = get_equals_opt(*pt);
+			shift(params, pt);
+			return true;
+		}
+		return false;
+	}
+	bool param_int( std::vector<std::string>& params
+		      , std::vector<std::string>::iterator& pt
+		      , std::string option
+		      , int& target
+		      ) {
+		auto tmp = std::string();
+		auto ret = param_string(params, pt, option, tmp);
+		if (ret) {
+			auto pos = std::size_t(0);
+			auto tmp_int = int();
+			try {
+				tmp_int = std::stoi(tmp, &pos);
+			} catch (std::runtime_error const&) {
+				pos = tmp.length() - 1;
+			}
+			if (pos != tmp.length()) {
+				logger.BROKEN( "Expected numeric argument "
+					       "for %s, got %s."
+					     , option.c_str()
+					     , tmp.c_str()
+					     );
+				throw BadArg();
+			}
+
+			target = tmp_int;
+		}
+		return ret;
+	}
+
 public:
 	explicit
-	Impl(Util::Logger& logger_) : logger(logger_) {
+	Impl( Util::Logger& logger_
+	    , std::string helpline_
+	    , Supported supp_
+	    ) : logger(logger_)
+	      , helpline(std::move(helpline_))
+	      , supp(supp_)
+	      {
 		serverdir = get_home_dir() + "/.cldcb-server";
 		pidfile = "cldcb-server.pid";
 		logfile = "debug.log";
@@ -36,7 +162,78 @@ public:
 	std::unique_ptr<int>
 	handle(std::vector<std::string>& params) {
 
-		/* TODO: Actually handle options.  */
+		auto pt = params.begin();
+		while (pt != params.end()) {
+			if (!is_opt(*pt)) {
+				/* Skip non-options.  */
+				++pt;
+				continue;
+			}
+
+			if (*pt == "--") {
+				/* Shift, then leave the rest of the
+				 * parameters alone.
+				 */
+				shift(params, pt);
+				break;
+			}
+
+			if (*pt == "--help" || *pt == "-h") {
+				do_help();
+				return Util::make_unique<int>(0);
+			}
+
+			try {
+				auto max_count_int = int();
+
+				if (param_string( params, pt
+						, "--server-dir", serverdir
+						))
+					continue;
+				if (param_string( params, pt
+						, "--pidfile", pidfile
+						))
+					continue;
+
+				if (supp != All)
+					goto skip;
+				if (param_string( params, pt
+						, "--logfile", logfile
+						))
+					continue;
+				if (param_int( params, pt
+					     , "--port", port
+					     ))
+					continue;
+				if (param_int( params, pt
+					     , "--maxcount", max_count_int
+					     )) {
+					if ( max_count_int > 65536
+					  || max_count_int <= 0
+					   ) {
+						logger.BROKEN( "--maxcount "
+							       "out of range:"
+							       " %d"
+							     , max_count_int
+							     );
+						throw BadArg();
+					}
+					max_count = std::uint16_t(
+						max_count_int - 1
+					);
+				}
+			skip:
+				;
+			} catch (BadArg const& e) {
+				return Util::make_unique<int>(1);
+			}
+
+			/* Unknown option.  */
+			logger.BROKEN( "Unrecognized option: %s"
+				     , pt->c_str()
+				     );
+			return Util::make_unique<int>(1);
+		}
 
 		/* Enter the serverdir.
 		 * If not exist, create.
@@ -80,8 +277,11 @@ public:
 	int get_port() const { return port; }
 };
 
-OptionsHandler::OptionsHandler(Util::Logger& logger)
-	: pimpl(Util::make_unique<Impl>(logger))
+OptionsHandler::OptionsHandler( Util::Logger& logger
+			      , std::string helpline
+			      , Supported supp
+			      )
+	: pimpl(Util::make_unique<Impl>(logger, std::move(helpline), supp))
 	{ }
 OptionsHandler::OptionsHandler(OptionsHandler&& o)
 	: pimpl(std::move(o.pimpl)) { }

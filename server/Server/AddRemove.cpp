@@ -24,7 +24,12 @@ AddRemove::operator()(std::vector<std::string> params) {
 	auto logger = Server::TermLogger();
 
 	/* TODO: options, like the server directory.  */
-	auto options = Server::OptionsHandler(logger);
+	auto options = Server::OptionsHandler
+		( logger
+		, mode == AddMode ? "cldcb-server add [options] client [client...]"
+				  : "cldcb-server remove [options] client [client...]"
+		, Server::OptionsHandler::ServerdirPidfile
+		);
 	auto optret = options.handle(params);
 	if (optret)
 		return *optret;

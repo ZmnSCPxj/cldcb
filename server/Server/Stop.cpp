@@ -9,7 +9,11 @@ namespace Server {
 
 int Stop::operator()(std::vector<std::string> params) {
 	auto logger = Server::TermLogger();
-	auto options = Server::OptionsHandler(logger);
+	auto options = Server::OptionsHandler
+		( logger
+		, "cldcb-server stop [options]"
+		, Server::OptionsHandler::ServerdirPidfile
+		);
 	auto optret = options.handle(params);
 	if (optret)
 		return *optret;

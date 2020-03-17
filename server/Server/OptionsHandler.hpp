@@ -23,8 +23,20 @@ public:
 
 	~OptionsHandler();
 
+	enum Supported
+	/* Supports --serverdir, --pidfile, --logfile, --max-count,
+	 * --port.
+	 */
+	{ All
+	/* Supports --serverdir and --pidfile only.  */
+	, ServerdirPidfile
+	};
+
 	explicit
-	OptionsHandler(Util::Logger& logger);
+	OptionsHandler( Util::Logger& logger
+		      , std::string helpline
+		      , Supported supp
+		      );
 
 	/* Also changes current directory to the server-dir.
 	 * If it returns nullptr, continue as normal.

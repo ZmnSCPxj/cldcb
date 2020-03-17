@@ -109,7 +109,12 @@ private:
 	}
 
 public:
-	Impl() : termlogger(), options(termlogger) { }
+	Impl() : termlogger()
+	       , options( termlogger
+			, "cldcb-server daemon [options]"
+			, Server::OptionsHandler::All
+			)
+	       { }
 
 	int daemonize_and_run(std::vector<std::string> params) {
 		auto optret = options.handle(params);
