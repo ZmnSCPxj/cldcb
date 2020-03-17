@@ -26,6 +26,7 @@ typedef std::unordered_set<Secp256k1::PubKey> ClientSet;
  */
 std::string
 change_clients( Util::Logger& logger
+	      , std::string const& pidfile
 	      , std::function<void(ClientSet&)> changer
 	      );
 

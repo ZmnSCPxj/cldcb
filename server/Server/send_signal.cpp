@@ -8,8 +8,8 @@
 #endif
 
 namespace {
-pid_t get_server_pid() {
-	auto is = std::ifstream("cldcb-server.pid");
+pid_t get_server_pid(std::string const& pidfile) {
+	auto is = std::ifstream(pidfile);
 	if (!is || is.bad() || !is.good())
 		return (pid_t)-1;
 	auto ret = pid_t();
@@ -21,8 +21,8 @@ pid_t get_server_pid() {
 
 namespace Server {
 
-bool send_signal(int sig) {
-	auto server_pid = get_server_pid();
+bool send_signal(std::string const& pidfile, int sig) {
+	auto server_pid = get_server_pid(pidfile);
 	return server_pid >= 0 && kill(server_pid, sig) == 0;
 }
 

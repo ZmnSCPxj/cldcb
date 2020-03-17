@@ -167,6 +167,7 @@ namespace Server {
 
 std::string
 change_clients( Util::Logger& logger
+	      , std::string const& pidfile
 	      , std::function<void(ClientSet&)> changer
 	      ) {
 	auto error = std::string("");
@@ -232,7 +233,7 @@ change_clients( Util::Logger& logger
 	}
 	unlinker.do_not_unlink();
 
-	if (Server::send_signal(SIGHUP))
+	if (Server::send_signal(pidfile, SIGHUP))
 		logger.info("Triggered reload at server.");
 
 	error = "";

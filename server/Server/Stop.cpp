@@ -21,7 +21,7 @@ int Stop::operator()(std::vector<std::string> params) {
 		return 1;
 	}
 
-	if (!Server::send_signal(SIGINT)) {
+	if (!Server::send_signal(options.pidfile(), SIGINT)) {
 		std::cerr << "**BROKEN** Could not stop server."
 			  << std::endl
 			   ;

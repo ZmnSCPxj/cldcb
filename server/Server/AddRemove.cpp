@@ -66,6 +66,7 @@ AddRemove::operator()(std::vector<std::string> params) {
 	}
 
 	auto error = Server::change_clients( logger
+					   , options.pidfile()
 					   , [ &new_clients
 					     , &logger
 					     , this
