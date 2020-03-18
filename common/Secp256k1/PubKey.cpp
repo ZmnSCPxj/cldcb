@@ -177,6 +177,10 @@ PubKey::PubKey(PubKey&& o) {
 }
 PubKey::~PubKey() { }
 
+void const* PubKey::get_key() const {
+	return &pimpl->key;
+}
+
 void PubKey::negate() {
 	pimpl->negate();
 }

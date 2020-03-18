@@ -71,6 +71,8 @@ libcldcb_common_la_SOURCES = \
 	Secp256k1/PubKey.hpp \
 	Secp256k1/Random.cpp \
 	Secp256k1/Random.hpp \
+	Secp256k1/Signature.cpp \
+	Secp256k1/Signature.hpp \
 	Secp256k1/ecdh.cpp \
 	Secp256k1/ecdh.hpp \
 	Sha256/Hash.cpp \

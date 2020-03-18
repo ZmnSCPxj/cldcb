@@ -6,7 +6,10 @@
 #include"Secp256k1/PrivKey.hpp"
 #include"Secp256k1/PubKey.hpp"
 #include"Secp256k1/Random.hpp"
+#include"Secp256k1/Signature.hpp"
 #include"Secp256k1/ecdh.hpp"
+#include"Sha256/Hash.hpp"
+#include"Sha256/fun.hpp"
 
 using Secp256k1::G;
 
@@ -57,6 +60,10 @@ int main() {
 
 	/* Default-constructed privkey is just "1".  */
 	assert((Secp256k1::PrivKey() * A) == A);
+
+	auto m = Sha256::fun(nullptr, 0);
+	auto rs = Secp256k1::Signature::create(a, m);
+	assert(rs.valid(A, m));
 
 	return 0;
 }

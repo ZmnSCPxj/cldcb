@@ -17,6 +17,7 @@ struct secp256k1_context_struct;
 
 namespace Secp256k1 { class PrivKey; }
 namespace Secp256k1 { class PubKey; }
+namespace Secp256k1 { class Signature; }
 
 std::ostream& operator<<(std::ostream&, Secp256k1::PubKey const&);
 
@@ -35,6 +36,9 @@ private:
 
 	explicit PubKey(secp256k1_context_struct *, std::uint8_t buffer[33]);
 	explicit PubKey(std::uint8_t const buffer[33]);
+
+	/* Used by Signature::valid.  */
+	void const* get_key() const;
 
 public:
 	/* Get G.  */
@@ -111,7 +115,7 @@ public:
 
 	void to_buffer(std::uint8_t buffer[33]) const;
 
-	/* TODO: Serialization.  */
+	friend class Secp256k1::Signature;
 };
 
 inline

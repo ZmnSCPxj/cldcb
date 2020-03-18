@@ -85,6 +85,7 @@ public:
 	}
 
 	friend class PubKey;
+	friend class Signature;
 	friend std::ostream& ::operator<<(std::ostream&, Secp256k1::PrivKey const&);
 
 };
