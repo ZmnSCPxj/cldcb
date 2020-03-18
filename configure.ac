@@ -40,7 +40,7 @@ AC_TYPE_PID_T
 
 # Checks for library functions.
 AC_FUNC_FORK
-AC_CHECK_FUNCS([dup2 ftruncate gethostname memset socket strerror], [:], [
+AC_CHECK_FUNCS([dup2 ftruncate gethostname memset mkdir socket strerror], [:], [
 	AC_MSG_ERROR([Missing required system function ${ac_func}.])
 ])
 
