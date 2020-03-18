@@ -88,13 +88,18 @@ std::string translate_setup( Plugin::Setup& setup
 			   , std::map<std::string, std::string> const& opts
 			   ) {
 	auto it = opts.begin();
+	auto err = std::string("");
 	if ((it = opts.find("nid")) != opts.end())
-		translate_pubkey(setup.node_id, "00", "nid", it->second);
+		err = translate_pubkey(setup.node_id, "00", "nid", it->second);
+	if (err != "")
+		return err;
 	if ((it = opts.find("nsig")) != opts.end())
 		/*TODO*/;
 
 	if ((it = opts.find("cid")) != opts.end())
-		translate_pubkey(setup.our_id, "Cc", "cid", it->second);
+		err = translate_pubkey(setup.our_id, "Cc", "cid", it->second);
+	if (err != "")
+		return err;
 	if ((it = opts.find("cpk")) != opts.end()) {
 		auto& value = it->second;
 		if (!Util::Str::ishex(value))
@@ -125,19 +130,24 @@ std::string translate_setup( Plugin::Setup& setup
 	/* TODO: multiserver.  */
 	if ((it = opts.find("sid")) != opts.end()) {
 		setup.servers.resize(1);
-		translate_pubkey(setup.servers[0].id, "55", "sid", it->second);
+		err = translate_pubkey( setup.servers[0].id
+				      , "55", "sid"
+				      , it->second
+				      );
 	}
+	if (err != "")
+		return err;
 	if ((it = opts.find("shost")) != opts.end()) {
 		setup.servers.resize(1);
-		auto ret = translate_host_port( setup.servers[0].host
-					      , setup.servers[0].port
-					      , 29735
-					      , "shost"
-					      , it->second
-					      );
-		if (ret != "")
-			return ret;
+		err = translate_host_port( setup.servers[0].host
+					 , setup.servers[0].port
+					 , 29735
+					 , "shost"
+					 , it->second
+					 );
 	}
+	if (err != "")
+		return err;
 
 	return "";
 }
