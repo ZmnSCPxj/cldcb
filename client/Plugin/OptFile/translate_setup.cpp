@@ -93,8 +93,18 @@ std::string translate_setup( Plugin::Setup& setup
 		err = translate_pubkey(setup.node_id, "00", "nid", it->second);
 	if (err != "")
 		return err;
-	if ((it = opts.find("nsig")) != opts.end())
-		/*TODO*/;
+	if ((it = opts.find("nsig")) != opts.end()) {
+		auto& value = it->second;
+		if (!Util::Str::ishex(value))
+			return "Signature 'nsig' "
+			       "must be a hexadecimal string."
+			       ;
+		if (value.length() != 128)
+			return "Signature 'nsig' "
+			       "must have 128 digits."
+			       ;
+		setup.node_sig = Secp256k1::Signature(value);
+	}
 
 	if ((it = opts.find("cid")) != opts.end())
 		err = translate_pubkey(setup.our_id, "Cc", "cid", it->second);
