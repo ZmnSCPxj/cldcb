@@ -8,13 +8,15 @@
 int main() {
 	Secp256k1::Random rand;
 
-	auto p = Secp256k1::PrivKey(rand);
-	auto P = Secp256k1::PubKey(p);
+	auto s = Secp256k1::PrivKey(rand);
+	auto S = Secp256k1::PubKey(s);
+	auto r = Secp256k1::PrivKey(rand);
+	auto R = Secp256k1::PubKey(r);
 
 	/* Simple seal/unseal.  */
 	{
-		auto sealer = Crypto::Box::Sealer(P);
-		auto unsealer = Crypto::Box::Unsealer(p);
+		auto sealer = Crypto::Box::Sealer(s, R);
+		auto unsealer = Crypto::Box::Unsealer(S, r);
 		auto plaintext = std::vector<std::uint8_t>();
 		plaintext.push_back(0x01);
 		plaintext.push_back(0x42);
@@ -29,8 +31,8 @@ int main() {
 	{
 		auto number = 50;
 		auto size = 1000;
-		auto sealer = Crypto::Box::Sealer(P);
-		auto unsealer = Crypto::Box::Unsealer(p);
+		auto sealer = Crypto::Box::Sealer(s, R);
+		auto unsealer = Crypto::Box::Unsealer(S, r);
 
 		auto plaintexts = std::vector<std::vector<std::uint8_t>>();
 		auto ciphertexts = std::vector<std::vector<std::uint8_t>>();
@@ -53,9 +55,9 @@ int main() {
 	/* Wrong privkey will not work.  */
 	{
 		auto size = 100;
-		auto sealer = Crypto::Box::Sealer(P);
+		auto sealer = Crypto::Box::Sealer(s, R);
 		auto q = Secp256k1::PrivKey(rand);
-		auto unsealer = Crypto::Box::Unsealer(q);
+		auto unsealer = Crypto::Box::Unsealer(S, q);
 
 		auto plaintext = std::vector<std::uint8_t>(size);
 		for (auto& p : plaintext)
@@ -68,8 +70,8 @@ int main() {
 	/* Same message to different sealers yield different ciphertexts.  */
 	{
 		auto size = 100;
-		auto sealer1 = Crypto::Box::Sealer(P);
-		auto sealer2 = Crypto::Box::Sealer(P);
+		auto sealer1 = Crypto::Box::Sealer(s, R);
+		auto sealer2 = Crypto::Box::Sealer(s, R);
 
 		auto plaintext = std::vector<std::uint8_t>(size);
 		for (auto& p : plaintext)
@@ -80,8 +82,8 @@ int main() {
 		assert(ciphertext1 != ciphertext2);
 
 		/* But will still yield the same plaintext.  */
-		auto unsealer1 = Crypto::Box::Unsealer(p);
-		auto unsealer2 = Crypto::Box::Unsealer(p);
+		auto unsealer1 = Crypto::Box::Unsealer(S, r);
+		auto unsealer2 = Crypto::Box::Unsealer(S, r);
 		auto new_plaintext1 = unsealer1.unseal(ciphertext1);
 		auto new_plaintext2 = unsealer2.unseal(ciphertext2);
 		assert(new_plaintext1);
@@ -95,7 +97,7 @@ int main() {
 	 */
 	{
 		auto size = 100;
-		auto sealer = Crypto::Box::Sealer(P);
+		auto sealer = Crypto::Box::Sealer(s, R);
 
 		auto plaintext = std::vector<std::uint8_t>(size);
 		for (auto& p : plaintext)

@@ -8,7 +8,10 @@
 #include"Secp256k1/PrivKey.hpp"
 #include"Secp256k1/PubKey.hpp"
 #include"Secp256k1/Random.hpp"
+#include"Secp256k1/Signature.hpp"
 #include"Secp256k1/ecdh.hpp"
+#include"Sha256/Hash.hpp"
+#include"Sha256/fun.hpp"
 
 namespace Crypto { namespace Box {
 
@@ -21,18 +24,23 @@ private:
 	Secp256k1::PrivKey ephemeral_privkey;
 	Crypto::Secret shared_secret;
 
+	Secp256k1::PrivKey sender_privkey;
+
 	/* nonce counters.  */
 	Detail::Nonce nonce;
 
 	bool start;
 
-	Impl(Secp256k1::PubKey const& receiver_pubkey)
+	Impl( Secp256k1::PrivKey const& sender_privkey_
+	    , Secp256k1::PubKey const& receiver_pubkey
+	    )
 		: rand()
 		, ephemeral_privkey(rand)
 		, shared_secret( Secp256k1::ecdh( ephemeral_privkey
 						, receiver_pubkey
 						)
 			       )
+		, sender_privkey(sender_privkey_)
 		, nonce()
 		, start(true)
 		{
@@ -44,10 +52,12 @@ public:
 
 	static
 	std::unique_ptr<Impl, ImplDeleter>
-	create(Secp256k1::PubKey const& receiver_pubkey) {
+	create( Secp256k1::PrivKey const& sender_privkey
+	      , Secp256k1::PubKey const& receiver_pubkey
+	      ) {
 		/* FIXME: Use some kind of secure memory. */
 		return std::unique_ptr<Impl, ImplDeleter>(
-			new Impl(receiver_pubkey)
+			new Impl(sender_privkey, receiver_pubkey)
 		);
 	}
 
@@ -56,11 +66,12 @@ public:
 		auto ret = std::vector<std::uint8_t>();
 		auto msg = (std::uint8_t *) nullptr;
 		if (start) {
-			ret.resize( 33
+			ret.resize( 33 /* ephemeral pubkey */
+				  + 64 /* signature of the ephemeral pubkey */
 				  + plaintext.size()
 				  + crypto_aead_chacha20poly1305_ietf_ABYTES
 				  );
-			msg = &ret[33];
+			msg = &ret[33 + 64];
 			auto ephemeral_pubkey = Secp256k1::PubKey(ephemeral_privkey);
 			ephemeral_pubkey.to_buffer(&ret[0]);
 
@@ -71,6 +82,13 @@ public:
 			 * 0x02 or 0x03, then it is a new version of
 			 * the Crypto::Box protocol.
 			 */
+
+			/* Generate the signature.  */
+			auto m = Sha256::fun(&ret[0], 33);
+			auto s = Secp256k1::Signature::create( sender_privkey
+							     , m
+							     );
+			s.to_buffer(&ret[33]);
 
 			start = false;
 		} else {
@@ -105,8 +123,10 @@ void Sealer::ImplDeleter::operator()(Impl* p) {
 	delete p;
 }
 
-Sealer::Sealer(Secp256k1::PubKey const& receiver_pubkey)
-	: pimpl(Impl::create(receiver_pubkey)) { }
+Sealer::Sealer( Secp256k1::PrivKey const& sender_privkey
+	      , Secp256k1::PubKey const& receiver_pubkey
+	      )
+	: pimpl(Impl::create(sender_privkey, receiver_pubkey)) { }
 Sealer::Sealer(Sealer&& o) {
 	pimpl.swap(o.pimpl);
 }

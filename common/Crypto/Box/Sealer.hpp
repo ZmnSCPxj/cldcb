@@ -5,14 +5,17 @@
 #include<memory>
 #include<vector>
 
+namespace Secp256k1 { class PrivKey; }
 namespace Secp256k1 { class PubKey; }
 
 namespace Crypto { namespace Box {
 
 /* A Sealer accepts plaintext, then encrypts it to a
- * public key.
+ * public key, proving a particular sender generated
+ * the ciphertext.
  * The resulting ciphertext can only be opened with
- * knowledge of the corresponding private key.
+ * knowledge of the corresponding private key, and
+ * that it came from a particular sender.
  *
  * The intent is that you construct a Sealer for a
  * set of related messages, then use the same instance
@@ -39,7 +42,9 @@ public:
 	Sealer() =delete;
 	Sealer(Sealer const&) =delete;
 
-	explicit Sealer(Secp256k1::PubKey const&);
+	explicit Sealer( Secp256k1::PrivKey const& sender
+		       , Secp256k1::PubKey const& receiver
+		       );
 	Sealer(Sealer&&);
 
 	Sealer& operator=(Sealer&& o) {

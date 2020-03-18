@@ -35,13 +35,15 @@ public:
 		S::serialize(plaintext, params);
 
 		/* Encrypt to the node ID.  */
-		auto sealer = Crypto::Box::Sealer(setup.node_id);
+		auto sealer = Crypto::Box::Sealer( setup.our_priv_key
+						 , setup.node_id
+						 );
 
 		/* Send to the server.  */
 		auto ptr = plaintext.begin();
 		auto next = plaintext.begin();
 		while (ptr < plaintext.end()) {
-			auto static constexpr maxsize = (65000 - 33 - 16);
+			auto static constexpr maxsize = (65000 - 33 - 64 - 16);
 			/* Determine how much to send.  */
 			if ((plaintext.end() - ptr) < maxsize) {
 				next = plaintext.end();
@@ -66,7 +68,9 @@ public:
 		auto res = serv_incr.increment_completed().get();
 
 		if (res.is_reupload()) {
-			auto sealer = Crypto::Box::Sealer(setup.node_id);
+			auto sealer = Crypto::Box::Sealer( setup.our_priv_key
+							 , setup.node_id
+							 );
 			auto& serv_reup = *res.is_reupload();
 
 			/* Save client privkey and current data_version.  */

@@ -8,13 +8,17 @@
 #include"S.hpp"
 #include"Secp256k1/PrivKey.hpp"
 #include"Secp256k1/PubKey.hpp"
+#include"Secp256k1/Signature.hpp"
 #include"Secp256k1/ecdh.hpp"
+#include"Sha256/Hash.hpp"
+#include"Sha256/fun.hpp"
 #include"Util/make_unique.hpp"
 
 namespace Crypto { namespace Box {
 
 class Unsealer::Impl {
 private:
+	Secp256k1::PubKey sender_pubkey;
 	Secp256k1::PrivKey receiver_privkey;
 
 	std::uint8_t shared_secret_storage[sizeof(Crypto::Secret)];
@@ -23,8 +27,11 @@ private:
 
 	bool start;
 
-	Impl(Secp256k1::PrivKey const& receiver_privkey_)
-		: receiver_privkey(receiver_privkey_)
+	Impl( Secp256k1::PubKey const& sender_pubkey_
+	    , Secp256k1::PrivKey const& receiver_privkey_
+	    )
+		: sender_pubkey(sender_pubkey_)
+		, receiver_privkey(receiver_privkey_)
 		, nonce()
 		, start(true)
 		{
@@ -47,10 +54,12 @@ public:
 
 	static
 	std::unique_ptr<Impl, ImplDeleter>
-	create(Secp256k1::PrivKey const& receiver_privkey) {
+	create( Secp256k1::PubKey const& sender_pubkey
+	      , Secp256k1::PrivKey const& receiver_privkey
+	      ) {
 		/* FIXME: Use some kind of secure memory. */
 		return std::unique_ptr<Impl, ImplDeleter>(
-			new Impl(receiver_privkey)
+			new Impl(sender_pubkey, receiver_privkey)
 		);
 	}
 
@@ -60,7 +69,7 @@ public:
 		auto msg = (std::uint8_t const*) nullptr;
 		auto msglen = std::size_t(0);
 		if (start) {
-			if (ciphertext.size() < crypto_aead_chacha20poly1305_ietf_ABYTES + 33)
+			if (ciphertext.size() < crypto_aead_chacha20poly1305_ietf_ABYTES + 33 + 64)
 				return nullptr;
 			/* Check version.  */
 			if (ciphertext[0] != 0x02 && ciphertext[0] != 0x03)
@@ -68,6 +77,13 @@ public:
 
 			/* First 33 bytes are an ephemeral pubkey.  */
 			auto ephemeral_pubkey = Secp256k1::PubKey::from_buffer(&ciphertext[0]);
+			/* Next 64 bytes are a signature.  */
+			auto s = Secp256k1::Signature::from_buffer(&ciphertext[33]);
+
+			/* Validate the ephmeral pubkey.  */
+			auto m = Sha256::fun(&ciphertext[0], 33);
+			if (!s.valid(sender_pubkey, m))
+				return nullptr;
 
 			/* Derive shared secret.  */
 			new(shared_secret_storage) Crypto::Secret(
@@ -75,8 +91,8 @@ public:
 			);
 			start = false;
 
-			msg = &ciphertext[33];
-			msglen = ciphertext.size() - 33;
+			msg = &ciphertext[33 + 64];
+			msglen = ciphertext.size() - 33 - 64;
 		} else {
 			if (ciphertext.size() < crypto_aead_chacha20poly1305_ietf_ABYTES)
 				return nullptr;
@@ -111,8 +127,10 @@ void Unsealer::ImplDeleter::operator()(Impl* p) {
 	delete p;
 }
 
-Unsealer::Unsealer(Secp256k1::PrivKey const& receiver_privkey)
-	: pimpl(Impl::create(receiver_privkey)) { }
+Unsealer::Unsealer( Secp256k1::PubKey const& sender_pubkey
+		  , Secp256k1::PrivKey const& receiver_privkey
+		  )
+	: pimpl(Impl::create(sender_pubkey, receiver_privkey)) { }
 
 Unsealer::Unsealer(Unsealer&& o) {
 	o.pimpl.swap(pimpl);

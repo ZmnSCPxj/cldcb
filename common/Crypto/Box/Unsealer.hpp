@@ -6,6 +6,7 @@
 #include<vector>
 
 namespace Secp256k1 { class PrivKey; }
+namespace Secp256k1 { class PubKey; }
 
 namespace Crypto { namespace Box {
 
@@ -14,6 +15,8 @@ namespace Crypto { namespace Box {
  * With knowledge of the receiver private key, the
  * Unsealer can decrypt messages created by the
  * Sealer with the receiver public key.
+ * The Unsealer also verifies that the Sealer
+ * used a particular privkey to encrypt.
  * As mentioned in the Sealer header as well, the
  * sequence of ciphertexts is versioned and it
  * would be theoretically possible to have the
@@ -31,7 +34,9 @@ public:
 	Unsealer() =delete;
 	Unsealer(Unsealer const&) =delete;
 
-	explicit Unsealer(Secp256k1::PrivKey const&);
+	explicit Unsealer( Secp256k1::PubKey const& sender_pubkey
+			 , Secp256k1::PrivKey const& receiver_privkey
+			 );
 	Unsealer(Unsealer&&);
 
 	Unsealer& operator=(Unsealer&& o) {
