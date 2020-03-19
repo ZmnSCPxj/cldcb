@@ -40,6 +40,8 @@ public:
 	 * failed.
 	 */
 	bool send_message(Protocol::Message message);
+
+	int get_fd() const { return fd.get(); }
 };
 
 }
