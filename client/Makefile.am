@@ -38,6 +38,8 @@ libcldcb_client_la_SOURCES = \
 	Plugin/ServerReuploadIf.hpp \
 	Plugin/ServerSpec.hpp \
 	Plugin/Setup.hpp \
+	ServerTalker/Detail/QueueTalker.cpp \
+	ServerTalker/Detail/QueueTalker.hpp \
 	ServerTalker/Handshaker.cpp \
 	ServerTalker/Handshaker.hpp \
 	ServerTalker/Messenger.cpp \
@@ -53,7 +55,8 @@ AM_CXXFLAGS = -I$(top_srcdir)/common/ $(PTHREAD_CFLAGS)
 TESTS = \
 	test_ld_logger \
 	test_ld_writer \
-	test_optfile
+	test_optfile \
+	test_queue_talker
 check_PROGRAMS = $(TESTS)
 
 EXTRA_DIST = optfile-example
