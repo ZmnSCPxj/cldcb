@@ -1,6 +1,8 @@
 C-Lightning Dynamic Channel Backup Mechanism
 ============================================
 
+> WARNING: This `README` is "what I want cldcb to be", not what it is right now!
+
 This backup mechanism is composed of many parts:
 
 * `cldcb-server` which can safely be run on somebody else computer,
