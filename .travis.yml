@@ -5,4 +5,3 @@ before_install:
 	- sudo apt-get install -y libev-dev
 script:
 	- autoreconf -i && ./configure && make distcheck
-
