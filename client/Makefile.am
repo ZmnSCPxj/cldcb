@@ -14,6 +14,8 @@ libcldcb_client_la_SOURCES = \
 	LD/Logger.hpp \
 	LD/Writer.cpp \
 	LD/Writer.hpp \
+	LD/checkmessage.cpp \
+	LD/checkmessage.hpp \
 	Plugin/DbFileReader.cpp \
 	Plugin/DbFileReader.hpp \
 	Plugin/DbWriteHandler.cpp \
@@ -53,6 +55,7 @@ LDADD = libcldcb-client.la $(PTHREAD_LIBS)
 AM_CXXFLAGS = -I$(top_srcdir)/common/ $(PTHREAD_CFLAGS)
 
 TESTS = \
+	test_ld_checkmessage \
 	test_ld_logger \
 	test_ld_writer \
 	test_optfile \
