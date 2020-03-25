@@ -187,7 +187,7 @@ ServiceLoop::dispatch_msg(Protocol::Message msg) {
 				      , messenger.get_fd()
 				      , Util::Str::hexdump( &it->second[0]
 							  , it->second.size()
-							  )
+							  ).c_str()
 				      );
 			return Ev::lift_io(0);
 		}
