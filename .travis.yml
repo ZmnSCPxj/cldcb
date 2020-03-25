@@ -2,7 +2,7 @@ language: cpp
 compiler:
   - clang
 before_install:
-  - sudo apt-get install -y libev-dev autoconf automake autoconf-archive
+  - sudo apt-get install -y libev-dev autoconf-archive valgrind
 script:
   - echo -en 'travis_fold:start:script.autoreconf\\r'
   - autoreconf -i
