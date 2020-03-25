@@ -20,7 +20,7 @@ PidFiler::PidFiler( Util::Logger& logger_
 	} catch (std::system_error const& e) {
 		logger.BROKEN( "Failed to open: %s: %s"
 			     , pid_path.c_str()
-			     , e.code().message()
+			     , e.code().message().c_str()
 			     );
 		std::cerr << "PidFiler: Failed to open: "
 			  << pid_path << ": "
