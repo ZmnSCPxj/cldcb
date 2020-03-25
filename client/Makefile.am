@@ -9,6 +9,8 @@ cldcb_plugin_SOURCES = \
 # A program is a library.
 noinst_LTLIBRARIES = libcldcb-client.la
 libcldcb_client_la_SOURCES = \
+	Client/recognize_code.cpp \
+	Client/recognize_code.hpp \
 	LD/DbWrite.hpp \
 	LD/Logger.cpp \
 	LD/Logger.hpp \
