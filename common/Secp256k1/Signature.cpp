@@ -20,6 +20,11 @@ Signature::Signature(std::uint8_t const buffer[64]) {
 		);
 	if (res == 0)
 		throw BadSignatureEncoding();
+	secp256k1_ecdsa_signature_normalize
+		( context.get()
+		, reinterpret_cast<secp256k1_ecdsa_signature*>(data)
+		, reinterpret_cast<secp256k1_ecdsa_signature*>(data)
+		);
 }
 Signature::Signature( Secp256k1::PrivKey const& sk
 		    , Sha256::Hash const& m
@@ -67,6 +72,11 @@ Signature::Signature(std::string const& s) {
 		);
 	if (res == 0)
 		throw BadSignatureEncoding();
+	secp256k1_ecdsa_signature_normalize
+		( context.get()
+		, reinterpret_cast<secp256k1_ecdsa_signature*>(data)
+		, reinterpret_cast<secp256k1_ecdsa_signature*>(data)
+		);
 }
 
 void Signature::to_buffer(std::uint8_t buffer[64]) const {
