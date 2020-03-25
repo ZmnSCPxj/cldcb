@@ -21,9 +21,9 @@ void start_idle_handler(EV_P_ ev_idle *raw_idler, int revents) {
 	auto containerp = (MainContainer*) idler->data;
 	auto main = std::move(containerp->main);
 
-	main.run([EV_A_ containerp](int exit_code) {
+	main.run([containerp](int exit_code) {
 		containerp->exit_code = exit_code;
-	}, [EV_A_ containerp](std::exception e) {
+	}, [containerp](std::exception e) {
 		std::cerr << "Unhandled exception!" << std::endl;
 		std::cerr << e.what() << std::endl;
 

@@ -48,8 +48,6 @@ public:
 	FooterJudge() =delete;
 	FooterJudge(FooterJudge const&) =default;
 	FooterJudge(FooterJudge&&) =default;
-	FooterJudge& operator=(FooterJudge const&) =default;
-	FooterJudge& operator=(FooterJudge&&) =default;
 
 	FooterJudge( Util::Logger& logger_
 		   , Ev::ThreadPool& threadpool_

@@ -148,9 +148,9 @@ public:
 	Impl( Util::Logger& logger_
 	    , std::string helpline_
 	    , Supported supp_
-	    ) : logger(logger_)
-	      , helpline(std::move(helpline_))
+	    ) : helpline(std::move(helpline_))
 	      , supp(supp_)
+	      , logger(logger_)
 	      {
 		serverdir = get_home_dir() + "/.cldcb-server";
 		pidfile = "cldcb-server.pid";

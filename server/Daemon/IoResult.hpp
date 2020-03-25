@@ -32,7 +32,8 @@ enum IoResultType
 , IoBroken
 };
 
-struct IoResult {
+class IoResult {
+public:
 	IoResultType result;
 	std::vector<std::uint8_t> data;
 };

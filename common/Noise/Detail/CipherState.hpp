@@ -22,7 +22,13 @@ public:
 	CipherState() : k(nullptr), n(0), wrapped(false) {}
 	CipherState(CipherState const&);
 	CipherState(CipherState&&) =default;
-	CipherState& operator=(CipherState const&) =default;
+	CipherState& operator=(CipherState const& o) {
+		auto tmp = CipherState(o);
+		k.swap(tmp.k);
+		n = tmp.n;
+		wrapped = tmp.wrapped;
+		return *this;
+	}
 	CipherState& operator=(CipherState&&) =default;
 	~CipherState();
 

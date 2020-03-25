@@ -23,10 +23,7 @@ private:
 
 public:
 	Messenger() =delete;
-	Messenger(Messenger const&)=default;
 	Messenger(Messenger&&)=default;
-	Messenger& operator=(Messenger const&)=default;
-	Messenger& operator=(Messenger&&)=default;
 
 	Messenger( Util::Logger& logger_
 		 , Daemon::Breaker& breaker_

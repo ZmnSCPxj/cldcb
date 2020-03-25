@@ -113,15 +113,18 @@ Net::Fd open_listener(int port, Util::Logger& logger) {
 namespace Net {
 
 Listener::Listener(int port, Util::Logger& logger_)
-		  : fd(open_listener(port, logger_)), logger(logger_) {
+		  : fd(open_listener(port, logger_)), plogger(&logger_) {
+	auto& logger = *plogger;
 	if (!fd) {
 		auto os = std::ostringstream();
 		os << "Could not bind to port: " << port;
+		logger.BROKEN("%s", os.str().c_str());
 		throw std::runtime_error(os.str());
 	}
 }
 
 Net::SocketFd Listener::accept() {
+	auto& logger = *plogger;
 	if (!fd)
 		throw std::logic_error("Attempt to use Net::Listener after being moved from.");
 

@@ -146,7 +146,7 @@ DataStorageImpl::request_backup_data(Secp256k1::PubKey const& cid) {
 			auto my_errno = errno;
 			logger.unusual( "Could not open %s for recovery: %s"
 				      , archive_filename.c_str()
-				      , strerror(errno)
+				      , strerror(my_errno)
 				      );
 		} else {
 			logger.debug( "%s opened for recovery as <fd %d>."

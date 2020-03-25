@@ -165,12 +165,13 @@ Ev::Io<int> wait_io_until( std::vector<std::pair<int, WaitDirection>> fds
 	return Io<int>(WaitIoFunctor(std::move(fds), timeout));
 }
 
-Ev::Io<int> wait_io_until(int fd0, WaitDirection dir0, ...) {
+Ev::Io<int> wait_io_until(int fd0, ...) {
 	auto fds = std::vector<std::pair<int, WaitDirection>>();
-	fds.push_back(std::make_pair(fd0, dir0));
 
 	va_list ap;
-	va_start(ap, dir0);
+	va_start(ap, fd0);
+	auto dir0 = (WaitDirection)(va_arg(ap, int));
+	fds.push_back(std::make_pair(fd0, dir0));
 	for (;;) {
 		auto fd = va_arg(ap, int);
 		if (fd < 0)
@@ -188,12 +189,13 @@ Ev::Io<int> wait_io(std::vector<std::pair<int, WaitDirection>> fds) {
 	return wait_io_until(std::move(fds), -1.0);
 }
 
-Ev::Io<int> wait_io(int fd0, WaitDirection dir0, ...) {
+Ev::Io<int> wait_io(int fd0, ...) {
 	auto fds = std::vector<std::pair<int, WaitDirection>>();
-	fds.push_back(std::make_pair(fd0, dir0));
 
 	va_list ap;
-	va_start(ap, dir0);
+	va_start(ap, fd0);
+	auto dir0 = (WaitDirection)(va_arg(ap, int));
+	fds.push_back(std::make_pair(fd0, dir0));
 	for (;;) {
 		auto fd = va_arg(ap, int);
 		if (fd < 0)

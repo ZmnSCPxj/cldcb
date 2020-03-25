@@ -9,7 +9,8 @@
 namespace LD {
 
 /* Represents the data from a `db_write` hook.  */
-struct DbWrite {
+class DbWrite {
+public:
 	std::uint32_t data_version;
 	std::vector<std::string> writes;
 };

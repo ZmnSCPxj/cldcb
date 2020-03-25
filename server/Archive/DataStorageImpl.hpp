@@ -23,7 +23,6 @@ private:
 public:
 	DataStorageImpl() =delete;
 	DataStorageImpl(DataStorageImpl&&) =default;
-	DataStorageImpl& operator=(DataStorageImpl&&) =default;
 
 	DataStorageImpl( Util::Logger& logger
 		       , Ev::ThreadPool& threadpool

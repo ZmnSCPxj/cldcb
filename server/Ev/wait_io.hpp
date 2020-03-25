@@ -8,7 +8,7 @@ namespace Ev { template<typename a> class Io; }
 
 namespace Ev {
 
-enum WaitDirection
+enum WaitDirection : int
 { WaitRead
 , WaitWrite
 };
@@ -25,7 +25,7 @@ Ev::Io<int> wait_io(std::vector<std::pair<int, WaitDirection>>);
  *        , -1
  *        );
  */
-Ev::Io<int> wait_io(int fd0, WaitDirection dir0, ...);
+Ev::Io<int> wait_io(int fd0, ...);
 
 /* Wait for one of the file descriptors to be
  * ready for read or write, or for a timeout
@@ -47,7 +47,7 @@ Ev::Io<int> wait_io_until( std::vector<std::pair<int, WaitDirection>>
  *              , double(1)
  *              );
  */
-Ev::Io<int> wait_io_until(int fd0, WaitDirection dir0, ...);
+Ev::Io<int> wait_io_until(int fd0, ...);
 
 }
 

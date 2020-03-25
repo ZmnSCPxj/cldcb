@@ -24,7 +24,6 @@ private:
 
 public:
 	Reader(Reader&&) =default;
-	Reader& operator=(Reader&&) =default;
 
 	explicit
 	Reader( Util::Logger& logger_

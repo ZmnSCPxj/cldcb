@@ -9,7 +9,7 @@
 #include<string>
 #include<vector>
 
-namespace Jsmn { namespace Detail { class ParseResult; }}
+namespace Jsmn { namespace Detail { struct ParseResult; }}
 namespace Jsmn { class Parser; }
 
 namespace Jsmn {

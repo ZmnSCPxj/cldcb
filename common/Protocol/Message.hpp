@@ -9,7 +9,8 @@
 namespace Protocol {
 
 /* A generic message structure.  */
-struct Message {
+class Message {
+public:
 	/* Message identifier.  */
 	std::uint16_t id;
 	/* Message TLVs.  */

@@ -24,8 +24,6 @@ public:
 	IncrementalThenReuploadSequence() =delete;
 	IncrementalThenReuploadSequence
 		(IncrementalThenReuploadSequence&&)=default;
-	IncrementalThenReuploadSequence&
-	operator=(IncrementalThenReuploadSequence&&)=default;
 
 	IncrementalThenReuploadSequence( Util::Logger& logger_
 				       , Ev::ThreadPool& threadpool_

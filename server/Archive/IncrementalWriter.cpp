@@ -52,6 +52,7 @@ IncrementalWriter::~IncrementalWriter() {
 		      , fd.get()
 		      );
 	auto res = ftruncate(fd.get(), off_t(orig_size));
+	(void) res;
 }
 
 Ev::Io<bool>
@@ -194,8 +195,9 @@ IncrementalWriter::write_data_version() {
 				       );
 	if (!wres) {
 		auto my_errno = errno;
-		logger.BROKEN( "Failed to write data_version to <fd %d>"
+		logger.BROKEN( "Failed to write data_version to <fd %d>: %s"
 			     , fd.get()
+			     , strerror(my_errno)
 			     );
 		return false;
 	}

@@ -10,7 +10,8 @@
 
 namespace Plugin {
 
-struct Setup {
+class Setup {
+public:
 	/* PubKey of the node.  */
 	Secp256k1::PubKey node_id;
 	/* Signature of the node.

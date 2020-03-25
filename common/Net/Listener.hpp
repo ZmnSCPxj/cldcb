@@ -2,6 +2,7 @@
 #define CLDCB_COMMON_NET_LISTENER_HPP
 
 #include<memory>
+#include<utility>
 #include"Net/Fd.hpp"
 
 namespace Net { class SocketFd; }
@@ -12,13 +13,20 @@ namespace Net {
 class Listener {
 private:
 	Net::Fd fd;
-	Util::Logger& logger;
+	Util::Logger* plogger;
 
 public:
 	Listener() =delete;
 	explicit Listener(int port, Util::Logger& logger);
-	Listener(Listener&& o) =default;
-	Listener& operator=(Listener&& o) =default;
+	Listener(Listener&& o) : fd(std::move(o.fd))
+			       , plogger(o.plogger)
+			       { }
+	Listener& operator=(Listener&& o) {
+		auto tmp = Listener(std::move(o));
+		fd.swap(tmp.fd);
+		plogger = tmp.plogger;
+		return *this;
+	}
 	Listener(Listener const&) =delete;
 
 	/* Blocks if not ready.  Use select or poll
