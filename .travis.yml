@@ -4,10 +4,10 @@ compiler:
 before_install:
   - sudo apt-get install -y libev-dev autoconf-archive valgrind
 script:
-  - echo -en 'travis_fold:start:script.autoreconf\\r'
+  - echo "autoreconf" && echo -en 'travis_fold:start:script.autoreconf\\r'
   - autoreconf -i
   - echo -en 'travis_fold:end:script.autoreconf\\r'
-  - echo -en 'travis_fold:start:script.configure\\r'
+  - echo "configure" && echo -en 'travis_fold:start:script.configure\\r'
   - ./configure
   - echo -en 'travis_fold:end:script.configure\\r'
   - make distcheck
