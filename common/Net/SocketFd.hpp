@@ -1,6 +1,7 @@
 #ifndef CLDCB_COMMON_NET_SOCKETFD_HPP
 #define CLDCB_COMMON_NET_SOCKETFD_HPP
 
+#include<cstddef>
 #include<utility>
 #include"Net/Fd.hpp"
 #include"Stream/SinkSource.hpp"
@@ -19,7 +20,7 @@ private:
 	Fd fd;
 
 public:
-	SocketFd(nullptr_t _ = nullptr) : fd() { }
+	SocketFd(std::nullptr_t _ = nullptr) : fd() { }
 	SocketFd(SocketFd&&) =default;
 	SocketFd& operator=(SocketFd&&) =default;
 
