@@ -4,10 +4,10 @@ compiler:
 before_install:
   - sudo apt-get install -y libev-dev autoconf automake autoconf-archive
 script:
-  - printf 'travis_fold:start:autoreconf\r'
+  - echo -en 'travis_fold:start:autoreconf\\r'
   - autoreconf -i
-  - printf 'travis_fold:end:autoreconf\r'
-  - printf 'travis_fold:start:configure\r'
+  - echo -en 'travis_fold:end:autoreconf\\r'
+  - echo -en 'travis_fold:start:configure\\r'
   - ./configure
-  - printf 'travis_fold:end:configure\r'
+  - echo -en 'travis_fold:end:configure\\r'
   - make distcheck
