@@ -71,7 +71,7 @@ Breaker::Breaker(Util::Logger& logger_) : logger(logger_) {
 	}
 
 	auto res_sigpipe = signal(SIGPIPE, SIG_IGN);
-	if (res_sigpipe < 0) {
+	if (res_sigpipe == SIG_ERR) {
 		auto my_errno = errno;
 		logger.BROKEN( "Daemon::Breaker: signal(SIGPIPE): %s"
 			     , strerror(my_errno)
