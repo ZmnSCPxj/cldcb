@@ -9,12 +9,12 @@ namespace Plugin {
 /* The result of sending an incremental change to the
  * server.
  * This can be either:
- * * An increment result, the server wants the plugin to
- *   upload just the incremental change.
+ * * A success result, the plugin can now return to the
+ *   lightningd.
+ * * A failure result, the server is unable to back up.
  * * A reupload result, the server wants the plugin to
  *   upload the complete file prior to the most recent
  *   change, and *then* the current incremental change.
- * * A failure result, the server is unable to back up.
  */
 class ServerResult {
 private:

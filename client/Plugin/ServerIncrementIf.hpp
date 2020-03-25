@@ -30,8 +30,10 @@ public:
 	static auto constexpr max_chunk_size = std::size_t(65000);
 
 	/* Signal complete sending of the current increment.
-	 * Returns true if the server backed it up okay,
-	 * false otherwise.
+	 * Returns a success result if the server has completed
+	 * the backup process, a failure result if the server
+	 * failed to backup, or a reupload result if the server
+	 * wants to get a fresh copy of the database.
 	 * Precondition: any previous send_increment_chunk() call
 	 * has had its future already valid.
 	 * Postcondition: this object can no longer be used after
