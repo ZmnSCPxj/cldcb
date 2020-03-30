@@ -114,7 +114,8 @@ AM_CXXFLAGS = -I$(top_srcdir)/common/ $(PTHREAD_CFLAGS) $(libev_CFLAGS)
 TESTS = \
 	test_archive_abort \
 	test_backup_storage \
-	test_footer
+	test_footer \
+	test_io_leak
 check_PROGRAMS = $(TESTS)
 
 if USE_VALGRIND
