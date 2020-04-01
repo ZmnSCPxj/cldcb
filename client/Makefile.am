@@ -42,6 +42,8 @@ libcldcb_client_la_SOURCES = \
 	Plugin/ServerReuploadIf.hpp \
 	Plugin/ServerSpec.hpp \
 	Plugin/Setup.hpp \
+	ServerTalker/Detail/DePinger.cpp \
+	ServerTalker/Detail/DePinger.hpp \
 	ServerTalker/Detail/QueueTalker.cpp \
 	ServerTalker/Detail/QueueTalker.hpp \
 	ServerTalker/Handshaker.cpp \
