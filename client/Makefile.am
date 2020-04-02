@@ -54,6 +54,7 @@ libcldcb_client_la_SOURCES = \
 	ServerTalker/Handshaker.hpp \
 	ServerTalker/Messenger.cpp \
 	ServerTalker/Messenger.hpp \
+	ServerTalker/MessengerIf.hpp \
 	ServerTalker/rw.hpp
 libcldcb_client_la_LIBADD = ../common/libcldcb-common.la
 

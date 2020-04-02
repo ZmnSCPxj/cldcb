@@ -5,13 +5,14 @@
 #include<utility>
 #include"Net/SocketFd.hpp"
 #include"Noise/Encryptor.hpp"
+#include"ServerTalker/MessengerIf.hpp"
 
 namespace Protocol { class Message; }
 namespace Util { class Logger; }
 
 namespace ServerTalker {
 
-class Messenger {
+class Messenger : public ServerTalker::MessengerIf {
 private:
 	Util::Logger& logger;
 	Net::SocketFd fd;
