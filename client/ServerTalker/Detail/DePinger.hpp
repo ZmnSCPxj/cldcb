@@ -1,12 +1,9 @@
 #ifndef CLDCB_CLIENT_SERVERTALKER_DETAIL_DEPINGER_HPP
 #define CLDCB_CLIENT_SERVERTALKER_DETAIL_DEPINGER_HPP
 
-#include<future>
 #include<memory>
-
-namespace ServerTalker { class Messenger; }
-namespace Protocol { class Message; }
-namespace Util { class Logger; }
+#include<queue>
+#include"ServerTalker/MessengerIf.hpp"
 
 namespace ServerTalker { namespace Detail {
 
@@ -16,25 +13,28 @@ namespace ServerTalker { namespace Detail {
  * a pong to the server if the server sends a
  * ping.
  */
-class DePinger {
+class DePinger : public ServerTalker::MessengerIf {
 private:
-	class Impl;
-	std::unique_ptr<Impl> pimpl;
+	std::unique_ptr<ServerTalker::MessengerIf> messenger;
+	std::queue<std::unique_ptr<Protocol::Message>> queue;
+
 public:
 	DePinger() =delete;
 	DePinger(DePinger&&) =delete;
 	DePinger(DePinger const&) =delete;
 
-	explicit DePinger( std::unique_ptr<ServerTalker::Messenger> messenger
+	explicit DePinger( std::unique_ptr<ServerTalker::MessengerIf> messenger
 			 );
-
 	~DePinger();
 
-	std::future<std::unique_ptr<Protocol::Message>>
-	receive_message();
+	std::unique_ptr<Protocol::Message> receive_message() override;
+	bool send_message(Protocol::Message message) override;
+	int get_fd() const override { return messenger->get_fd(); }
 
-	std::future<bool>
-	send_message(Protocol::Message message);
+	/* The using thread should invoke this whenever it notices that
+	 * the returned fd is ready for receiving.
+	 */
+	void deping();
 };
 
 }}
