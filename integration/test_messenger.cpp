@@ -87,20 +87,16 @@ int main() {
 	auto ck = Crypto::Secret(rand);
 
 	auto senc = ([&s2c, &c2s, &ck]() {
-		auto r_cipherstate = Noise::Detail::CipherState();
-		r_cipherstate.initialize_key(c2s);
-		auto s_cipherstate = Noise::Detail::CipherState();
-		s_cipherstate.initialize_key(s2c);
+		auto r_cipherstate = Noise::Detail::CipherState(c2s);
+		auto s_cipherstate = Noise::Detail::CipherState(s2c);
 		return Noise::Encryptor( std::move(r_cipherstate)
 				       , std::move(s_cipherstate)
 				       , ck
 				       );
 	})();
 	auto cenc = ([&s2c, &c2s, &ck]() {
-		auto r_cipherstate = Noise::Detail::CipherState();
-		r_cipherstate.initialize_key(s2c);
-		auto s_cipherstate = Noise::Detail::CipherState();
-		s_cipherstate.initialize_key(c2s);
+		auto r_cipherstate = Noise::Detail::CipherState(s2c);
+		auto s_cipherstate = Noise::Detail::CipherState(c2s);
 		return Noise::Encryptor( std::move(r_cipherstate)
 				       , std::move(s_cipherstate)
 				       , ck

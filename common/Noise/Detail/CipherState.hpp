@@ -20,6 +20,14 @@ private:
 
 public:
 	CipherState() : k(nullptr), n(0), wrapped(false) {}
+	explicit
+	CipherState( Crypto::Secret const& k_
+		   ) : k(nullptr)
+		     , n(0)
+		     , wrapped(false)
+		     {
+		initialize_key(k_);
+	}
 	CipherState(CipherState const&);
 	CipherState(CipherState&&) =default;
 	CipherState& operator=(CipherState const& o) {
