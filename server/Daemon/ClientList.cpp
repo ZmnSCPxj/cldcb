@@ -171,7 +171,7 @@ public:
 		});
 	}
 
-	bool has(Secp256k1::PubKey const& pk) {
+	bool has(Secp256k1::PubKey const& pk) const {
 		return clients.find(pk) != clients.end();
 	}
 };
@@ -194,7 +194,7 @@ Ev::Io<int> ClientList::launch() {
 	return pimpl->launch();
 }
 
-bool ClientList::has(Secp256k1::PubKey const& pk) {
+bool ClientList::has(Secp256k1::PubKey const& pk) const {
 	return pimpl->has(pk);
 }
 

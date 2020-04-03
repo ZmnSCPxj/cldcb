@@ -46,7 +46,7 @@ private:
 					   ) {
 			auto storage = Util::make_unique<Archive::StorageImpl>
 				( logger
-				, clients
+				, (::Daemon::ClientAllow&) clients
 				, *threadpool
 				, max_count
 				);

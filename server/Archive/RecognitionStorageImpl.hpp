@@ -7,7 +7,7 @@
 #include"Ev/Semaphore.hpp"
 #include"Secp256k1/PubKey.hpp"
 
-namespace Daemon { class ClientList; }
+namespace Daemon { class ClientAllow; }
 namespace Ev { class ThreadPool; }
 namespace Util { class Logger; }
 
@@ -16,7 +16,7 @@ namespace Archive {
 class RecognitionStorageImpl : public Backup::RecognitionStorage {
 private:
 	Util::Logger& logger;
-	Daemon::ClientList& clientlist;
+	Daemon::ClientAllow& clientlist;
 	Ev::ThreadPool& threadpool;
 
 	Ev::Semaphore mtx;
@@ -30,7 +30,7 @@ private:
 public:
 	explicit
 	RecognitionStorageImpl( Util::Logger& logger_
-			      , Daemon::ClientList& clientlist_
+			      , Daemon::ClientAllow& clientlist_
 			      , Ev::ThreadPool& threadpool_
 			      , std::string filename_
 			      ) : logger(logger_)

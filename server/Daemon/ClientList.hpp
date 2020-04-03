@@ -2,6 +2,7 @@
 #define CLDCB_SERVER_DAEMON_CLIENTLIST_HPP
 
 #include<memory>
+#include"Daemon/ClientAllow.hpp"
 
 namespace Daemon { class Breaker; }
 namespace Ev { template<typename a> class Io; }
@@ -10,7 +11,7 @@ namespace Util { class Logger; }
 
 namespace Daemon {
 
-class ClientList {
+class ClientList : public Daemon::ClientAllow {
 private:
 	class Impl;
 	std::unique_ptr<Impl> pimpl;
@@ -36,7 +37,7 @@ public:
 	Ev::Io<int> launch();
 
 	/* Determine if the specified client is in the list.  */
-	bool has(Secp256k1::PubKey const&);
+	bool has(Secp256k1::PubKey const&) const;
 };
 
 }

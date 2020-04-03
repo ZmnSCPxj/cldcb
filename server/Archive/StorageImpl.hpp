@@ -19,7 +19,7 @@ public:
 	StorageImpl() =delete;
 
 	StorageImpl( Util::Logger& logger
-		   , Daemon::ClientList& clientlist
+		   , Daemon::ClientAllow& clientlist
 		   , Ev::ThreadPool& threadpool
 		   , std::uint16_t max_count = 19999
 		   , std::string recognition_filename = "recognition_codes"

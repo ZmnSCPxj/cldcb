@@ -6,7 +6,7 @@
 #include"Backup/DataStorage.hpp"
 
 namespace Archive { class FileNamer; }
-namespace Daemon { class ClientList; }
+namespace Daemon { class ClientAllow; }
 namespace Ev { template<typename a> class Io; }
 namespace Ev { class ThreadPool; }
 
@@ -16,7 +16,7 @@ class DataStorageImpl : public Backup::DataStorage {
 private:
 	Util::Logger& logger;
 	Ev::ThreadPool& threadpool;
-	Daemon::ClientList& clientlist;
+	Daemon::ClientAllow& clientlist;
 	Archive::FooterJudge judge;
 	std::unique_ptr<Archive::FileNamer> namer;
 
@@ -26,7 +26,7 @@ public:
 
 	DataStorageImpl( Util::Logger& logger
 		       , Ev::ThreadPool& threadpool
-		       , Daemon::ClientList& clientlist
+		       , Daemon::ClientAllow& clientlist
 		       , std::uint16_t max_count
 		       , std::unique_ptr<Archive::FileNamer> namer
 		       );

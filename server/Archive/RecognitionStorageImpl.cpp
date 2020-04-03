@@ -3,7 +3,7 @@
 #include<fstream>
 #include<sstream>
 #include"Archive/RecognitionStorageImpl.hpp"
-#include"Daemon/ClientList.hpp"
+#include"Daemon/ClientAllow.hpp"
 #include"Ev/Io.hpp"
 #include"Ev/ThreadPool.hpp"
 #include"Util/Logger.hpp"

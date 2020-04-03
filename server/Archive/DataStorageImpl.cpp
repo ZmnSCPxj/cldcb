@@ -9,7 +9,7 @@
 #include"Archive/IncrementalOnlySequence.hpp"
 #include"Archive/IncrementalThenReuploadSequence.hpp"
 #include"Archive/Reader.hpp"
-#include"Daemon/ClientList.hpp"
+#include"Daemon/ClientAllow.hpp"
 #include"Ev/Io.hpp"
 #include"Ev/ThreadPool.hpp"
 #include"Net/Fd.hpp"
@@ -54,7 +54,7 @@ namespace Archive {
 
 DataStorageImpl::DataStorageImpl( Util::Logger& logger_
 				, Ev::ThreadPool& threadpool_
-				, Daemon::ClientList& clientlist_
+				, Daemon::ClientAllow& clientlist_
 				, std::uint16_t max_count
 				, std::unique_ptr<Archive::FileNamer> namer_
 				) : logger(logger_)

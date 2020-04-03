@@ -53,6 +53,7 @@ libcldcb_server_la_SOURCES = \
 	Daemon/AcceptLoop.hpp \
 	Daemon/Breaker.cpp \
 	Daemon/Breaker.hpp \
+	Daemon/ClientAllow.hpp \
 	Daemon/ClientList.cpp \
 	Daemon/ClientList.hpp \
 	Daemon/Connection.cpp \
