@@ -211,11 +211,8 @@ public:
 		auto& rk = split.first;
 		auto& sk = split.second;
 
-		auto r = Noise::Detail::CipherState(rk); /* sets rn = 0. */
-		auto s = Noise::Detail::CipherState(sk); /* sets sn = 0. */
-
-		return Noise::Encryptor( std::move(r)
-				       , std::move(s)
+		return Noise::Encryptor( rk
+				       , sk
 				       , handshake.get_ck()
 				       );
 	}

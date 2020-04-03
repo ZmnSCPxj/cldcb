@@ -41,6 +41,16 @@ public:
 		   , sck(ck_)
 		   { initial_checks(); }
 
+	Encryptor( Crypto::Secret const& rk
+		 , Crypto::Secret const& sk
+		 , Crypto::Secret const& ck
+		 ) : r(rk)
+		   , rck(ck)
+		   , r_state(0)
+		   , s(sk)
+		   , sck(ck)
+		   { initial_checks(); }
+
 	/* Decrypt the length of the succeeding message.
 	 * The encrypted length must be exactly 18 bytes.
 	 * Afterwards, you should read the length + 16 bytes from

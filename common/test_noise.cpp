@@ -3,7 +3,6 @@
 #include<queue>
 #include<vector>
 #include"Crypto/Secret.hpp"
-#include"Noise/Detail/CipherState.hpp"
 #include"Noise/Detail/hkdf2.hpp"
 #include"Noise/Encryptor.hpp"
 #include"Noise/Initiator.hpp"
@@ -41,18 +40,15 @@ int main() {
 		auto sk = Crypto::Secret("969ab31b4d288cedf6218839b27a3e2140827047f2c0f01bf5c04435d43511a9");
 		auto rk = Crypto::Secret("bb9020b8965f4df047e07f955f3c4b88418984aadc5cdb35096b9ea8fa5c3442");
 
-		auto s = Noise::Detail::CipherState(sk);
-		auto r = Noise::Detail::CipherState(rk);
-
-		auto enc = Noise::Encryptor( Noise::Detail::CipherState(r)
-					   , Noise::Detail::CipherState(s)
+		auto enc = Noise::Encryptor( rk
+					   , sk
 					   , ck
 					   );
 		/* The decryptor has the r and s swapped.
 		 * The r is normally first because it is earlier in the alphabet.
 		 */
-		auto dec = Noise::Encryptor( Noise::Detail::CipherState(s)
-					   , Noise::Detail::CipherState(r)
+		auto dec = Noise::Encryptor( sk
+					   , rk
 					   , ck
 					   );
 
