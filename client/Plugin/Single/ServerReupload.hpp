@@ -3,7 +3,7 @@
 
 #include"Plugin/ServerReuploadIf.hpp"
 
-namespace ServerTalker { namespace Detail { class DePinger; }}
+namespace ServerTalker { class Thread; }
 namespace Util { class Logger; }
 
 namespace Plugin { namespace Single {
@@ -11,15 +11,15 @@ namespace Plugin { namespace Single {
 class ServerReupload : public Plugin::ServerReuploadIf {
 private:
 	Util::Logger& logger;
-	ServerTalker::Detail::DePinger& depinger;
+	ServerTalker::Thread& server_thread;
 
 	void init();
 
 public:
 	ServerReupload( Util::Logger& logger_
-		      , ServerTalker::Detail::DePinger& depinger_
+		      , ServerTalker::Thread& server_thread_
 		      ) : logger(logger_)
-			, depinger(depinger_)
+			, server_thread(server_thread_)
 			{
 		init();
 	}

@@ -1,7 +1,8 @@
 #include"Plugin/Single/ServerReupload.hpp"
 #include"Protocol/MID.hpp"
 #include"Protocol/Message.hpp"
-#include"ServerTalker/Detail/DePinger.hpp"
+#include"ServerTalker/MessengerIf.hpp"
+#include"ServerTalker/Thread.hpp"
 #include"Util/Logger.hpp"
 
 namespace Plugin { namespace Single {
@@ -12,37 +13,41 @@ void ServerReupload::init() {
 
 std::future<bool>
 ServerReupload::send_reupload_chunk(std::vector<std::uint8_t> ciphertext) {
-	auto msg = Protocol::Message();
-	msg.id = std::uint16_t(Protocol::MID::reupload_chunk);
-	msg.tlvs[0] = std::move(ciphertext);
-	return depinger.send_message(std::move(msg));
+	return server_thread
+	     .submit<bool>([ciphertext](ServerTalker::MessengerIf& messenger) {
+		auto msg = Protocol::Message();
+		msg.id = std::uint16_t(Protocol::MID::reupload_chunk);
+		msg.tlvs[0] = std::move(ciphertext);
+
+		return messenger.send_message(msg);
+	});
 }
 std::future<bool>
 ServerReupload::reupload_completed() {
 	logger.debug("Plugin::Single::ServerReupload completing.");
-	auto msg = Protocol::Message();
-	msg.id = std::uint16_t(Protocol::MID::reupload_end);
-	auto ret1 = std::make_shared<std::future<bool>>(
-		 depinger.send_message(std::move(msg))
-	);
 
-	return std::async([ret1, this]() {
-		auto send_res = ret1.get();
-		if (!send_res)
+	return server_thread
+	     .submit<bool>([this](ServerTalker::MessengerIf& messenger) {
+		auto msg = Protocol::Message();
+		msg.id = std::uint16_t(Protocol::MID::reupload_end);
+
+		if (!messenger.send_message(msg))
 			return false;
 
-		auto msg = depinger.receive_message().get();
-		if (!msg) {
+		auto response = messenger.receive_message();
+		if (!response) {
 			logger.BROKEN( "Server disconnected at "
 				       "end of reupload."
 				     );
 			return false;
 		}
-		if (msg->id == std::uint16_t(Protocol::MID::acknowledge_upload))
+		if ( response->id
+		  == std::uint16_t(Protocol::MID::acknowledge_upload)
+		   )
 			return true;
 
 		logger.BROKEN( "Server sent unexpected message id %d."
-			     , (int) msg->id
+			     , (int) response->id
 			     );
 
 		return false;

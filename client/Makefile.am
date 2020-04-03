@@ -42,6 +42,10 @@ libcldcb_client_la_SOURCES = \
 	Plugin/ServerReuploadIf.hpp \
 	Plugin/ServerSpec.hpp \
 	Plugin/Setup.hpp \
+	Plugin/Single/ServerIncrement.cpp \
+	Plugin/Single/ServerIncrement.hpp \
+	Plugin/Single/ServerReupload.cpp \
+	Plugin/Single/ServerReupload.hpp \
 	ServerTalker/Detail/DePinger.cpp \
 	ServerTalker/Detail/DePinger.hpp \
 	ServerTalker/Detail/QueueTalker.cpp \
