@@ -48,6 +48,8 @@ libcldcb_client_la_SOURCES = \
 	Plugin/Single/ServerIncrement.hpp \
 	Plugin/Single/ServerReupload.cpp \
 	Plugin/Single/ServerReupload.hpp \
+	Plugin/make_net_connector.cpp \
+	Plugin/make_net_connector.hpp \
 	ServerTalker/Detail/DePinger.cpp \
 	ServerTalker/Detail/DePinger.hpp \
 	ServerTalker/Detail/QueueTalker.cpp \
