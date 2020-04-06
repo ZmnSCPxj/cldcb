@@ -61,6 +61,8 @@ libcldcb_client_la_SOURCES = \
 	ServerTalker/MessengerIf.hpp \
 	ServerTalker/Thread.cpp \
 	ServerTalker/Thread.hpp \
+	ServerTalker/connect_then_handshake.cpp \
+	ServerTalker/connect_then_handshake.hpp \
 	ServerTalker/rw.hpp
 libcldcb_client_la_LIBADD = ../common/libcldcb-common.la
 
