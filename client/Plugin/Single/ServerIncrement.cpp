@@ -39,7 +39,7 @@ ServerIncrement::increment_completed() {
 		if (!messenger.send_message(std::move(msg)))
 			return ret;
 	
-		auto response = messenger.receive_message().get();
+		auto response = messenger.receive_message();
 		if (!response) {
 			logger.BROKEN( "Server disconnected at "
 				       "end of incremental update."
