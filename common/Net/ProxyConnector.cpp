@@ -1,5 +1,4 @@
 #include<errno.h>
-#include<iostream>
 #include<netdb.h>
 #include<string.h>
 #include<sys/socket.h>
@@ -59,7 +58,6 @@ void analyze_host( std::string const& host
 		auto sa = reinterpret_cast<sockaddr_in*>(paddr->ai_addr);
 		addr_data.resize(4);
 		memcpy(&addr_data[0], &sa->sin_addr, addr_data.size());
-std::cout << "IPv4" << std::endl;
 		return;
 	}
 	if (res == 0 && paddr && paddr->ai_family == AF_INET6) {
@@ -67,7 +65,6 @@ std::cout << "IPv4" << std::endl;
 		auto sa = reinterpret_cast<sockaddr_in6*>(paddr->ai_addr);
 		addr_data.resize(16);
 		memcpy(&addr_data[0], &sa->sin6_addr, addr_data.size());
-std::cout << "IPv6" << std::endl;
 		return;
 	}
 
@@ -80,7 +77,6 @@ std::cout << "IPv6" << std::endl;
 		addr_data.resize(256);
 	addr_data[0] = std::uint8_t(addr_data.size() - 1);
 	memcpy(&addr_data[1], &host[0], addr_data.size() - 1);
-std::cout << "Name" << std::endl;
 	return;
 
 }
