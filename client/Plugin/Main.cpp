@@ -1,52 +1,23 @@
 #ifdef HAVE_CONFIG_H
 #include"config.h"
 #endif
+#include<assert.h>
 #include<utility>
 #include"LD/DbWrite.hpp"
 #include"LD/Logger.hpp"
 #include"LD/Writer.hpp"
+#include"Net/Connector.hpp"
 #include"Plugin/DbFileReader.hpp"
 #include"Plugin/DbWriteHandler.hpp"
 #include"Plugin/Main.hpp"
 #include"Plugin/MainLoop.hpp"
 #include"Plugin/OptFile/load.hpp"
 #include"Plugin/OptHandler.hpp"
-#include"Plugin/Setup.hpp"
 #include"Plugin/ServerIf.hpp"
-#include"Plugin/ServerIncrementIf.hpp"
-#include"Plugin/ServerResult.hpp"
+#include"Plugin/Setup.hpp"
+#include"Plugin/Single/create.hpp"
+#include"Plugin/make_net_connector.hpp"
 #include"Util/make_unique.hpp"
-
-namespace {
-
-class NullIncrementIf : public Plugin::ServerIncrementIf {
-public:
-	std::future<bool>
-	send_increment_chunk(std::vector<std::uint8_t>) override {
-		auto p = std::promise<bool>();
-		p.set_value(true);
-		return p.get_future();
-	}
-	std::future<Plugin::ServerResult>
-	increment_completed() override {
-		auto p = std::promise<Plugin::ServerResult>();
-		p.set_value(Plugin::ServerResult::success());
-		return p.get_future();
-	}
-};
-
-class NullServerIf : public Plugin::ServerIf {
-public:
-	std::future<std::unique_ptr<Plugin::ServerIncrementIf>>
-	new_update(std::uint32_t) override {
-		auto incr_if = Util::make_unique<NullIncrementIf>();
-		auto p = std::promise<std::unique_ptr<Plugin::ServerIncrementIf>>();
-		p.set_value(std::move(incr_if));
-		return p.get_future();
-	}
-};
-
-}
 
 namespace Plugin {
 
@@ -80,10 +51,18 @@ public:
 		if (optload_result)
 			return *optload_result;
 
-		auto server = NullServerIf();
+		assert(setup.servers.size() == 1);
+
+		auto connector = Plugin::make_net_connector(setup);
+		auto server = Plugin::Single::create( log
+						    , *connector
+						    , setup
+						    , setup.servers[0]
+						    );
+
 		/* FIXME: Make this an option in the optionfile.  */
 		auto db = DbFileReader("lightningd.sqlite3");
-		auto handler = Plugin::DbWriteHandler(setup, server, db);
+		auto handler = Plugin::DbWriteHandler(setup, *server, db);
 		auto loop = Plugin::MainLoop(stdin, writer, log, handler);
 
 		log.info( "cldcb-plugin %1$s "
