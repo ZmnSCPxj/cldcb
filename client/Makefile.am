@@ -1,8 +1,10 @@
-bin_PROGRAMS = cldcb-plugin
+bin_PROGRAMS = cldcb-plugin cldcb-client
 
 # Programs are just a single cpp file.
 cldcb_plugin_SOURCES = \
 	plugin.cpp
+cldcb_client_SOURCES = \
+	client.cpp
 
 # The rest of the program is in a convenience library,
 # to facilitate testing.
