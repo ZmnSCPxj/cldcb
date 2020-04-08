@@ -95,6 +95,8 @@ libcldcb_common_la_SOURCES = \
 	Util/Rw.hpp \
 	Util/Str.cpp \
 	Util/Str.hpp \
+	Util/TermLogger.cpp \
+	Util/TermLogger.hpp \
 	Util/fork_test.cpp \
 	Util/fork_test.hpp \
 	Util/make_unique.hpp

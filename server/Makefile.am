@@ -97,7 +97,6 @@ libcldcb_server_la_SOURCES = \
 	Server/OptionsHandler.hpp \
 	Server/Stop.cpp \
 	Server/Stop.hpp \
-	Server/TermLogger.cpp \
 	Server/TermLogger.hpp \
 	Server/change_clients.cpp \
 	Server/change_clients.hpp \
