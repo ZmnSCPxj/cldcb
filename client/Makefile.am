@@ -11,6 +11,8 @@ cldcb_client_SOURCES = \
 # A program is a library.
 noinst_LTLIBRARIES = libcldcb-client.la
 libcldcb_client_la_SOURCES = \
+	Client/NewClient.cpp \
+	Client/NewClient.hpp \
 	Client/recognize_code.cpp \
 	Client/recognize_code.hpp \
 	LD/DbWrite.hpp \
