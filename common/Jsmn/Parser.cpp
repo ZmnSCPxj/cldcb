@@ -69,7 +69,7 @@ public:
 
 namespace Jsmn {
 
-std::string ParseError::enmessage(std::string input, unsigned int i) {
+std::string ParseError::enmessage(std::string const& input, unsigned int i) {
 	/* FIXME: Show context around error.  */
 	char cs[2];
 	cs[0] = input[i];

@@ -18,13 +18,15 @@ private:
 	unsigned int i;
 
 	static
-	std::string enmessage(std::string input, unsigned int i);
+	std::string enmessage(std::string const& input, unsigned int i);
 
 public:
 	ParseError() =delete;
 	ParseError( std::string input_
 		  , unsigned int i_
 		  ) : std::runtime_error(enmessage(input_, i_))
+		    , input(std::move(input_))
+		    , i(i_)
 		    {
 		input = std::move(input_);
 		i = i_;
