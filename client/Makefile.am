@@ -18,6 +18,7 @@ libcldcb_client_la_SOURCES = \
 	LD/DbWrite.hpp \
 	LD/Logger.cpp \
 	LD/Logger.hpp \
+	LD/Rpc.hpp \
 	LD/Writer.cpp \
 	LD/Writer.hpp \
 	LD/checkmessage.cpp \
